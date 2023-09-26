@@ -1,6 +1,7 @@
-global cont,contowner
+global cont,contowner,codloc
 cont=2
 contowner=0
+codloc=0
 #------------------------IMPORT-------------------------------
 import os
 import pickle
@@ -249,14 +250,14 @@ def buscadicotomica(elem):
         return bandera
 #----------------------------CARGA LOCALES-----------------------------
 def crear_locales():
-    global k,i, shopping_loc,cod,bandera, med,rubroLocal,rub1,rub2,rub3
+    global k,i, shopping_loc,codloc"""dejar""",bandera, med,rubroLocal,rub1,rub2,rub3
     k = 0
     alu = open (afu,"r+b")
     regUser=pickle.load(alu)
     all = open (afl,"r+b")
     regLoc=pickle.load(all)
     exit = "S" 
-    while exit.upper() == "S" and k<=6:
+    while exit.upper() == "S":
 
         ingreso_datos()
 
@@ -309,24 +310,18 @@ def crear_locales():
             else:
                 cod = input("El codigo no pertenece a un dueño o no existe. Repetir código. CÓDIGO: ")
         regLoc.codUsuario=cod
+        regLoc.estado="A"
+        codloc=codloc+1
+        regLoc.codLocal=codloc
 
 
-        if k==4:
-            shopping_loc[i][4]="A"
-            k = k+1
-        if k == 5:
-                cod=cod+1
-                shopping_loc[i][5]= cod
-                k = 0
-                i = i + 1
-                orden(shopping_loc)
-                if i == 49:
-                        print("Se alcanzó el límite de filas (50).")
-                else:
-                        exit = input("\n ¿Desea seguir cargando? (S/N): ")
-                        while exit.upper() != "S" and exit.upper() != "N":
-                                exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ")
-                                #gestion_locales()
+
+        orden(shopping_loc)#agregar archivo ordenar 
+
+        exit = input("\n ¿Desea seguir cargando? (S/N): ")
+        while exit.upper() != "S" and exit.upper() != "N":
+                exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ")
+                #gestion_locales()
 
     pickle.dump(regLoc, all)
     all.flush()
