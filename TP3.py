@@ -166,6 +166,24 @@ while alu.tell() < size:
 
 alu.close()
 
+
+#----Locales----
+def locales_cargados(): #agregar linduras p/
+    all = open (afl,"r+b")
+    size= os.path.getsize(afl)
+
+    while all.tell() < size:
+        regLoc = pickle.load(all)
+        print(regLoc.codLocal,regLoc.nombreLocal,regLoc.ubicacionLocal,regLoc.rubroLocal,regLoc.codUsuario,regLoc.estado)
+    all.close()
+
+
+
+
+
+
+
+
 #------------------------VALIDADORES-------------------------
 
 def valid_opc():
@@ -248,9 +266,61 @@ def buscadicotomica(elem):
                 else:
                     sup=med-1
         return bandera
+
+#----------------------------ORDEN EN LA SALA-----------------------------
+def orden(archivo,archfis,campo):#duda si parametro y duda si seek 0,0 #sacar parametros si no funca
+    archivo.seek(0,0)
+    reg=pickle.load(archivo)   
+    tamreg=archivo.tell()
+    tamarch=os.path.getsize(archfis)  
+    cantreg=tamarch//tamreg #cantidad de "filas"
+    i=0
+    j=0
+    for i in range (cantreg-1):
+            for j in range(i+1,cantreg):
+                if archivo.campo[i]>archivo.campo[j]:#ver si parametro .nombreloc
+                        aux = archivo[i]
+                        archivo[i] = archivo[j]
+                        archivo[j] = aux
+
+def orden_rub(matriz):
+    i=0
+    j=1
+    k=0
+    aux=[]
+    for i in range(len(matriz)-1):
+            for j in range(i+1,len(matriz)):
+                if matriz[1][i] != "" and matriz[1][j] != "" and (matriz[1][i]<matriz[1][j]):
+                    for k in range (1):
+                        aux = matriz[k][i]
+                        matriz[k][i] = matriz[k][j]
+                        matriz[k][j] = aux
+    locales_cargados()
+#----------------------------CONTADURIA RUBROS-----------------------------
+def rubros():
+    all.seek(0,0)
+    reg=pickle.load(all)   
+    size=os.path.getsize(afl)
+    rubrolocal = [[0] * 2 for i in range(3)]
+    rubrolocal[0][0]="Indumentaria"
+    rubrolocal[0][1]="Perfumeria"
+    rubrolocal[0][2]="Comidas"
+    for i in range (size):
+        if reg.estado[i] == "A":
+
+            if reg.rubroLocal[i] == "Indumentaria":
+                rubrolocal[1][0] += 1
+
+            elif reg.rubroLocal[i] == "Perfumeria":
+                rubrolocal[1][1] += 1
+
+            elif reg.rubroLocal[i] == "Comidas":
+                rubrolocal[1][2] += 1
+
+    orden(rubrolocal)
 #----------------------------CARGA LOCALES-----------------------------
 def crear_locales():
-    global k,i, shopping_loc,codloc"""dejar""",bandera, med,rubroLocal,rub1,rub2,rub3
+    global k,i, shopping_loc,codloc,bandera, med,rubroLocal,rub1,rub2,rub3#dejar codloc
     k = 0
     alu = open (afu,"r+b")
     regUser=pickle.load(alu)
@@ -316,25 +386,27 @@ def crear_locales():
 
 
 
-        orden(shopping_loc)#agregar archivo ordenar 
+        orden(all,afl,"nombreLoc")#agregar archivo ordenar 
 
         exit = input("\n ¿Desea seguir cargando? (S/N): ")
         while exit.upper() != "S" and exit.upper() != "N":
                 exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ")
-                #gestion_locales()
+                gestion_locales()
 
     pickle.dump(regLoc, all)
     all.flush()
-                orden(shopping_loc)
-        loc_cargados(shopping_loc)
+    orden(all,afl,"nombreLoc") #ojo al nombre local
+    locales_cargados()
     
-    rubros(shopping_loc)
+    rubros()
     exit = input("\n Toque Enter para volver: ")
     while exit != "":
         exit = input("Respuesta inválida. Presione ENTER: ")
     if exit=="": 
         clear_screen()
         gestion_locales()
+    alu.close()
+    all.close()
 #standby recordar close ambos alu afu 
 
 
@@ -345,6 +417,7 @@ def gestion_locales():
     
     global shopping_loc, i
     all = open (afl,"r+b")
+    all.seek(0,0)#out of range ijo epuuuu
     regLoc=pickle.load(all)
     size=os.path.getsize(afl)
     pantalla_locales()
@@ -356,7 +429,7 @@ def gestion_locales():
             exit = input("\n ¿Desea ver los locales cargados? (S/N): ").upper()
             while exit.upper() != "S" and exit.upper() != "N":
                 exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ").upper()
-            if exit=="S" and size=0:
+            if exit=="S" and size==0:
                 print("\n       No hay locales cargados hasta el momento.")
             else:
                 if exit=="S":
