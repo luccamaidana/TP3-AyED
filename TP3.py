@@ -73,11 +73,32 @@ afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
 alu = open (afu, "w+b")
 regUser = user()
 
+regUser.usuario = regUser.usuario.ljust(100)
+regUser.clave = regUser.clave.ljust(8)
+regUser.tipo= regUser.tipo.ljust(14)
+
+
+
+
 #locales
 #afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
 afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
 all = open (afl, "w+b")
 regLoc = locales()
+
+regLoc.nombreLocal = regLoc.nombreLocal.ljust(100)
+regLoc.ubicacionLocal = regLoc.ubicacionLocal.ljust(100)
+regLoc.rubroLocal = regLoc.rubroLocal.ljust(12)
+regLoc.codUsuario = regLoc.codUsuario.ljust(100)
+regLoc.estado = regLoc.estado.ljust(1)
+
+regLoc.codLocal=1
+regLoc.nombreLocal=""
+regLoc.ubicacionLocal=""
+regLoc.rubroLocal=""
+regLoc.codUsuario=""
+regLoc.estado=""
+pickle.dump(regLoc,all)
 
 #promos
 #afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
@@ -96,6 +117,13 @@ regUP = uso_promociones()
 afn = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\NOVEDADES.DAT"
 #aln = open (afn, "w+b")
 regNov = novedades()
+
+#-------------------------EL AJUSTE---------------------------
+
+
+
+
+
 
 #-------------------------PRECARGAS/CARGAS---------------------------
 
@@ -166,6 +194,12 @@ while alu.tell() < size:
 
 alu.close()
 
+"""all= open(afl,"r+b")
+sizes= os.path.getsize(afl)
+while all.tell() < sizes:
+    regLoc = pickle.load(all)
+    print(regLoc.nombreLocal)
+all.close()"""
 
 #----Locales----
 def locales_cargados(): #agregar linduras p/
@@ -196,12 +230,14 @@ def valid_opc():
         #clear_screen()
     #clear_screen()
     return opc
+
 def valid_adm():
     global opcadm
     opcadm = input("\nOPCION: ")
     while opcadm != "1" and opcadm != "2" and opcadm != "3" and opcadm != "4" and opcadm != "5" and opcadm != "0":
         opcadm = input("Mal ingresado. Repetir opción. OPCION: ")
     clear_screen()
+
 def valid_opc_loc():
     global opcloc
     opcloc = input("\nOPCION: ")
@@ -210,6 +246,7 @@ def valid_opc_loc():
         opcloc = input("Mal ingresado. Repetir opción. OPCION: ")
         opcloc = opcloc.lower()
     clear_screen()
+
 #----------------------------CASE-----------------------------
 def select_menu(m):
     match m:
@@ -219,6 +256,7 @@ def select_menu(m):
             menu_owner()
         case "Cliente":
             menu_client()
+
 def ingreso_main_menu(k):
     match k:
         case "1":
@@ -228,7 +266,8 @@ def ingreso_main_menu(k):
             mainMenu()
         case "3":
             print("\nSaliendo...")
-def ingreso_datos():
+
+"""def ingreso_datos():
     global k
     match k:
         case 0:
@@ -237,19 +276,24 @@ def ingreso_datos():
             print("\nIngrese la UBICACIÓN del local:")
         case 2:
             print("\nIngrese el RUBRO del local:")
-            valid_selec_rubro(shopping_loc[i][2])
+            valid_selec_rubro(shopping_loc[i][2])" pasarlo
         case 3:
             print("\nIngrese el CÓDIGO DEL USUARIO")
-            valid_cod_user()
+            valid_cod_user()"""#oasarlo
 
 #----------------------------BUSQUEDA DICOATOMICA-----------------------------
 def buscadicotomica(elem): 
         global bandera, med
         bandera=0 
-        #all = open (afu,"r+b")
-        regLoc=pickle.load(all)   
-        tamreg=all.tell()
+
         tamarch=os.path.getsize(afl)
+        if (tamarch==0):
+            all = open (afl,"w+b")
+        else:
+            all = open (afl,"r+b")
+            regLoc=pickle.load(all)
+
+        tamreg=all.tell()
         cant=tamarch//tamreg
         inf = 0
         sup = cant-1
@@ -296,6 +340,7 @@ def orden_rub(matriz):
                         matriz[k][i] = matriz[k][j]
                         matriz[k][j] = aux
     locales_cargados()
+
 #----------------------------CONTADURIA RUBROS-----------------------------
 def rubros():
     all.seek(0,0)
@@ -318,31 +363,44 @@ def rubros():
                 rubrolocal[1][2] += 1
 
     orden(rubrolocal)
+
 #----------------------------CARGA LOCALES-----------------------------
 def crear_locales():
     global k,i, shopping_loc,codloc,bandera, med,rubroLocal,rub1,rub2,rub3#dejar codloc
     k = 0
     alu = open (afu,"r+b")
     regUser=pickle.load(alu)
-    all = open (afl,"r+b")
-    regLoc=pickle.load(all)
+    size=os.path.getsize(afl)
+    if (size==0):
+        all = open (afl,"w+b")
+    else:
+        all = open (afl,"r+b")
+        regLoc=pickle.load(all)
+        all.seek(0,0)
+
     exit = "S" 
     while exit.upper() == "S":
 
-        ingreso_datos()
+        #ingreso_datos()
 
-        valor = input(f"Ingrese el Nombre del Local: ")
+        valor = input("Ingrese el Nombre del Local: ")
+        while valor=="":
+            valor = input("No se permiten espacios vacios. Pruebe nuevamente: ")
         bandera=1
 
         while bandera==1:
-            bandera=buscadicotomica(valor)
+            if(size==0):
+                bandera=0
+            else:
+                bandera=buscadicotomica(valor)
             while (bandera == 1 or valor==""):
                 if(valor==""):
-                    valor = input(f"No se permiten espacios vacios. Pruebe nuevamente: ")
+                    valor = input("No se permiten espacios vacios. Pruebe nuevamente: ")
                     bandera=1
                 else:
-                    valor = input(f"Este nombre ya existe. Pruebe nuevamente: ")
+                    valor = input("Este nombre ya existe. Pruebe nuevamente: ")
                     bandera=buscadicotomica(valor)
+
         regLoc=all.seek(0,2)
         regLoc.nombreLocal=valor
 
@@ -414,11 +472,13 @@ def crear_locales():
 
 #------------------------GESTIONES-------------------------
 def gestion_locales(): 
-    
-    global shopping_loc, i
-    all = open (afl,"r+b")
+    size=os.path.getsize(afl)
+    if (size==0):
+        all = open (afl,"w+b")
+    else:
+        all = open (afl,"r+b")
+        regLoc=pickle.load(all)
     all.seek(0,0)#out of range ijo epuuuu
-    regLoc=pickle.load(all)
     size=os.path.getsize(afl)
     pantalla_locales()
     valid_opc_loc()
@@ -443,7 +503,7 @@ def gestion_locales():
                         print(regLoc.codUsuario)
                         print(regLoc.estado)
             if(contowner==0):
-                print("No hay duenos regristrados.")
+                print("No hay dueños registrados. Primero debe crear una cuenta de dueño de local...")
             else:
                 crear_locales()
             gestion_locales()
@@ -501,7 +561,7 @@ def gestion_locales():
             if exit=="": 
                 gestion_locales()
         case "e":
-            menu_adm()
+            menu_admin()
     all.close()     
 
 
@@ -540,6 +600,7 @@ def login():
         print("Cantidad de maxima de intentos permitidos")
 
     alu.close()
+
 #-------------------------SIGN IN----------------------------
 
 def signin(user):
@@ -548,9 +609,7 @@ def signin(user):
     size=os.path.getsize(afu)
     regUser=pickle.load(alu)
     flag=0
-    regUser.usuario = regUser.usuario.ljust(100)
-    regUser.clave = regUser.clave.ljust(8)
-    regUser.tipo= regUser.tipo.ljust(14)
+
 
     nombre=input("\nIngrese el nombre: ")
 
@@ -580,6 +639,7 @@ def signin(user):
     alu.close()
     print("\nPerfil creado exitosamente!")
     print("Volviendo...")
+
 #-------------------------MENU'S----------------------------
 def menu_admin():
    global contowner
@@ -635,6 +695,8 @@ def menu_admin():
         while exit != "":
                 exit = input("Respuesta inválida. Presione ENTER: ")
         print("\nSaliendo...")
+
+
 #Main Menu
 def mainMenu():
     #clear_screen()
