@@ -38,7 +38,7 @@ class locales:
         self.nombreLocal = ""
         self.ubicacionLocal = ""
         self.rubroLocal = ""
-        self.codUsuario = ""
+        self.codUsuario = 0
         self.estado = ""
 
 class promociones:
@@ -85,20 +85,21 @@ regUser.tipo= regUser.tipo.ljust(14)
 afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
 all = open (afl, "w+b")
 regLoc = locales()
-
+pickle.dump(regLoc,all)
+all.flush()
 regLoc.nombreLocal = regLoc.nombreLocal.ljust(100)
 regLoc.ubicacionLocal = regLoc.ubicacionLocal.ljust(100)
 regLoc.rubroLocal = regLoc.rubroLocal.ljust(12)
-regLoc.codUsuario = regLoc.codUsuario.ljust(100)
 regLoc.estado = regLoc.estado.ljust(1)
 
 regLoc.codLocal=1
 regLoc.nombreLocal=""
 regLoc.ubicacionLocal=""
 regLoc.rubroLocal=""
-regLoc.codUsuario=""
+regLoc.codUsuario=0
 regLoc.estado=""
 pickle.dump(regLoc,all)
+all.flush()
 
 #promos
 #afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
@@ -267,20 +268,6 @@ def ingreso_main_menu(k):
         case "3":
             print("\nSaliendo...")
 
-"""def ingreso_datos():
-    global k
-    match k:
-        case 0:
-            print("\nIngrese el NOMBRE del local:")
-        case 1:
-            print("\nIngrese la UBICACIÓN del local:")
-        case 2:
-            print("\nIngrese el RUBRO del local:")
-            valid_selec_rubro(shopping_loc[i][2])" pasarlo
-        case 3:
-            print("\nIngrese el CÓDIGO DEL USUARIO")
-            valid_cod_user()"""#oasarlo
-
 #----------------------------BUSQUEDA DICOATOMICA-----------------------------
 def buscadicotomica(elem): 
         global bandera, med
@@ -309,23 +296,26 @@ def buscadicotomica(elem):
                     inf=med+1
                 else:
                     sup=med-1
+        all.close()
         return bandera
 
 #----------------------------ORDEN EN LA SALA-----------------------------
-def orden(archivo,archfis,campo):#duda si parametro y duda si seek 0,0 #sacar parametros si no funca
-    archivo.seek(0,0)
-    reg=pickle.load(archivo)   
-    tamreg=archivo.tell()
-    tamarch=os.path.getsize(archfis)  
+def orden():#duda si parametro y duda si seek 0,0 #sacar parametros si no funca
+    all=open(afl,"r+b")
+    all.seek(0,0)
+    regLoc=pickle.load(all)   
+    tamreg=all.tell()
+    tamarch=os.path.getsize(afl)  
     cantreg=tamarch//tamreg #cantidad de "filas"
     i=0
     j=0
     for i in range (cantreg-1):
             for j in range(i+1,cantreg):
-                if archivo.campo[i]>archivo.campo[j]:#ver si parametro .nombreloc
-                        aux = archivo[i]
-                        archivo[i] = archivo[j]
-                        archivo[j] = aux
+                if regLoc.nombreLocal[i]>regLoc.nombreLocal[j]:#ver si parametro .nombreLoc
+                        aux = regLoc[i]
+                        regLoc[i] = regLoc[j]
+                        regLoc[j] = aux
+
 
 def orden_rub(matriz):
     i=0
@@ -380,9 +370,6 @@ def crear_locales():
 
     exit = "S" 
     while exit.upper() == "S":
-
-        #ingreso_datos()
-
         valor = input("Ingrese el Nombre del Local: ")
         while valor=="":
             valor = input("No se permiten espacios vacios. Pruebe nuevamente: ")
@@ -399,10 +386,10 @@ def crear_locales():
                     bandera=1
                 else:
                     valor = input("Este nombre ya existe. Pruebe nuevamente: ")
-                    bandera=buscadicotomica(valor)
+                    bandera=buscadicotomica(valor) 
 
-        regLoc=all.seek(0,2)
-        regLoc.nombreLocal=valor
+        all.seek(0,2)
+        regLoc.nombreLocal = valor
 
         
 
@@ -428,7 +415,8 @@ def crear_locales():
 
         size= os.path.getsize(afu)
         bandera=0
-        cod = input("\nIngrese el CÓDIGO de dueño de local: ")
+        print(regUser.cod)
+        cod = int(input("\nIngrese el CÓDIGO de dueño de local: "))
         while bandera==0:
             alu.seek(0,0)
             while alu.tell() < size and regUser.tipo!="Dueño de local" and regUser.cod!=cod:
@@ -436,7 +424,7 @@ def crear_locales():
             if(regUser.tipo=="Dueño de local" and regUser.cod==cod):
                 bandera=1
             else:
-                cod = input("El codigo no pertenece a un dueño o no existe. Repetir código. CÓDIGO: ")
+                cod = int(input("El codigo no pertenece a un dueño o no existe. Repetir código. CÓDIGO: "))
         regLoc.codUsuario=cod
         regLoc.estado="A"
         codloc=codloc+1
@@ -444,7 +432,7 @@ def crear_locales():
 
 
 
-        orden(all,afl,"nombreLoc")#agregar archivo ordenar 
+        orden()#agregar archivo ordenar 
 
         exit = input("\n ¿Desea seguir cargando? (S/N): ")
         while exit.upper() != "S" and exit.upper() != "N":
@@ -453,7 +441,7 @@ def crear_locales():
 
     pickle.dump(regLoc, all)
     all.flush()
-    orden(all,afl,"nombreLoc") #ojo al nombre local
+    orden(all,afl,nombreloc) #ojo al nombre local
     locales_cargados()
     
     rubros()
