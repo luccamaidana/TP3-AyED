@@ -78,6 +78,8 @@ afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
 #afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
 all = open (afl, "w+b")
 regLoc = locales()
+pickle.dump(regLoc,all)
+
 
 #promos
 afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
@@ -86,14 +88,14 @@ afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
 regProm = promociones()
 
 #uso promos
-afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
-#afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
+#afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
+afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
 #alup = open (afup, "w+b")
 regUP = uso_promociones()
 
 #novedades
-afn = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\NOVEDADES.DAT"
-#afn = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\NOVEDADES.DAT"
+#afn = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\NOVEDADES.DAT"
+afn = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\NOVEDADES.DAT"
 #aln = open (afn, "w+b")
 regNov = novedades()
 
@@ -178,39 +180,10 @@ def locales_cargados(): #agregar linduras p/
     all.close()
 
 
-#----------------------------CASE-----------------------------
-def select_menu(m):
-    match m:
-        case "Administrador":
-            menu_admin()
-        case "Dueño de local":
-            menu_owner()
-        case "Cliente":
-            menu_client()
 
-def ingreso_main_menu(k):
-    match k:
-        case "1":
-            login()
-        case "2":
-            signin("Cliente")
-            mainMenu()
-        case "3":
-            print("\nSaliendo...")
 
-def ingreso_datos():
-    global k
-    match k:
-        case 0:
-            print("\nIngrese el NOMBRE del local:")
-        case 1:
-            print("\nIngrese la UBICACIÓN del local:")
-        case 2:
-            print("\nIngrese el RUBRO del local:")
-            #valid_selec_rubro(shopping_loc[i][2])
-        case 3:
-            print("\nIngrese el CÓDIGO DEL USUARIO")
-            #valid_cod_user()
+
+
 
 
 #------------------------VALIDADORES-------------------------
@@ -239,41 +212,37 @@ def valid_opc_loc():
         opcloc = input("Mal ingresado. Repetir opción. OPCION: ")
         opcloc = opcloc.lower()
     clear_screen()
-
-
-#-------------------------LOGIN----------------------------
-
-def login():
-    alu = open (afu, "r+b")
-    size=os.path.getsize(afu)
-    correcto=0
-    cont=1
-    nombre=input("\nIngrese el nombre: ")
-    password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*")
-    regUser=pickle.load(alu)
-    #1
-    while correcto!=1 and cont<3:
-        alu.seek(0,0)
-
-        while(alu.tell() < size) and (regUser.usuario!=nombre) and (regUser.clave!=password):
-            regUser=pickle.load(alu)
-            #si no funca agregar reguser/ty
-
-        if(regUser.usuario==nombre and regUser.clave==password):  
-            correcto=1
-        else:
-            nombre=input("\nIngrese el nombre: ")
-            password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*")
-            cont=cont+1
-            alu.seek(0,0)
-    if (regUser.usuario==nombre and regUser.clave==password):  
-            correcto=1    
-    if(correcto==1):
-        select_menu(regUser.tipo)
-    else:
-        print("Cantidad de maxima de intentos permitidos")
-
-    alu.close()
+#----------------------------CASE-----------------------------
+def select_menu(m):
+    match m:
+        case "Administrador":
+            menu_admin()
+        case "Dueño de local":
+            menu_owner()
+        case "Cliente":
+            menu_client()
+def ingreso_main_menu(k):
+    match k:
+        case "1":
+            login()
+        case "2":
+            signin("Cliente")
+            mainMenu()
+        case "3":
+            print("\nSaliendo...")
+""" def ingreso_datos():
+    global k
+    match k:
+        case 0:
+            print("\nIngrese el NOMBRE del local:")
+        case 1:
+            print("\nIngrese la UBICACIÓN del local:")
+        case 2:
+            print("\nIngrese el RUBRO del local:")
+            valid_selec_rubro(shopping_loc[i][2])
+        case 3:
+            print("\nIngrese el CÓDIGO DEL USUARIO")
+            valid_cod_user() """
 
 #----------------------------BUSQUEDA DICOATOMICA-----------------------------
 def buscadicotomica(elem): 
@@ -357,17 +326,18 @@ def crear_locales():
     k = 0
     alu = open (afu,"r+b")
     regUser=pickle.load(alu)
-    all = open (afl,"r+b")
-    regLoc=pickle.load(all)
+
+    all = open (afl,"w+b")
+    #regLoc=pickle.load(all)
     exit = "S" 
     while exit.upper() == "S":
 
-        ingreso_datos()
+        #ingreso_datos()
 
         valor = input(f"Ingrese el Nombre del Local: ")
         bandera=1
 
-        while bandera==1:
+        """ while bandera==1:
             bandera=buscadicotomica(valor)
             while (bandera == 1 or valor==""):
                 if(valor==""):
@@ -375,8 +345,8 @@ def crear_locales():
                     bandera=1
                 else:
                     valor = input(f"Este nombre ya existe. Pruebe nuevamente: ")
-                    bandera=buscadicotomica(valor)
-        regLoc=all.seek(0,2)
+                    bandera=buscadicotomica(valor) """
+        #regLoc=all.seek(0,2)
         regLoc.nombreLocal=valor
 
         
@@ -450,9 +420,8 @@ def gestion_locales():
     
     global shopping_loc, i
     all = open (afl,"r+b")
+    all.seek(0,0)#out of range ijo epuuuu
     #regLoc=pickle.load(all)
-    #all.seek(0,0)#out of range ijo epuuuu
-
     size=os.path.getsize(afl)
     pantalla_locales()
     valid_opc_loc()
@@ -477,7 +446,7 @@ def gestion_locales():
                         print(regLoc.codUsuario)
                         print(regLoc.estado)
             if(contowner==0):
-                print("No hay duenos registrados.")
+                print("No hay duenos regristrados.")
             else:
                 crear_locales()
             gestion_locales()
@@ -535,13 +504,45 @@ def gestion_locales():
             if exit=="": 
                 gestion_locales()
         case "e":
-            menu_admin()
+            menu_adm()
     all.close()     
 
 
 
 
+#-------------------------LOGIN----------------------------
 
+def login():
+    alu = open (afu, "r+b")
+    size=os.path.getsize(afu)
+    correcto=0
+    cont=1
+    nombre=input("\nIngrese el nombre: ")
+    password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*")
+    regUser=pickle.load(alu)
+    #1
+    while correcto!=1 and cont<3:
+        alu.seek(0,0)
+
+        while(alu.tell() < size) and (regUser.usuario!=nombre) and (regUser.clave!=password):
+            regUser=pickle.load(alu)
+            #si no funca agregar reguser/ty
+
+        if(regUser.usuario==nombre and regUser.clave==password):  
+            correcto=1
+        else:
+            nombre=input("\nIngrese el nombre: ")
+            password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*")
+            cont=cont+1
+            alu.seek(0,0)
+    if (regUser.usuario==nombre and regUser.clave==password):  
+            correcto=1    
+    if(correcto==1):
+        select_menu(regUser.tipo)
+    else:
+        print("Cantidad de maxima de intentos permitidos")
+
+    alu.close()
 #-------------------------SIGN IN----------------------------
 
 def signin(user):
