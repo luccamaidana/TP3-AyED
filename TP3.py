@@ -148,6 +148,9 @@ def pantalla_adm():
     print("5_ Reporte de utilización de descuentos")
     print("0_ Fin de programa")
 
+def pantalla_owner():
+    clear_screen()
+    
 
 def pantalla_locales():
     print("\n        Gestión de locales")
