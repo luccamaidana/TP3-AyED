@@ -248,7 +248,7 @@ def ingreso_main_menu(k):
 def buscadicotomica(elem): 
         global bandera, med
         bandera=0 
-        #all = open (afu,"r+b")
+        all = open (afl,"r+b")
         regLoc=pickle.load(all)   
         tamreg=all.tell()
         tamarch=os.path.getsize(afl)
@@ -267,6 +267,7 @@ def buscadicotomica(elem):
                     inf=med+1
                 else:
                     sup=med-1
+        all.close()
         return bandera
 
 #----------------------------ORDEN EN LA SALA-----------------------------
@@ -337,7 +338,7 @@ def crear_locales():
         valor = input(f"Ingrese el Nombre del Local: ")
         bandera=1
 
-        """ while bandera==1:
+        while bandera==1:
             bandera=buscadicotomica(valor)
             while (bandera == 1 or valor==""):
                 if(valor==""):
@@ -345,8 +346,8 @@ def crear_locales():
                     bandera=1
                 else:
                     valor = input(f"Este nombre ya existe. Pruebe nuevamente: ")
-                    bandera=buscadicotomica(valor) """
-        #regLoc=all.seek(0,2)
+                    bandera=buscadicotomica(valor)
+        all.seek(0,2)
         regLoc.nombreLocal=valor
 
         
