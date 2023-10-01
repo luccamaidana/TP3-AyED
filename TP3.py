@@ -2,8 +2,8 @@ global cont,contowner,codloc, fecha_actual, nombredia
 cont=2
 contowner=0
 codloc=0
-fecha_actual = datetime.datetime.now    
-nombredia = fecha_actual.strftime("%A")
+codpromo=1
+
 #------------------------IMPORT-------------------------------
 import os
 import pickle
@@ -26,7 +26,6 @@ from colorama import Fore, Style
 # Inicializar colorama
 colorama.init(autoreset=True)
 
-nombredia = fecha_actual.strftime("%A")
 #--------------------------CLASS------------------------------
 class user:
     def __init__(self):
@@ -73,36 +72,37 @@ class novedades:
 #user
 #afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
 #afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
-afl = "D:\Descargas\Facultad\TP3-AyED\USUARIOS.dat"
+afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
 alu = open (afu, "w+b")
 regUser = user()
 
 #locales
 #afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
 #afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
-afl = "D:\Descargas\Facultad\TP3-AyED\LOCALES.dat"
+afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
 all = open (afl, "w+b") 
 regLoc = locales()
 
 #promos
 #afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
 #afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
-afp = "D:\Descargas\Facultad\TP3-AyED\PROMOCIONES.DAT"
-#alp = open (afp, "w+b")
+afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
+alp = open (afp, "w+b")
 regProm = promociones()
+
 
 #uso promos
 #afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
 #afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
-afup = "D:\Descargas\Facultad\TP3-AyED\USO_PROMOCIONES.DAT"
-#alup = open (afup, "w+b")
+afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
+alup = open (afup, "w+b")
 regUP = uso_promociones()
 
 #novedades
 #afn = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\NOVEDADES.DAT"
 #afn = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\NOVEDADES.DAT"
-afn = "D:\Descargas\Facultad\TP3-AyED\NOVEDADES.DAT"
-#aln = open (afn, "w+b")
+afn = "D:\\Descargas\\Facultad\\TP3-AyED\\NOVEDADES.DAT"
+aln = open (afn, "w+b")
 regNov = novedades()
 
 #-------------------------PRECARGAS/CARGAS---------------------------
@@ -113,8 +113,6 @@ regUser.clave="6"
 regUser.tipo="Administrador"
 pickle.dump(regUser,alu)
 
-
-
 regUser.cod=cont
 regUser.usuario= input("\nUsuario:")
 regUser.clave= input("\nClave:")
@@ -123,6 +121,28 @@ pickle.dump(regUser, alu)
 alu.flush()
 alu.close()
 
+regProm.codPromo=0
+regProm.textoPromo=""
+regProm.fechaDesdePromo=""
+regProm.fechaHastaPromo=""
+regProm.diasSemana=""
+regProm.estado=""
+regProm.codLocal=1
+pickle.dump(regProm, alp)
+
+alp.flush()
+alp.close()
+
+regLoc.codLocal=1
+regLoc.nombreLocal="a"
+regLoc.ubicacionLocal="norte"
+regLoc.rubroLocal="Indumentaria"
+regLoc.codUsuario=3
+regLoc.estado="A"
+pickle.dump(regLoc, all)
+
+all.flush()
+all.close()
 #------------------------PANTALLAS-------------------------
 def mostrar_menu():
     ancho_ventana = shutil.get_terminal_size().columns
@@ -225,14 +245,13 @@ def valid_opc_loc():
         opcloc = opcloc.lower()
     clear_screen()
 
-def valid_dia():
-    global opcdia
-    opcdia = input("Dias que la promo estara disponible (Presione * para terminar la carga): ")
+def valid_dia(opcdia):
     opcdia = opcdia.upper()
     while opcdia != "LUNES" and opcdia != "MARTES" and opcdia != "MIERCOLES" and opcdia != "JUEVES" and opcdia != "VIERNES" and opcdia != "SABADO" and opcdia != "DOMINGO":
         opcdia = input("Mal ingresado. Repetir opción: ")
         opcdia = opcdia.upper()
-    clear_screen()
+
+
 
 #----------------------------CASE-----------------------------
 def select_menu(m):
@@ -529,16 +548,25 @@ def gestion_locales():
 
 #------------------------MENU OWNER------------------------------------------------------------------------------------------
 def crear_descuento():
-    global nombredia, fecha_actual, nombredia
-    alp = open (afp, "r+b")
-    regProm = pickle.load(alp)
-    all = open (afl, "r+b")
-    regLoc = pickle.load(all)
-    alu = open(afu, "r+b")
-    regUser = pickle.load(alu)
-    alp.seek(0,0)
-    all.seek(0,0)  
-    alu.seek(0,0)
+    global nombredia, fecha_actual, nombredia, codpromo
+    bandera=0
+    size = os.path.getsize(afp)
+    if size==0:
+        alp = open (afp, "w+b")
+    else:
+        alp = open (afp, "r+b")
+        all = open (afl, "r+b")
+        alu = open(afu, "r+b")
+        alp.seek(0,0)
+        all.seek(0,0)  
+        alu.seek(0,0)
+        regProm = pickle.load(alp)
+        regLoc = pickle.load(all)
+        regUser = pickle.load(alu)
+
+    fecha_actual = datetime.datetime.now()
+    fecha_formateada = fecha_actual.strftime("%d/%m/%Y")
+    print(fecha_formateada)
 
     size = os.path.getsize(afp)
     if size==0:
@@ -553,39 +581,48 @@ def crear_descuento():
             print(regProm.diasSemana)
             print(regProm.estado)
             print(regProm.codLocal)
-    
-    #agregar codigo y ver el tema de reiniciar el pointer
 
-    texto = input("Ingrese texto de la promocion: ")
-    regProm.textoPromo = texto
+    alp.seek(0,0)
+    codigo=int(input("Identifique el codigo del local al que quiere cargar un descuento: "))
+    while alp.tell() < size and codigo!=regProm.codLocal and bandera==0:
+            regProm = pickle.load(alp)
+            if (codigo!=regProm.codLocal): 
+                codigo=int(input("Código de local no válido, volver a ingresar. CÓDIGO: "))
+                alp.seek(0,0)
+    if (codigo==regProm.codLocal):
+        bandera=1
 
-    desde = input("Ingrese dia que inicia la promoción: ")
-    hasta = input("Ingrese dia que finaliza la promoción: ")
-    while desde<fecha_actual:
-        desde = input("Fecha de inicio de la prom. no valido. Ingrese otra fecha: ")
-    while desde>hasta:
-        hasta = input("Fecha de finalizacion de la prom. no valido. Ingrese otra fecha: ")
+    if bandera==1:
+        texto = input("Ingrese texto de la promocion: ")
+        regProm.textoPromo = texto
 
-    while opcdia!="*":
-        global opcdia
-        valid_dia()
-        match opcdia:
-            case "LUNES":
-                regProm.diasSemana==1
-            case "MARTES":
-                regProm.diasSemana==1
-            case "MIERCOLES":
-                regProm.diasSemana==1
-            case "JUEVES":
-                regProm.diasSemana==1
-            case "VIERNES":
-                regProm.diasSemana==1
-            case "SABADO":
-                regProm.diasSemana==1
-            case "DOMINGO": #MOMINGO AMIGOOOOOOS ver con los pibes despues verificar while
-                regProm.diasSemana==1
+        desde = input("Ingrese dia que inicia la promoción: ")
+        regProm.fechaDesdePromo=desde
+        hasta = input("Ingrese dia que finaliza la promoción: ")
+        regProm.fechaHastaPromo=hasta
+        while fecha_formateada>desde:
+            desde = input("Fecha de inicio de la prom. no valido. Ingrese otra fecha: ")
+            regProm.fechaDesdePromo=desde
+        while desde>hasta:
+            hasta = input("Fecha de finalizacion de la prom. no valido. Ingrese otra fecha: ")
+            regProm.fechaHastaPromo=hasta
+        regProm.estado = "Pendiente"
+        regProm.codLocal=codigo
+        regProm.codPromo=codpromo
+        codpromo=codpromo+1
+        
+        while exit=="S":
+            dia=input("Dias habiles de la promocion: ")
+            valid_dia(dia)
+            
+            exit=input("Desea cargar más dias? (S/N): ")
+            while exit.upper() != "S" and exit.upper() != "N":
+                exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ")
 
-    regProm.estado = "Pendiente"
+
+
+    print("Promoción crada exitosamente =)")
+
 
 def uso_descuento():
     alp = open (afp, "r+b")
@@ -722,30 +759,7 @@ def menu_admin():
         menu_admin()
       case "0":
         clear_screen()
-        chau_franchu=f"""{Fore.RED}
-        ▒╔═╦═╦═╦╦╦═╦══╗▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒║╬║║║╔╣╔╣╦╩╗╔╝▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒
-        ▒║╗╣║║╚╣╚╣╩╗║║▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄██▒▒
-        ▒╚╩╩═╩═╩╩╩═╝╚╝▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▀██▀█▀█▀███
-        ▒╔══╦═╦══╦═╦═╗▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀▀▀▀▀████▀▀▀▒
-        ▒╚╗╔╣╦╣╔╗║║║║║▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▒▒▒▀██▒▒▒▒
-        ▒▒║║║╩╣╠╣║║║║║▒▒▒▒▒▒▒▒▒▒▒███▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒▒╚╝╚═╩╝╚╩╩═╩╝▒▒▒▒▒▒▄▒▒▒─███▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐█▌▒▒▒▒▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒▒▒▒▒▒▒▒▒▒▒▒▒▒█▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒▒▒▒▒▒▒▒▒▒▒▒▐█▒▒▒▒▒▒▒▒▄▄▄▒▒▒█▒▒▒▒▄▒▒▒▒▒▒▒
-        ▒▒▒▒█████████▒▒▒▒▒▒▒▒█▀█▀█▒█▀█▒▒█▀█▒▄███▄
-        ▒▒▒████████████▒▒▒▒▒░█▀█▀█░█▀██░█▀█░█▄█▄█
-        ▒▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▒▒▒░█▀█▀█░█▀████▀█░█▄█▄█
-        ▐████████████████▒▒▒████████▀████████████
-"""
-        print(chau_franchu)
-        
-        exit = input("\n Toque Enter para salir: ")
-        while exit != "":
-                exit = input("Respuesta inválida. Presione ENTER: ")
-        print("\nSaliendo...")
+        mainMenu()
 
 def menu_owner():
     pantalla_owner()
@@ -773,4 +787,5 @@ def mainMenu():
 def PP():
     mainMenu()
 
-PP()
+#PP()
+crear_descuento()
