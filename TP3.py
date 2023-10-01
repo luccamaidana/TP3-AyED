@@ -300,21 +300,54 @@ def buscadicotomica(elem):
         return bandera
 
 #----------------------------ORDEN EN LA SALA-----------------------------
-def orden():#duda si parametro y duda si seek 0,0 #sacar parametros si no funca
-    all=open(afl,"r+b")
-    all.seek(0,0)
-    regLoc=pickle.load(all)   
+def orden():  #ordena por campo codigo 
+    all = open(afl, "r+b")
+    all.seek (0, 0)
+    aux = pickle.load(all)
+    auxi = pickle.load(all)
+    auxj = pickle.load(all)
+    tamReg = all.tell() 
+    tamArch = os.path.getsize(afl)
+    cantReg = tamArch // tamReg
+    for i in range(0, cantReg-1):
+        for j in range (i+1, cantReg):
+            all.seek (i*tamReg, 0)
+            auxi = pickle.load(all)
+            all.seek (j*tamReg, 0)
+            auxj = pickle.load(all)
+            if (auxi.nombreLocal > auxj.nombreLocal):
+                auxreg = auxi
+                auxi = auxj
+                auxj = auxreg
+                all.seek (i*tamReg, 0)
+                pickle.dump(auxj, all)
+                all.seek (j*tamReg, 0)
+                pickle.dump(auxi, all)
+                all.flush()
+
+"""def orden():
+    all = open(afl, "r+b")
+    all.seek(0, 0)
+    regLoc = pickle.load(all)
     tamreg=all.tell()
-    tamarch=os.path.getsize(afl)  
-    cantreg=tamarch//tamreg #cantidad de "filas"
-    i=0
-    j=0
-    for i in range (cantreg-1):
-            for j in range(i+1,cantreg):
-                if regLoc.nombreLocal[i]>regLoc.nombreLocal[j]:#ver si parametro .nombreLoc
-                        aux = regLoc[i]
-                        regLoc[i] = regLoc[j]
-                        regLoc[j] = aux
+    tamarch = os.path.getsize(afl)
+    cantreg = tamarch//tamreg  # Corregir la cantidad de registros
+
+    for i in range(cantreg - 1):
+        for j in range(i + 1, cantreg):
+            if regLoc[i][1]> regLoc[j][1]:  # Comparar por el campo adecuado (por ejemplo, regLoc[i][1])
+                aux = regLoc[i]
+                regLoc[i] = regLoc[j]
+                regLoc[j] = aux
+
+    # Volver al inicio del archivo y sobrescribir los registros ordenados
+    all.seek(0, 0)
+    pickle.dump(regLoc, all)
+    all.close()  # Cerrar el archivo"""
+
+
+
+
 
 
 def orden_rub(matriz):
@@ -430,21 +463,23 @@ def crear_locales():
         codloc=codloc+1
         regLoc.codLocal=codloc
 
-
-
-        orden()#agregar archivo ordenar 
+        pickle.dump(regLoc, all)
+        all.flush()
+        size=os.path.getsize(afl)
+         
 
         exit = input("\n ¿Desea seguir cargando? (S/N): ")
         while exit.upper() != "S" and exit.upper() != "N":
                 exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ")
-                gestion_locales()
+                #gestion_locales()
 
-    pickle.dump(regLoc, all)
-    all.flush()
-    orden(all,afl,nombreloc) #ojo al nombre local
+    #pickle.dump(regLoc, all)
+    #all.flush()
+    if (size!=0):
+        orden()#agregar archivo ordenar
     locales_cargados()
     
-    rubros()
+    #rubros()
     exit = input("\n Toque Enter para volver: ")
     while exit != "":
         exit = input("Respuesta inválida. Presione ENTER: ")
