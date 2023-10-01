@@ -68,8 +68,8 @@ class novedades:
 
 #------------------------PP-----------------------------------
 #user
-afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
-#afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
+#afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
+afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
 alu = open (afu, "w+b")
 regUser = user()
 
@@ -81,8 +81,8 @@ regUser.tipo= regUser.tipo.ljust(14)
 
 
 #locales
-afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
-#afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
+#afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
+afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
 all = open (afl, "w+b")
 regLoc = locales()
 pickle.dump(regLoc,all)
@@ -93,9 +93,9 @@ regLoc.rubroLocal = regLoc.rubroLocal.ljust(12)
 regLoc.estado = regLoc.estado.ljust(1)
 
 regLoc.codLocal=1
-regLoc.nombreLocal="".ljust(100)
-regLoc.ubicacionLocal="".ljust(100)
-regLoc.rubroLocal="".ljust(12)
+regLoc.nombreLocal=""
+regLoc.ubicacionLocal=""
+regLoc.rubroLocal=""
 regLoc.codUsuario=0
 regLoc.estado="A"
 pickle.dump(regLoc,all)
@@ -272,14 +272,15 @@ def ingreso_main_menu(k):
 def buscadicotomica(elem): 
         global bandera, med
         bandera=0 
-
+        
         tamarch=os.path.getsize(afl)
-        if (tamarch==0):
+        if (tamarch<=349):
             all = open (afl,"w+b")
         else:
             all = open (afl,"r+b")
             regLoc=pickle.load(all)
-
+        tamarch=os.path.getsize(afl)
+        all.seek(0,0)
         tamreg=all.tell()
         cant=tamarch//tamreg
         inf = 0
@@ -390,12 +391,12 @@ def crear_locales():
     alu = open (afu,"r+b")
     regUser=pickle.load(alu)
     size=os.path.getsize(afl)
-    if (size==0):
-        all = open (afl,"w+b")
-    else:
-        all = open (afl,"r+b")
-        regLoc=pickle.load(all)
-        all.seek(0,0)
+    #if (size<=349):
+        #all = open (afl,"w+b")
+    #else:
+    all = open (afl,"r+b")
+    regLoc=pickle.load(all)
+    all.seek(0,0)
 
     exit = "S" 
     while exit.upper() == "S":
@@ -405,7 +406,7 @@ def crear_locales():
         bandera=1
 
         while bandera==1:
-            if(size==0):
+            if(size<=349):
                 bandera=0
             else:
                 bandera=buscadicotomica(valor)
@@ -418,8 +419,8 @@ def crear_locales():
                     bandera=buscadicotomica(valor) 
 
         all.seek(0,2)
-        regLoc.nombreLocal = valor.ljust(100)
-
+        regLoc.nombreLocal = valor        
+        regLoc.nombreLocal = regLoc.nombreLocal.ljust(100)
         
 
         ubi = input("\nIngrese la UBICACIÓN: ")
