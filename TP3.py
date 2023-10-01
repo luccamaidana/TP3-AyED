@@ -64,21 +64,42 @@ regUser.tipo= regUser.tipo.ljust(14)
 afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
 all = open (afl, "w+b")
 regLoc = locales()
-pickle.dump(regLoc,all)
-all.flush()
 regLoc.nombreLocal = regLoc.nombreLocal.ljust(100)
 regLoc.ubicacionLocal = regLoc.ubicacionLocal.ljust(100)
 regLoc.rubroLocal = regLoc.rubroLocal.ljust(12)
 regLoc.estado = regLoc.estado.ljust(1)
-
-regLoc.codLocal=1
-regLoc.nombreLocal=""
-regLoc.ubicacionLocal=""
-regLoc.rubroLocal=""
-regLoc.codUsuario=0
-regLoc.estado=""
 pickle.dump(regLoc,all)
 all.flush()
+all.seek(0,0)
+regLoc.codLocal=1
+regLoc.nombreLocal="c"
+regLoc.ubicacionLocal="narnia"
+regLoc.rubroLocal="2"
+regLoc.codUsuario=0
+regLoc.estado="A"
+pickle.dump(regLoc,all)
+regLoc.codLocal=2
+regLoc.nombreLocal="a"
+regLoc.ubicacionLocal="narnia2"
+regLoc.rubroLocal="2"
+regLoc.codUsuario=0
+regLoc.estado="A"
+pickle.dump(regLoc,all)
+regLoc.codLocal=3
+regLoc.nombreLocal="b"
+regLoc.ubicacionLocal="sex"
+regLoc.rubroLocal="3"
+regLoc.codUsuario=0
+regLoc.estado="A"
+pickle.dump(regLoc,all)
+
+
+
+
+
+
+all.flush()
+all.close()
 
 #promos
 #afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
@@ -107,23 +128,17 @@ regNov = novedades()
 
 #-------------------------PRECARGAS/CARGAS---------------------------
 
-regUser.cod=1
-regUser.usuario="5"
-regUser.clave="6"
-regUser.tipo="Administrador"
-pickle.dump(regUser,alu)
 
 
 
-regUser.cod=cont
-regUser.usuario= input("\nUsuario:")
-regUser.clave= input("\nClave:")
-pickle.dump(regUser, alu)
+def locales_cargados(): #agregar linduras p/
+    all = open (afl,"r+b")
+    size= os.path.getsize(afl)
 
-alu.flush()
-alu.close()
-
-
+    while all.tell() < size:
+        regLoc = pickle.load(all)
+        print(regLoc.codLocal,regLoc.nombreLocal,regLoc.ubicacionLocal,regLoc.rubroLocal,regLoc.estado)
+    all.close()
 
 
 
@@ -152,10 +167,13 @@ def orden():  #ordena por campo codigo
             auxi = pickle.load(all)
             all.seek (j*tamReg, 0)
             auxj = pickle.load(all)
+            print(auxi)
+            print(auxj)
             if (auxi.nombreLocal > auxj.nombreLocal):
                 auxreg = auxi
                 auxi = auxj
                 auxj = auxreg
+                
                 all.seek (i*tamReg, 0)
                 pickle.dump(auxj, all)
                 all.seek (j*tamReg, 0)
@@ -164,3 +182,4 @@ def orden():  #ordena por campo codigo
 
 
 orden()
+locales_cargados()
