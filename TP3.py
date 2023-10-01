@@ -47,8 +47,8 @@ class novedades:
 
 #------------------------PP-----------------------------------
 #user
-#afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
-afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
+afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
+#afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
 alu = open (afu, "w+b")
 regUser = user()
 
@@ -60,43 +60,38 @@ regUser.tipo= regUser.tipo.ljust(14)
 
 
 #locales
-#afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
-afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
+afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
+#afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
 all = open (afl, "w+b")
 regLoc = locales()
-regLoc.nombreLocal = regLoc.nombreLocal.ljust(100)
-regLoc.ubicacionLocal = regLoc.ubicacionLocal.ljust(100)
-regLoc.rubroLocal = regLoc.rubroLocal.ljust(12)
-regLoc.estado = regLoc.estado.ljust(1)
+
 pickle.dump(regLoc,all)
 all.flush()
 all.seek(0,0)
 regLoc.codLocal=1
-regLoc.nombreLocal="c"
-regLoc.ubicacionLocal="narnia"
-regLoc.rubroLocal="2"
+regLoc.nombreLocal="Caquita".ljust(100)
+regLoc.ubicacionLocal="narnia".ljust(100)
+regLoc.rubroLocal="2".ljust(12)
 regLoc.codUsuario=0
 regLoc.estado="A"
 pickle.dump(regLoc,all)
 regLoc.codLocal=2
-regLoc.nombreLocal="a"
-regLoc.ubicacionLocal="narnia2"
-regLoc.rubroLocal="2"
+regLoc.nombreLocal="Azombrozo".ljust(100)
+regLoc.ubicacionLocal="narnia2".ljust(100)
+regLoc.rubroLocal="2".ljust(12)
 regLoc.codUsuario=0
 regLoc.estado="A"
 pickle.dump(regLoc,all)
 regLoc.codLocal=3
-regLoc.nombreLocal="b"
-regLoc.ubicacionLocal="sex"
-regLoc.rubroLocal="3"
+regLoc.nombreLocal="Barbaro".ljust(100)
+regLoc.ubicacionLocal="sex".ljust(100)
+regLoc.rubroLocal="3".ljust(12)
 regLoc.codUsuario=0
 regLoc.estado="A"
 pickle.dump(regLoc,all)
-
-
-
-
-
+regLoc.nombreLocal = regLoc.nombreLocal.ljust(100)
+regLoc.ubicacionLocal = regLoc.ubicacionLocal.ljust(100)
+regLoc.rubroLocal = regLoc.rubroLocal.ljust(12)
 
 all.flush()
 all.close()
@@ -137,48 +132,33 @@ def locales_cargados(): #agregar linduras p/
 
     while all.tell() < size:
         regLoc = pickle.load(all)
-        print(regLoc.codLocal,regLoc.nombreLocal,regLoc.ubicacionLocal,regLoc.rubroLocal,regLoc.estado)
+        print(regLoc.codLocal,regLoc.nombreLocal.rstrip(),regLoc.ubicacionLocal.rstrip(),regLoc.rubroLocal.rstrip(),regLoc.estado)
+        print("\ndepois ", all.tell())
+
     all.close()
-
-
-
-
-
-
-
-
-
-
-
 
 
 def orden():  #ordena por campo codigo 
     all = open(afl, "r+b")
     all.seek (0, 0)
     aux = pickle.load(all)
-    auxi = pickle.load(all)
-    auxj = pickle.load(all)
     tamReg = all.tell() 
     tamArch = os.path.getsize(afl)
-    cantReg = tamArch // tamReg
+    cantReg = int(tamArch / tamReg)
     for i in range(0, cantReg-1):
         for j in range (i+1, cantReg):
             all.seek (i*tamReg, 0)
             auxi = pickle.load(all)
             all.seek (j*tamReg, 0)
             auxj = pickle.load(all)
-            print(auxi)
-            print(auxj)
             if (auxi.nombreLocal > auxj.nombreLocal):
-                auxreg = auxi
-                auxi = auxj
-                auxj = auxreg
-                
-                all.seek (i*tamReg, 0)
-                pickle.dump(auxj, all)
                 all.seek (j*tamReg, 0)
                 pickle.dump(auxi, all)
+                all.seek (i*tamReg, 0)
+                pickle.dump(auxj, all)
                 all.flush()
+    all.close()
+    
 
 
 orden()
