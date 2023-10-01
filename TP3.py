@@ -68,8 +68,8 @@ class novedades:
 
 #------------------------PP-----------------------------------
 #user
-#afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
-afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
+afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
+#afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
 alu = open (afu, "w+b")
 regUser = user()
 
@@ -81,8 +81,8 @@ regUser.tipo= regUser.tipo.ljust(14)
 
 
 #locales
-#afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
-afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
+afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
+#afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
 all = open (afl, "w+b")
 regLoc = locales()
 pickle.dump(regLoc,all)
@@ -93,11 +93,11 @@ regLoc.rubroLocal = regLoc.rubroLocal.ljust(12)
 regLoc.estado = regLoc.estado.ljust(1)
 
 regLoc.codLocal=1
-regLoc.nombreLocal=""
-regLoc.ubicacionLocal=""
-regLoc.rubroLocal=""
+regLoc.nombreLocal="".ljust(100)
+regLoc.ubicacionLocal="".ljust(100)
+regLoc.rubroLocal="".ljust(12)
 regLoc.codUsuario=0
-regLoc.estado=""
+regLoc.estado="A"
 pickle.dump(regLoc,all)
 all.flush()
 
@@ -418,14 +418,14 @@ def crear_locales():
                     bandera=buscadicotomica(valor) 
 
         all.seek(0,2)
-        regLoc.nombreLocal = valor
+        regLoc.nombreLocal = valor.ljust(100)
 
         
 
         ubi = input("\nIngrese la UBICACIÓN: ")
         while ubi== "":
             ubi = input("No se permiten espacios vacios: ")
-        regLoc.ubicacionLocal=ubi
+        regLoc.ubicacionLocal=ubi.ljust(100)
 
 
         rubro = input("\nIngrese el RUBRO 1_Indumentaria 2_Perfumeria 3_Comidas ")
@@ -433,14 +433,12 @@ def crear_locales():
             rubro = input("Mal ingresado. Repetir opción. OPCION: ")
         match rubro:
             case "1":
-                regLoc.rubroLocal="Indumentaria"
+                regLoc.rubroLocal="Indumentaria".ljust(12)
             case "2":
-                regLoc.rubroLocal="Perfumeria"
+                regLoc.rubroLocal="Perfumeria".ljust(12)
             case "3":
-                regLoc.rubroLocal="Comidas"    
+                regLoc.rubroLocal="Comidas".ljust(12)    
             
-
-        
 
         size= os.path.getsize(afu)
         bandera=0
