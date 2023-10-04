@@ -331,41 +331,41 @@ def orden():  #ordena por campo codigo
                 all.flush()
     all.close()
 
-
 def orden_rub(matriz):
-    i=0
-    j=1
-    k=0
-    aux=[]
-    for i in range(len(matriz)-1):
-            for j in range(i+1,len(matriz)):
-                if matriz[1][i] != "" and matriz[1][j] != "" and (matriz[1][i]<matriz[1][j]):
-                    for k in range (1):
-                        aux = matriz[k][i]
-                        matriz[k][i] = matriz[k][j]
-                        matriz[k][j] = aux
-    locales_cargados()
+    for i in range(len(matriz[0])):
+        for j in range(i+1, len(matriz[0])):
+            if matriz[1][i] < matriz[1][j]:
+                # Intercambiar las columnas i y j
+                for k in range(len(matriz)):
+                    aux = matriz[k][i]
+                    matriz[k][i] = matriz[k][j]
+                    matriz[k][j] = aux
+    print(matriz[0])
+    print(matriz[1])
 
 #----------------------------CONTADURIA RUBROS-----------------------------
 def rubros():
-    all.seek(0,0)
-    reg=pickle.load(all)   
+    all=open(afl,"r+b")
+    all.seek(0,0) 
     size=os.path.getsize(afl)
-    rubrolocal = [[0] * 2 for i in range(3)]
+    rubrolocal = [[0] * 3 for i in range(2)]
+    print(rubrolocal)
     rubrolocal[0][0]="Indumentaria"
     rubrolocal[0][1]="Perfumeria"
     rubrolocal[0][2]="Comidas"
-    for i in range (size):
-        if reg.estado[i] == "A":
+    all.seek(0,0)
+    while all.tell()<size:
 
-            if reg.rubroLocal[i] == "Indumentaria":
-                rubrolocal[1][0] += 1
+        regLoc=pickle.load(all)
+        if regLoc.estado == "A":
+            match regLoc.rubroLocal.rstrip():
+                case "Indumentaria":
+                    rubrolocal[1][0] += 1
+                case "Perfumeria":
+                    rubrolocal[1][1] += 1
+                case "Comidas":
+                    rubrolocal[1][2] += 1
 
-            elif reg.rubroLocal[i] == "Perfumeria":
-                rubrolocal[1][1] += 1
-
-            elif reg.rubroLocal[i] == "Comidas":
-                rubrolocal[1][2] += 1
 
     orden_rub(rubrolocal)
 
@@ -468,10 +468,6 @@ def crear_locales():
         gestion_locales()
     alu.close()
     all.close()
-#standby recordar close ambos alu afu 
-
-
-
 
 #------------------------GESTIONES-------------------------
 def gestion_locales(): 
@@ -567,11 +563,7 @@ def gestion_locales():
             menu_admin()
     all.close()     
 
-
-
-
 #-------------------------LOGIN----------------------------
-
 def login():
     alu = open (afu, "r+b")
     size=os.path.getsize(afu)
@@ -605,7 +597,6 @@ def login():
     alu.close()
 
 #-------------------------SIGN IN----------------------------
-
 def signin(user):
     global cont
     alu = open (afu, "r+b")
