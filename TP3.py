@@ -592,7 +592,8 @@ def modificar_local():
                         coduser = int(input("\nNo existe el codigo, Ingrese nuevamente: "))
                         bandera=1
                         alu.seek(0,0)
-
+        campo=input("Desea cambiar 1.Nombre 2.Ubicacion 3.Rubro 4.Codigo de usuario 0.Volver")
+        valid_campo()
 
     print(f"{Fore.GREEN}\n\n     La modificación fue EXITOSA.")
 
