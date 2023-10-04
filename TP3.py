@@ -251,11 +251,10 @@ def valid_adm():
         opcadm = input("Mal ingresado. Repetir opción. OPCION: ")
     clear_screen()
 
-def valid_campo():
-    global campo
-    campo = input("\nOPCION: ")
-    while campo != "1" and campo != "2" and campo != "3" and campo != "4" and campo != "0":
-        campo = input("Mal ingresado. Repetir opción. OPCION: ")
+def valid_campo(opc):
+    opc = int(input("\nDesea cambiar 1.Nombre 2.Ubicacion 3.Rubro 4.Codigo de usuario 0.Volver"))
+    while opc != "1" and opc != "2" and opc != "3" and opc != "4" and opc != "0":
+        opc = input("Mal ingresado. Repetir opción. OPCION: ")
     clear_screen()
 
 def valid_opc_loc():
@@ -267,30 +266,29 @@ def valid_opc_loc():
         opcloc = opcloc.lower()
     clear_screen()
 
-def valid_codLoc() #te dice si existe el codloc
-    global codloc
-    all=open(all,"r+b")
+def valid_codLoc(codLoc): #te dice si existe el codloc
+    all=open(afl,"r+b")
     regLoc=locales()
     all.seek(0,0)
     size=os.path.getsize(afl)
     bandera=1
-    while all.tell()<size and codLoc!=regLoc.codLocal and bandera=1:
+    while all.tell()<size and codLoc!=regLoc.codLocal and bandera==1:
         regLoc=pickle.load(all)
     if(codLoc!=regLoc.codLocal):
         bandera=1
         all.seek(0,0)
-        codLoc=int(input("Codigo inexistente, pruebe nuevamente: "))
     else:
         bandera=0
+    return bandera
 
-def valid_codUser() #te dice si esxiste el coduser
+def valid_codUser(): #te dice si esxiste el coduser
     global coduser
     all=open(all,"r+b")
     regLoc=locales()
     all.seek(0,0)
     size=os.path.getsize(afl)
     bandera=1
-    while all.tell()<size and codLoc!=regLoc.codLocal and bandera=1:
+    while all.tell()<size and codLoc!=regLoc.codLocal and bandera==1:
         regLoc=pickle.load(all)
     if(codLoc!=regLoc.codLocal):
         bandera=1
@@ -515,16 +513,19 @@ def crear_locales():
 def modificar_local():
     global bandera, med,campo,codloc,coduser
  #ver que pasa si no hay locales cargados
-    all=open(all,"r+b")
+    all=open(afl,"r+b")
     regLoc=locales()
     all.seek(0,0)
     size=os.path.getsize(afl)
+
     codLoc=int(input("Ingrese el codigo del local a modificar:"))
-    valid_codLoc()
+    while bandera==1:
+        codLoc=int(input("Ingrese el codigo del local a modificar:"))
+        bandera=valid_codLoc(codLoc)
 
     all.seek(0,0) #busca el registro
     while regLoc.codLocal!=codLoc:
-        regLoc=pickle.load()
+        regLoc=pickle.load(all)
 
 
     if (regLoc.estado =="B"):
@@ -534,8 +535,9 @@ def modificar_local():
         if (alta=="S"):
             regLoc.estado="A" 
 
-    campo=input("Desea cambiar 1.Nombre 2.Ubicacion 3.Rubro 4.Codigo de usuario 0.Volver")
-    valid_campo()
+    campo = valid_campo(campo)
+    
+
 
     while campo!=0:
         match campo:
@@ -635,9 +637,9 @@ def gestion_locales():
                     while all.tell() < size:
                         regLoc = pickle.load(all)
                         print(regLoc.codLocal)
-                        print(regLoc.nombreLocal)
-                        print(regLoc.ubicacionLocal)
-                        print(regLoc.rubroLocal)
+                        print(regLoc.nombreLocal.rstrip())
+                        print(regLoc.ubicacionLocal.rstrip())
+                        print(regLoc.rubroLocal.rstrip())
                         print(regLoc.codUsuario)
                         print(regLoc.estado)
             if(contowner==0):
@@ -660,11 +662,14 @@ def gestion_locales():
                     while all.tell() < size:
                         regLoc = pickle.load(all)
                         print(regLoc.codLocal)
-                        print(regLoc.nombreLocal)
-                        print(regLoc.ubicacionLocal)
-                        print(regLoc.rubroLocal)
+                        print(regLoc.nombreLocal.rstrip())
+                        print(regLoc.ubicacionLocal.rstrip())
+                        print(regLoc.rubroLocal.rstrip())
                         print(regLoc.codUsuario)
                         print(regLoc.estado)
+                        modificar_local()
+            if(size!=0 and exit=="N"):
+                modificar_local()
             gestion_locales()
         case "c":
             clear_screen()
