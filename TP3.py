@@ -1,4 +1,4 @@
-global cont,contowner,codloc
+global cont,contowner,codloc,regLoc
 cont=2
 contowner=0
 codloc=0
@@ -65,7 +65,7 @@ class novedades:
         self.fechaHastaNovedad = ""
         self.tipoUsuario = ""
         self.estado = ""
-
+global all
 #------------------------PP-----------------------------------
 #user
 #afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
@@ -84,23 +84,35 @@ regUser.tipo= regUser.tipo.ljust(14)
 #afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
 afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
 all = open (afl, "w+b")
+size= os.path.getsize(afl)
+print(size)
+#allaux = open (afl, "w+b")
 regLoc = locales()
-pickle.dump(regLoc,all)
+regLocAux = regLoc
+#pickle.dump(regLocAux,all)
+#pickle.dump(regLoc,all)
 all.flush()
+#allaux.flush()
+size= os.path.getsize(afl)
+print(size)
 regLoc.nombreLocal = regLoc.nombreLocal.ljust(100)
 regLoc.ubicacionLocal = regLoc.ubicacionLocal.ljust(100)
 regLoc.rubroLocal = regLoc.rubroLocal.ljust(12)
 regLoc.estado = regLoc.estado.ljust(1)
-
-regLoc.codLocal=1
+size= os.path.getsize(afl)
+print(size)
+regLoc.codLocal= 0
 regLoc.nombreLocal=""
 regLoc.ubicacionLocal=""
 regLoc.rubroLocal=""
-regLoc.codUsuario=0
-regLoc.estado="A"
-pickle.dump(regLoc,all)
+regLoc.codUsuario= 0
+regLoc.estado= "A"
+size= os.path.getsize(afl)
+print(size)
+#pickle.dump(regLoc,all)
 all.flush()
-
+#size= os.path.getsize(afl)
+#print(size)
 #promos
 #afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
 afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
@@ -272,32 +284,31 @@ def ingreso_main_menu(k):
 def buscadicotomica(elem): 
         global bandera, med
         bandera=0 
+        allaux = open (afl,"rb")
+        allaux.seek(0,0)
+        tamarch=os.path.getsize(afl)
+        regLocAux=pickle.load(allaux)
         
-        tamarch=os.path.getsize(afl)
-        if (tamarch<=349):
-            all = open (afl,"w+b")
-        else:
-            all = open (afl,"r+b")
-            regLoc=pickle.load(all)
-        tamarch=os.path.getsize(afl)
-        all.seek(0,0)
-        tamreg=all.tell()
+        tamreg=allaux.tell()#final del primer  registro por pickle load
+        print(tamreg)
+        """if (tamreg==0):
+            tamreg=1"""
         cant=tamarch//tamreg
         inf = 0
         sup = cant-1
 
         while (inf<=sup) and bandera==0:
             med = (inf+sup)//2
-            all.seek(med*tamreg,0)
-            regLoc=pickle.load(all)
-            if(regLoc.nombreLocal==elem):
+            allaux.seek(med*tamreg,0)
+            regLocAux=pickle.load(allaux)
+            if(regLocAux.nombreLocal==elem):
                 bandera=1
             else:
-                if(regLoc.nombreLocal<elem):
+                if(regLocAux.nombreLocal<elem):
                     inf=med+1
                 else:
                     sup=med-1
-        all.close()
+        allaux.close()
         return bandera
 
 #----------------------------ORDEN EN LA SALA-----------------------------
@@ -321,30 +332,6 @@ def orden():  #ordena por campo codigo
                 pickle.dump(auxj, all)
                 all.flush()
     all.close()
-    
-"""def orden():
-    all = open(afl, "r+b")
-    all.seek(0, 0)
-    regLoc = pickle.load(all)
-    tamreg=all.tell()
-    tamarch = os.path.getsize(afl)
-    cantreg = tamarch//tamreg  # Corregir la cantidad de registros
-
-    for i in range(cantreg - 1):
-        for j in range(i + 1, cantreg):
-            if regLoc[i][1]> regLoc[j][1]:  # Comparar por el campo adecuado (por ejemplo, regLoc[i][1])
-                aux = regLoc[i]
-                regLoc[i] = regLoc[j]
-                regLoc[j] = aux
-
-    # Volver al inicio del archivo y sobrescribir los registros ordenados
-    all.seek(0, 0)
-    pickle.dump(regLoc, all)
-    all.close()  # Cerrar el archivo"""
-
-
-
-
 
 
 def orden_rub(matriz):
@@ -386,30 +373,37 @@ def rubros():
 
 #----------------------------CARGA LOCALES-----------------------------
 def crear_locales():
-    global k,i, shopping_loc,codloc,bandera, med,rubroLocal,rub1,rub2,rub3#dejar codloc
+    global k,i, shopping_loc,codloc,bandera, med,rubroLocal,rub1,rub2,rub3,all,afl,regLoc#dejar codloc
     k = 0
+    
     alu = open (afu,"r+b")
     regUser=pickle.load(alu)
     size=os.path.getsize(afl)
-    #if (size<=349):
-        #all = open (afl,"w+b")
-    #else:
-    all = open (afl,"r+b")
-    regLoc=pickle.load(all)
-    all.seek(0,0)
+    if (size==0):
+        all = open (afl,"r+b")
+        print("entre")
+        regLoc=locales()
+    else:
+        all = open (afl,"r+b")
+        regLoc=pickle.load(all)
+        all.seek(0,2)
+    #all.seek(0,0)
 
     exit = "S" 
     while exit.upper() == "S":
+
+        if(size==0):
+            bandera=0
+        else:
+            bandera=1
+
         valor = input("Ingrese el Nombre del Local: ")
         while valor=="":
             valor = input("No se permiten espacios vacios. Pruebe nuevamente: ")
-        bandera=1
+        
 
         while bandera==1:
-            if(size<=349):
-                bandera=0
-            else:
-                bandera=buscadicotomica(valor)
+            bandera=buscadicotomica(valor)
             while (bandera == 1 or valor==""):
                 if(valor==""):
                     valor = input("No se permiten espacios vacios. Pruebe nuevamente: ")
@@ -418,8 +412,8 @@ def crear_locales():
                     valor = input("Este nombre ya existe. Pruebe nuevamente: ")
                     bandera=buscadicotomica(valor) 
 
-        all.seek(0,2)
-        regLoc.nombreLocal = valor        
+        
+        regLoc.nombreLocal = valor
         regLoc.nombreLocal = regLoc.nombreLocal.ljust(100)
         
 
