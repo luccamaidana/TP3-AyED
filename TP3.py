@@ -3,6 +3,8 @@ import os
 import pickle
 import os.path
 import io
+import shutil
+import maskpass
 
 class user:
     def __init__(self):
