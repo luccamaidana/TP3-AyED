@@ -251,6 +251,13 @@ def valid_adm():
         opcadm = input("Mal ingresado. Repetir opción. OPCION: ")
     clear_screen()
 
+def valid_campo():
+    global campo
+    campo = input("\nOPCION: ")
+    while campo != "1" and campo != "2" and campo != "3" and campo != "4" and campo != "0":
+        campo = input("Mal ingresado. Repetir opción. OPCION: ")
+    clear_screen()
+
 def valid_opc_loc():
     global opcloc
     opcloc = input("\nOPCION: ")
@@ -260,6 +267,37 @@ def valid_opc_loc():
         opcloc = opcloc.lower()
     clear_screen()
 
+def valid_codLoc() #te dice si existe el codloc
+    global codloc
+    all=open(all,"r+b")
+    regLoc=locales()
+    all.seek(0,0)
+    size=os.path.getsize(afl)
+    bandera=1
+    while all.tell()<size and codLoc!=regLoc.codLocal and bandera=1:
+        regLoc=pickle.load(all)
+    if(codLoc!=regLoc.codLocal):
+        bandera=1
+        all.seek(0,0)
+        codLoc=int(input("Codigo inexistente, pruebe nuevamente: "))
+    else:
+        bandera=0
+
+def valid_codUser() #te dice si esxiste el coduser
+    global coduser
+    all=open(all,"r+b")
+    regLoc=locales()
+    all.seek(0,0)
+    size=os.path.getsize(afl)
+    bandera=1
+    while all.tell()<size and codLoc!=regLoc.codLocal and bandera=1:
+        regLoc=pickle.load(all)
+    if(codLoc!=regLoc.codLocal):
+        bandera=1
+        all.seek(0,0)
+        codLoc=int(input("Codigo inexistente, pruebe nuevamente: "))
+    else:
+        bandera=0
 #----------------------------CASE-----------------------------
 def select_menu(m):
     match m:
@@ -308,6 +346,10 @@ def buscadicotomica(elem):
                     sup=med-1
         all.close()
         return bandera
+
+#----------------------------BUSQUEDAS-----------------------------
+
+
 
 #----------------------------ORDEN EN LA SALA-----------------------------
 def orden():  #ordena por campo codigo 
@@ -469,6 +511,101 @@ def crear_locales():
     alu.close()
     all.close()
 
+#----------------------------MODIFICATIO LOCALATIO-----------------------------
+def modificar_local():
+    global bandera, med,campo,codloc,coduser
+ #ver que pasa si no hay locales cargados
+    all=open(all,"r+b")
+    regLoc=locales()
+    all.seek(0,0)
+    size=os.path.getsize(afl)
+    codLoc=int(input("Ingrese el codigo del local a modificar:"))
+    valid_codLoc()
+
+    all.seek(0,0) #busca el registro
+    while regLoc.codLocal!=codLoc:
+        regLoc=pickle.load()
+
+
+    if (regLoc.estado =="B"):
+        alta = input("\nEste local esta dado de baja. ¿Desea activarlo? (S/N): ").upper()
+        while alta.upper() != "S" and alta.upper() != "N":
+            alta = input("\nRespuesta inválida. ¿Desea activarlo? (S/N): ")
+        if (alta=="S"):
+            regLoc.estado="A" 
+
+    campo=input("Desea cambiar 1.Nombre 2.Ubicacion 3.Rubro 4.Codigo de usuario 0.Volver")
+    valid_campo()
+
+    while campo!=0:
+        match campo:
+            case 1: #NOMBRE
+                if (regLoc.estado=="A"):
+                    bandera=0
+                    valor = input("Ingrese el Nombre del Local: ").ljust(100)
+                    while valor=="":
+                        valor = input("No se permiten espacios vacios. Pruebe nuevamente: ").ljust(100)
+                    while bandera==1:
+                        bandera=buscadicotomica(valor)
+                        while (bandera == 1 or valor==""):
+                            if(valor==""):
+                                valor = input("No se permiten espacios vacios. Pruebe nuevamente: ").ljust(100)
+                                bandera=1
+                            else:
+                                valor = input("Este nombre ya existe. Pruebe nuevamente: ").ljust(100)
+                                bandera=buscadicotomica(valor)
+                all.seek(0,0) #busca el registro
+                while regLoc.codLocal!=codLoc:
+                    regLoc=pickle.load()
+
+            case 2:  #UBICACION
+                ubi = input("\nIngrese la UBICACIÓN: ").ljust(100)
+                while ubi== "":
+                    ubi = input("No se permiten espacios vacios: ").ljust(100)
+                regLoc.ubicacionLocal=ubi.ljust(100)
+
+            case 3: #RUBRO
+                rubro = input("\nIngrese el RUBRO 1_Indumentaria 2_Perfumeria 3_Comidas ")
+                while rubro!= "1" and rubro != "2" and rubro != "3":
+                    rubro = input("Mal ingresado. Repetir opción. OPCION: ")
+                match rubro:
+                    case "1":
+                        regLoc.rubroLocal="Indumentaria".ljust(12)
+                    case "2":
+                        regLoc.rubroLocal="Perfumeria".ljust(12)
+                    case "3":
+                        regLoc.rubroLocal="Comidas".ljust(12)   
+
+            case 4: #CODIGO
+                    bandera=0
+                    alu=open(afl,"r+b")
+                    alu.seek(0,0)
+                    regUser=user()
+                    size=os.path.getsize(afu)
+                    coduser = int(input("\nIngrese el CÓDIGO de usuario: "))
+                    while alu.tell()<size and regUser.tipo!="Dueño de Local" and regUser.cod!=coduser and bandera==1:#recorre user p/ver si existe el codigo con dueño de local
+                        regUser=pickle.load(alu)
+                    if(regUser.tipo=="Dueño de Local" and regUser.cod!=coduser):
+                        regLoc.codLocal=coduser
+                        bandera=0
+                    else:
+                        coduser = int(input("\nNo existe el codigo, Ingrese nuevamente: "))
+                        bandera=1
+                        alu.seek(0,0)
+
+
+    print(f"{Fore.GREEN}\n\n     La modificación fue EXITOSA.")
+
+    rubros()
+    orden_rub()
+
+    exit = input("\n Toque Enter para volver: ")
+    while exit != "":
+        exit = input("Respuesta inválida. Presione ENTER: ")
+    if exit=="": 
+        clear_screen()
+        gestion_locales()
+
 #------------------------GESTIONES-------------------------
 def gestion_locales(): 
     size=os.path.getsize(afl)
@@ -488,8 +625,9 @@ def gestion_locales():
             exit = input("\n ¿Desea ver los locales cargados? (S/N): ").upper()
             while exit.upper() != "S" and exit.upper() != "N":
                 exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ").upper()
+            size=os.path.getsize(afl)
             if exit=="S" and size==0:
-                print("\n       No hay locales cargados hasta el momento.")
+                print("\n       No hay locales cargados hasta el momento.\n ")
             else:
                 if exit=="S":
                     all.seek(0,0)
@@ -512,10 +650,11 @@ def gestion_locales():
             exit = input("\n ¿Desea ver los locales cargados? (S/N): ").upper()
             while exit.upper() != "S" and exit.upper() != "N":
                 exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ").upper()
-            if exit=="S" and i==0:
-                print("\n       No hay locales cargados hasta el momento.")
+            size=os.path.getsize(afl)
+            if exit=="S" and size==0:
+                print("\n       No hay locales cargados hasta el momento.\n")
             else:
-                if exit=="S":
+                if exit=="S" and size!=0:
                     all.seek(0,0)
                     while all.tell() < size:
                         regLoc = pickle.load(all)
@@ -525,8 +664,6 @@ def gestion_locales():
                         print(regLoc.rubroLocal)
                         print(regLoc.codUsuario)
                         print(regLoc.estado)
-
-            modificar_local(shopping_loc)
             gestion_locales()
         case "c":
             clear_screen()
