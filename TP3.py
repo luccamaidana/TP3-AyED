@@ -221,7 +221,7 @@ def locales_cargados(): #agregar linduras p/
 
     while all.tell() < size:
         regLoc = pickle.load(all)
-        print(regLoc.codLocal,regLoc.nombreLocal,regLoc.ubicacionLocal,regLoc.rubroLocal,regLoc.codUsuario,regLoc.estado)
+        print(regLoc.codLocal,regLoc.nombreLocal.rstrip(),regLoc.ubicacionLocal.rstrip(),regLoc.rubroLocal.rstrip(),regLoc.codUsuario,regLoc.estado)
     all.close()
 
 
@@ -283,32 +283,30 @@ def ingreso_main_menu(k):
 #----------------------------BUSQUEDA DICOATOMICA-----------------------------
 def buscadicotomica(elem): 
         global bandera, med
+        print("bonjour")
+        all = open (afl,"r+b")
+        regLoc=locales()
         bandera=0 
-        allaux = open (afl,"rb")
-        allaux.seek(0,0)
+        all.seek(0,0)
+        regLoc=pickle.load(all)
+        tamreg=all.tell()
         tamarch=os.path.getsize(afl)
-        regLocAux=pickle.load(allaux)
-        
-        tamreg=allaux.tell()#final del primer  registro por pickle load
-        print(tamreg)
-        """if (tamreg==0):
-            tamreg=1"""
         cant=tamarch//tamreg
         inf = 0
         sup = cant-1
-
-        while (inf<=sup) and bandera==0:
-            med = (inf+sup)//2
-            allaux.seek(med*tamreg,0)
-            regLocAux=pickle.load(allaux)
-            if(regLocAux.nombreLocal==elem):
+        while (inf<=sup) and bandera==0: 
+            med = int((inf+sup)//2)
+            all.seek(med*tamreg,0)
+            regLoc=pickle.load(all)
+            if(regLoc.nombreLocal==elem):
                 bandera=1
             else:
-                if(regLocAux.nombreLocal<elem):
+                if(regLoc.nombreLocal<elem):
                     inf=med+1
+                    
                 else:
                     sup=med-1
-        allaux.close()
+        all.close()
         return bandera
 
 #----------------------------ORDEN EN LA SALA-----------------------------
@@ -369,7 +367,7 @@ def rubros():
             elif reg.rubroLocal[i] == "Comidas":
                 rubrolocal[1][2] += 1
 
-    orden(rubrolocal)
+    orden_rub(rubrolocal)
 
 #----------------------------CARGA LOCALES-----------------------------
 def crear_locales():
@@ -379,15 +377,8 @@ def crear_locales():
     alu = open (afu,"r+b")
     regUser=pickle.load(alu)
     size=os.path.getsize(afl)
-    if (size==0):
-        all = open (afl,"r+b")
-        print("entre")
-        regLoc=locales()
-    else:
-        all = open (afl,"r+b")
-        regLoc=pickle.load(all)
-        all.seek(0,2)
-    #all.seek(0,0)
+    all = open (afl,"r+b")
+    regLoc=locales()
 
     exit = "S" 
     while exit.upper() == "S":
@@ -396,30 +387,30 @@ def crear_locales():
             bandera=0
         else:
             bandera=1
+            
 
-        valor = input("Ingrese el Nombre del Local: ")
+        valor = input("Ingrese el Nombre del Local: ").ljust(100)
         while valor=="":
-            valor = input("No se permiten espacios vacios. Pruebe nuevamente: ")
+            valor = input("No se permiten espacios vacios. Pruebe nuevamente: ").ljust(100)
         
 
         while bandera==1:
             bandera=buscadicotomica(valor)
             while (bandera == 1 or valor==""):
                 if(valor==""):
-                    valor = input("No se permiten espacios vacios. Pruebe nuevamente: ")
+                    valor = input("No se permiten espacios vacios. Pruebe nuevamente: ").ljust(100)
                     bandera=1
                 else:
-                    valor = input("Este nombre ya existe. Pruebe nuevamente: ")
+                    valor = input("Este nombre ya existe. Pruebe nuevamente: ").ljust(100)
                     bandera=buscadicotomica(valor) 
 
-        
+        all.seek(0,2)
         regLoc.nombreLocal = valor
-        regLoc.nombreLocal = regLoc.nombreLocal.ljust(100)
         
 
-        ubi = input("\nIngrese la UBICACIÓN: ")
+        ubi = input("\nIngrese la UBICACIÓN: ").ljust(100)
         while ubi== "":
-            ubi = input("No se permiten espacios vacios: ")
+            ubi = input("No se permiten espacios vacios: ").ljust(100)
         regLoc.ubicacionLocal=ubi.ljust(100)
 
 
@@ -455,17 +446,17 @@ def crear_locales():
         pickle.dump(regLoc, all)
         all.flush()
         size=os.path.getsize(afl)
-         
+        orden()
 
         exit = input("\n ¿Desea seguir cargando? (S/N): ")
         while exit.upper() != "S" and exit.upper() != "N":
                 exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ")
                 #gestion_locales()
 
-    #pickle.dump(regLoc, all)
-    #all.flush()
+
+    all.flush()
     if (size!=0):
-        orden()#agregar archivo ordenar
+        orden()
     locales_cargados()
     
     #rubros()
