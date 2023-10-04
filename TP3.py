@@ -6,6 +6,7 @@ import io
 import shutil
 import maskpass
 
+
 class user:
     def __init__(self):
         self.cod = 0
