@@ -5,6 +5,22 @@ import os.path
 import io
 import shutil
 import maskpass
+def clear_screen():
+    # Comando para limpiar la pantalla en Windows
+    if os.name == 'nt':
+        os.system('cls')
+    # Comando para limpiar la pantalla en sistemas basados en Unix (Linux, macOS, etc.)
+    else:
+        os.system('clear')
+
+import colorama
+from colorama import Fore, Style
+
+# Inicializar colorama
+colorama.init(autoreset=True)
+
+
+
 
 
 class user:
@@ -72,29 +88,27 @@ pickle.dump(regLoc,all)
 all.flush()
 all.seek(0,0)
 regLoc.codLocal=1
-regLoc.nombreLocal="Caquita".ljust(100)
+regLoc.nombreLocal="Nombre1".ljust(100)
 regLoc.ubicacionLocal="narnia".ljust(100)
 regLoc.rubroLocal="Indumentaria".ljust(12)
 regLoc.codUsuario=0
 regLoc.estado="A"
 pickle.dump(regLoc,all)
 regLoc.codLocal=2
-regLoc.nombreLocal="Azombrozo".ljust(100)
-regLoc.ubicacionLocal="narnia2".ljust(100)
+regLoc.nombreLocal="Nombre2".ljust(100)
+regLoc.ubicacionLocal="narniaconenanos".ljust(100)
 regLoc.rubroLocal="Perfumeria".ljust(12)
 regLoc.codUsuario=0
 regLoc.estado="A"
 pickle.dump(regLoc,all)
 regLoc.codLocal=3
-regLoc.nombreLocal="Barbaro".ljust(100)
+regLoc.nombreLocal="Nombre3".ljust(100)
 regLoc.ubicacionLocal="sex".ljust(100)
-regLoc.rubroLocal="Perfumeria".ljust(12)
+regLoc.rubroLocal="Comidas".ljust(12)
 regLoc.codUsuario=0
 regLoc.estado="A"
 pickle.dump(regLoc,all)
-regLoc.nombreLocal = regLoc.nombreLocal.ljust(100)
-regLoc.ubicacionLocal = regLoc.ubicacionLocal.ljust(100)
-regLoc.rubroLocal = regLoc.rubroLocal.ljust(12)
+
 
 all.flush()
 all.close()
@@ -196,7 +210,7 @@ alu.close()
 def locales_cargados(): #agregar linduras p/
     all = open (afl,"r+b")
     size= os.path.getsize(afl)
-
+    all.seek(0,0)
     while all.tell() < size:
         regLoc = pickle.load(all)
         print(regLoc.codLocal,regLoc.nombreLocal.rstrip(),regLoc.ubicacionLocal.rstrip(),regLoc.rubroLocal.rstrip(),regLoc.codUsuario,regLoc.estado)
@@ -230,7 +244,6 @@ def valid_adm():
     clear_screen()
 
 def valid_campo(opc):
-    opc = int(input("\nDesea cambiar 1.Nombre 2.Ubicacion 3.Rubro 4.Codigo de usuario 0.Volver"))
     while opc != "1" and opc != "2" and opc != "3" and opc != "4" and opc != "0":
         opc = input("Mal ingresado. Repetir opción. OPCION: ")
     clear_screen()
@@ -245,6 +258,7 @@ def valid_opc_loc():
     clear_screen()
 
 def valid_codLoc(codLoc): #te dice si existe el codloc
+    global punt
     all=open(afl,"r+b")
     regLoc=locales()
     all.seek(0,0)
@@ -257,6 +271,7 @@ def valid_codLoc(codLoc): #te dice si existe el codloc
         all.seek(0,0)
     else:
         bandera=0
+    punt=all.tell()
     return bandera
 
 def valid_codUser(): #te dice si esxiste el coduser
@@ -347,6 +362,7 @@ def orden():  #ordena por campo codigo
                 all.seek (i*tamReg, 0)
                 pickle.dump(auxj, all)
                 all.flush()
+    
     all.close()
 
 def orden_rub(matriz):
@@ -363,17 +379,18 @@ def orden_rub(matriz):
 
 #----------------------------CONTADURIA RUBROS-----------------------------
 def rubros():
+    global rubrolocal
     all=open(afl,"r+b")
     all.seek(0,0) 
+    regLoc=locales()
     size=os.path.getsize(afl)
     rubrolocal = [[0] * 3 for i in range(2)]
-    print(rubrolocal)
     rubrolocal[0][0]="Indumentaria"
     rubrolocal[0][1]="Perfumeria"
     rubrolocal[0][2]="Comidas"
-    all.seek(0,0)
     while all.tell()<size:
-
+        print(all.tell())
+        print(size)
         regLoc=pickle.load(all)
         if regLoc.estado == "A":
             match regLoc.rubroLocal.rstrip():
@@ -489,21 +506,20 @@ def crear_locales():
 
 #----------------------------MODIFICATIO LOCALATIO-----------------------------
 def modificar_local():
-    global bandera, med,campo,codloc,coduser
+    global bandera, med,campo,codloc,coduser,rubrolocal,punt
  #ver que pasa si no hay locales cargados
     all=open(afl,"r+b")
     regLoc=locales()
     all.seek(0,0)
     size=os.path.getsize(afl)
 
-    codLoc=int(input("Ingrese el codigo del local a modificar:"))
+    bandera=1
     while bandera==1:
         codLoc=int(input("Ingrese el codigo del local a modificar:"))
+        print("hola quiero saber tu nomber y quizas ")
         bandera=valid_codLoc(codLoc)
 
-    all.seek(0,0) #busca el registro
-    while regLoc.codLocal!=codLoc:
-        regLoc=pickle.load(all)
+    all.seek(punt,0) #busca el registro
 
 
     if (regLoc.estado =="B"):
@@ -513,72 +529,79 @@ def modificar_local():
         if (alta=="S"):
             regLoc.estado="A" 
 
-    campo = valid_campo(campo)
+    campo = input("\nDesea cambiar 1.Nombre 2.Ubicacion 3.Rubro 4.Codigo de usuario 0.Volver: ")
+    valid_campo(campo)
     
 
 
-    while campo!=0:
+    while campo!="0":
         match campo:
-            case 1: #NOMBRE
-                if (regLoc.estado=="A"):
-                    bandera=0
-                    valor = input("Ingrese el Nombre del Local: ").ljust(100)
-                    while valor=="":
-                        valor = input("No se permiten espacios vacios. Pruebe nuevamente: ").ljust(100)
-                    while bandera==1:
-                        bandera=buscadicotomica(valor)
-                        while (bandera == 1 or valor==""):
-                            if(valor==""):
-                                valor = input("No se permiten espacios vacios. Pruebe nuevamente: ").ljust(100)
-                                bandera=1
-                            else:
-                                valor = input("Este nombre ya existe. Pruebe nuevamente: ").ljust(100)
-                                bandera=buscadicotomica(valor)
-                all.seek(0,0) #busca el registro
-                while regLoc.codLocal!=codLoc:
-                    regLoc=pickle.load()
+            case "1": #NOMBRE
+                bandera=0
+                valor = input("Ingrese el Nombre del Local: ").ljust(100)
+                while valor=="":
+                    valor = input("No se permiten espacios vacios. Pruebe nuevamente: ").ljust(100)
+                while bandera==1:
+                    bandera=buscadicotomica(valor)
+                    while (bandera == 1 or valor==""):
+                        if(valor==""):
+                            valor = input("No se permiten espacios vacios. Pruebe nuevamente: ").ljust(100)
+                            bandera=1
+                        else:
+                            valor = input("Este nombre ya existe. Pruebe nuevamente: ").ljust(100)
+                            bandera=buscadicotomica(valor)
+                all.seek(punt,0) #busca el registro
+                regLoc.nombreLocal=valor
+                pickle.dump(regLoc,all)
 
-            case 2:  #UBICACION
+            case "2":  #UBICACION
                 ubi = input("\nIngrese la UBICACIÓN: ").ljust(100)
                 while ubi== "":
                     ubi = input("No se permiten espacios vacios: ").ljust(100)
+                all.seek(punt,0) #busca el registro
                 regLoc.ubicacionLocal=ubi.ljust(100)
+                pickle.dump(regLoc,all)
+                
 
-            case 3: #RUBRO
+            case "3": #RUBRO
+                all.seek(punt,0) #busca el registro
                 rubro = input("\nIngrese el RUBRO 1_Indumentaria 2_Perfumeria 3_Comidas ")
                 while rubro!= "1" and rubro != "2" and rubro != "3":
                     rubro = input("Mal ingresado. Repetir opción. OPCION: ")
                 match rubro:
                     case "1":
-                        regLoc.rubroLocal="Indumentaria".ljust(12)
+                        regLoc.rubroLocal="Indumentaria".rstrip()
                     case "2":
-                        regLoc.rubroLocal="Perfumeria".ljust(12)
+                        regLoc.rubroLocal="Perfumeria".rstrip()
                     case "3":
-                        regLoc.rubroLocal="Comidas".ljust(12)   
-
-            case 4: #CODIGO
+                        regLoc.rubroLocal="Comidas".rstrip()
+                pickle.dump(regLoc,all)
+            case "4": #CODIGO
+                bandera=0
+                alu=open(afl,"r+b")
+                alu.seek(0,0)
+                regUser=user()
+                size=os.path.getsize(afu)
+                coduser = int(input("\nIngrese el CÓDIGO de usuario: "))
+                while alu.tell()<size and regUser.tipo!="Dueño de Local" and regUser.cod!=coduser and bandera==1:#recorre user p/ver si existe el codigo con dueño de local
+                    regUser=pickle.load(alu)
+                if(regUser.tipo=="Dueño de Local" and regUser.cod!=coduser):
+                    all.seek(punt,0) #busca el registro
+                    regLoc.codLocal=coduser
                     bandera=0
-                    alu=open(afl,"r+b")
+                else:
+                    coduser = int(input("\nNo existe el codigo, Ingrese nuevamente: "))
+                    bandera=1
                     alu.seek(0,0)
-                    regUser=user()
-                    size=os.path.getsize(afu)
-                    coduser = int(input("\nIngrese el CÓDIGO de usuario: "))
-                    while alu.tell()<size and regUser.tipo!="Dueño de Local" and regUser.cod!=coduser and bandera==1:#recorre user p/ver si existe el codigo con dueño de local
-                        regUser=pickle.load(alu)
-                    if(regUser.tipo=="Dueño de Local" and regUser.cod!=coduser):
-                        regLoc.codLocal=coduser
-                        bandera=0
-                    else:
-                        coduser = int(input("\nNo existe el codigo, Ingrese nuevamente: "))
-                        bandera=1
-                        alu.seek(0,0)
-        campo=input("Desea cambiar 1.Nombre 2.Ubicacion 3.Rubro 4.Codigo de usuario 0.Volver")
-        valid_campo()
-
+                pickle.dump(regLoc,all)
+        
+        campo=input("Desea cambiar 1.Nombre 2.Ubicacion 3.Rubro 4.Codigo de usuario 0.Volver: salida")
+        valid_campo(campo)
+    print(regLoc)
     print(f"{Fore.GREEN}\n\n     La modificación fue EXITOSA.")
 
     rubros()
-    orden_rub()
+    orden_rub(rubrolocal)
 
     exit = input("\n Toque Enter para volver: ")
     while exit != "":
@@ -611,15 +634,7 @@ def gestion_locales():
                 print("\n       No hay locales cargados hasta el momento.\n ")
             else:
                 if exit=="S":
-                    all.seek(0,0)
-                    while all.tell() < size:
-                        regLoc = pickle.load(all)
-                        print(regLoc.codLocal)
-                        print(regLoc.nombreLocal.rstrip())
-                        print(regLoc.ubicacionLocal.rstrip())
-                        print(regLoc.rubroLocal.rstrip())
-                        print(regLoc.codUsuario)
-                        print(regLoc.estado)
+                    locales_cargados()
             if(contowner==0):
                 print("No hay dueños registrados. Primero debe crear una cuenta de dueño de local...")
             else:
@@ -636,16 +651,8 @@ def gestion_locales():
                 print("\n       No hay locales cargados hasta el momento.\n")
             else:
                 if exit=="S" and size!=0:
-                    all.seek(0,0)
-                    while all.tell() < size:
-                        regLoc = pickle.load(all)
-                        print(regLoc.codLocal)
-                        print(regLoc.nombreLocal.rstrip())
-                        print(regLoc.ubicacionLocal.rstrip())
-                        print(regLoc.rubroLocal.rstrip())
-                        print(regLoc.codUsuario)
-                        print(regLoc.estado)
-                        modificar_local()
+                    locales_cargados()
+                    modificar_local()
             if(size!=0 and exit=="N"):
                 modificar_local()
             gestion_locales()
