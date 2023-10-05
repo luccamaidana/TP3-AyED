@@ -9,6 +9,8 @@ import os.path
 import io
 import shutil
 import maskpass
+import datetime
+import time
 def clear_screen():
     # Comando para limpiar la pantalla en Windows
     if os.name == 'nt':
@@ -18,7 +20,7 @@ def clear_screen():
         os.system('clear')
 
 import colorama
-from colorama import Fore, Style
+from colorama import Fore, Style, Back
 
 # Inicializar colorama
 colorama.init(autoreset=True)
@@ -69,7 +71,8 @@ global all
 #------------------------PP-----------------------------------
 #user
 #afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
-afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
+#afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
+afu = "E:\\Users\\Lenovo\\Documents\\GitHub\\TP3-AyED\\USUARIOS.dat"
 alu = open (afu, "w+b")
 regUser = user()
 
@@ -82,7 +85,8 @@ regUser.tipo= regUser.tipo.ljust(14)
 
 #locales
 #afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
-afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
+#afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
+afl="E:\\Users\\Lenovo\\Documents\\GitHub\\TP3-AyED\\LOCALES.dat"
 all = open (afl, "w+b")
 size= os.path.getsize(afl)
 print(size)
@@ -176,13 +180,27 @@ pickle.dump(regUser,alu)
 
 
 
-
-
 alu.flush()
 alu.close()
 
 
 #------------------------PANTALLAS-------------------------
+def barracarga():
+    clear_screen()
+    print(Style.BRIGHT + Fore.WHITE + "         CARGANDO...")
+    bar_len = 25
+    elements = ['-','\\', '|', '/']
+    for i in range(bar_len+1):
+        frame =i%len(elements)
+        print(Fore.GREEN + Style.BRIGHT + f'\r[{elements[frame]*i:=^{bar_len}}]', end='')
+        time.sleep(0.08) 
+
+
+def centrar_texto(texto):
+    ancho_consola, _ = shutil.get_terminal_size()
+    espacio_adicional = max(0, (ancho_consola - len(texto)) // 2)
+    texto_centrado = " " * espacio_adicional + texto
+    print(texto_centrado)
 def mostrar_menu():
     ancho_ventana = shutil.get_terminal_size().columns
 
@@ -193,28 +211,36 @@ def mostrar_menu():
     print("-" * ancho_ventana)
     print(f"|{' ' * espacio_blancos}{menu_texto}{' ' * espacio_blancos}|")
     print("-" * ancho_ventana)
-    print("\nIngrese una opcion 1-3\n")
-    print("1_ Ingresar con usuario registrado\n2_ Registrarse como cliente\n3_ Salir")
+    print(Style.BRIGHT + '\nIngrese una opción' + Fore.YELLOW  + ' 1-3\n')
+    print(Fore.YELLOW + '1_ ' + Fore.RESET + 'Ingresar con usuario registrado\n' + Fore.YELLOW + '2_' + Fore.RESET + ' Registrarse como cliente\n' + Fore.YELLOW + '3_' + Fore.RESET + ' Salir')
 def pantalla_adm():
     clear_screen()
-    print("\n        Menú ADMIN")
-    print("Ingrese una opcion 0-5\n")
-    print("1_ Gestión de locales")
-    print("2_ Crear cuentas de dueños de locales")
-    print("3_ Aprobar / Denegar solicitud de descuento")
-    print("4_ Gestión de novedades")
-    print("5_ Reporte de utilización de descuentos")
-    print("0_ Fin de programa")
+    centrar_texto(Style.BRIGHT  + Fore.WHITE +'Menú ADMIN')
+    print(Style.BRIGHT +'Ingrese una opción ' +  Fore.LIGHTYELLOW_EX + '0-5\n')
+    print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + '1_' + Fore.RESET + ' Gestión de locales')
+    print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + '2_' + Fore.RESET +' Crear cuentas de dueños de locales')
+    print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + '3_' + Fore.RESET +' Aprobar / Denegar solicitud de descuento')
+    print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + '4_' + Fore.RESET +' Gestión de novedades')
+    print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + '5_' + Fore.RESET +' Reporte de utilización de descuentos')
+    print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + '0_' + Fore.RESET +' Volver al Menú Principal')
 def pantalla_locales():
-    
-    print("\n        Gestión de locales")
-    print("Ingrese una opción a-d\n")
-    print("a- Crear locales")
-    print("b- Modificar local")
-    print("c- Eliminar local")
-    print("d- Mapa de locales")
-    print("e- Volver")
+    clear_screen()
+    centrar_texto(Fore.WHITE + Style.BRIGHT + "Gestión de locales")
+    print(Style.BRIGHT +'Ingrese una opción ' +  Fore.LIGHTYELLOW_EX + 'a-d\n')
+    print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + 'a_' + Fore.RESET + ' Crear locales')
+    print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + 'b_' + Fore.RESET + ' Modificar local')
+    print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + 'c_' + Fore.RESET + ' Eliminar local')
+    print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + 'd_' + Fore.RESET + ' Mapa de locales')
+    print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + 'e_' + Fore.RESET + ' Volver')
 
+def enter(menu):
+    #COPIAR ESTA LINEA DE ABAJO PARA CADA EXIT
+    #exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
+    while exit != "":
+        exit = input("Respuesta inválida. Presione ENTER: ")
+    if exit=="":
+        clear_screen()
+        menu
 
 
 
@@ -234,21 +260,55 @@ alu.close()
 
 
 #----Locales----
-def locales_cargados(): #agregar linduras p/
+""" def locales_cargados(): #agregar linduras p/
     all = open (afl,"r+b")
     size= os.path.getsize(afl)
     all.seek(0,0)
+    print(Fore.BLUE + Style.BRIGHT + Back.BLACK + 'Código del Local |         Nombre         |        Ubicación         |  Rubro Código del Dueño Estado')
     while all.tell() < size:
         regLoc = pickle.load(all)
-        print(regLoc.codLocal,regLoc.nombreLocal.rstrip(),regLoc.ubicacionLocal.rstrip(),regLoc.rubroLocal.rstrip(),regLoc.codUsuario,regLoc.estado)
+        print('       ',regLoc.codLocal,'       |',   '       ',regLoc.nombreLocal.rstrip(),'       |','       ' ,regLoc.ubicacionLocal.rstrip(),'         |',regLoc.rubroLocal.rstrip(),regLoc.codUsuario,regLoc.estado)
+    all.close() """
+def locales_cargados():
+    all = open(afl, "r+b")
+    size = os.path.getsize(afl)
+    all.seek(0, 0)
+
+    # Definir ancho de cada columna de la tabla
+    col_codLocal = 20
+    col_nombreLocal = 40
+    col_ubicacionLocal = 40
+    col_rubroLocal = 20
+    col_codUsuario = 20
+    col_estado = 10
+
+    # Encabezados de la tabla
+    print(
+        Fore.BLUE + Style.BRIGHT + Back.BLACK +
+        f'{"Código del Local".center(col_codLocal)} | ' +
+        f'{"Nombre".center(col_nombreLocal)} | ' +
+        f'{"Ubicación".center(col_ubicacionLocal)} | ' +
+        f'{"Rubro".center(col_rubroLocal)} | ' +
+        f'{"Código del Dueño".center(col_codUsuario)} | ' +
+        f'{"Estado".center(col_estado)}'
+    )
+
+    while all.tell() < size:
+        regLoc = pickle.load(all)
+
+        # Formatear y centrar cada columna en la tabla
+        formatted_row = (
+            f'{str(regLoc.codLocal).center(col_codLocal)} | ' +
+            f'{regLoc.nombreLocal.strip().center(col_nombreLocal)} | ' +
+            f'{regLoc.ubicacionLocal.strip().center(col_ubicacionLocal)} | ' +
+            f'{regLoc.rubroLocal.strip().center(col_rubroLocal)} | ' +
+            f'{str(regLoc.codUsuario).center(col_codUsuario)} | ' +
+            f'{regLoc.estado.center(col_estado)}'
+        )
+        
+        print(formatted_row)
+
     all.close()
-
-
-
-
-
-
-
 
 #------------------------VALIDADORES-------------------------
 
@@ -530,12 +590,9 @@ def crear_locales():
     locales_cargados()
     
     #rubros()
-    exit = input("\n Toque Enter para volver: ")
-    while exit != "":
-        exit = input("Respuesta inválida. Presione ENTER: ")
-    if exit=="": 
-        clear_screen()
-        gestion_locales()
+    exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
+    enter(gestion_locales())
+    
     alu.close()
     all.close()
 
@@ -551,7 +608,7 @@ def modificar_local():
     orden()
     bandera=1
     while bandera==1:
-        codLoc=int(input("Ingrese el codigo del local a Modificar:"))
+        codLoc=int(input('\nIngrese el código del local a' + Fore.WHITE + Style.BRIGHT + ' Modificar' + Fore.RESET + Style.RESET_ALL + ': '))
         bandera=valid_codLoc(codLoc)
     
     point=buscadorLoc(codLoc)
@@ -564,7 +621,7 @@ def modificar_local():
         if (alta=="S"):
             regLoc.estado="A" 
 
-    campo = int(input("\nDesea cambiar 1.Nombre 2.Ubicacion 3.Rubro 4.Codigo de usuario 0.Volver: "))
+    campo = int(input('\nIngrese el campo que desea' + Fore.WHITE + Style.BRIGHT + ' Modificar' + Style.RESET_ALL + Fore.YELLOW + '\n1_ ' + Fore.RESET + 'Nombre' + Fore.YELLOW + '\n2_ ' + Fore.RESET + 'Ubicación' + Fore.YELLOW + '\n3_ ' + Fore.RESET + 'Rubro' + Fore.YELLOW + '\n4_ ' + Fore.RESET + 'Código de usuario' + Fore.YELLOW + '\n0_ ' + Fore.RESET + 'Volver\n\nOPCION: '))
     campo=valid_campo(campo)
     
   
@@ -627,7 +684,7 @@ def modificar_local():
                     coduser = int(input("\nNo existe el codigo, Ingrese nuevamente: "))
                     bandera=1
                     alu.seek(0,0)
-        campo=int(input("Desea cambiar 1.Nombre 2.Ubicacion 3.Rubro 4.Codigo de usuario 0.Volver: "))
+        campo = int(input('\nIngrese el campo que desea' + Fore.WHITE + Style.BRIGHT + ' Modificar' + Style.RESET_ALL + Fore.YELLOW + '\n1_ ' + Fore.RESET + 'Nombre' + Fore.YELLOW + '\n2_ ' + Fore.RESET + 'Ubicación' + Fore.YELLOW + '\n3_ ' + Fore.RESET + 'Rubro' + Fore.YELLOW + '\n4_ ' + Fore.RESET + 'Código de usuario' + Fore.YELLOW + '\n0_ ' + Fore.RESET + 'Volver\n\nOPCION: '))
         campo=valid_campo(campo)
     
     
@@ -646,16 +703,14 @@ def modificar_local():
     all.seek(point,0)
     orden()
     locales_cargados()
-    print(f"{Fore.GREEN}\n\n     La modificación fue EXITOSA.")
+
+    centrar_texto(Fore.GREEN + Style.BRIGHT + 'La modificación fue EXITOSA.')
     rubros()
     orden_rub(rubrolocal)
 
-    exit = input("\n Toque Enter para volver: ")
-    while exit != "":
-        exit = input("Respuesta inválida. Presione ENTER: ")
-    if exit=="": 
-        clear_screen()
-        gestion_locales()
+    exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
+    enter(gestion_locales())
+
 
 #----------------------------ELIMINATION LOCALATIO-----------------------------
 def eliminar_loc():
@@ -664,7 +719,7 @@ def eliminar_loc():
 
     bandera=1
     while bandera==1:
-        codLoc=int(input(f"Ingrese el código del local a {Fore.RED + "Eliminar: "}{Style.RESET_ALL}"))
+        codLoc=int(input(f"Ingrese el código del local a {Fore.RED + 'Eliminar:' }{Style.RESET_ALL}"))
         bandera=valid_codLoc(codLoc)
 
     point=buscadorLoc(codLoc)
@@ -696,17 +751,15 @@ def eliminar_loc():
     all.seek(point,0)
     
     #print("El local", regLoc.codLocal, "fue dado de baja.")
-	print(f"El local {Fore.RED + regLoc.codLocal}{Style.RESET_ALL} fue dado de baja.")
+    codStr=str(regLoc.codLocal)
+    print(f"El local {Fore.RED + codStr}{Style.RESET_ALL} fue dado de baja.")
+    
     orden()
     rubros()
     orden_rub(rubrolocal)
 
-    exit = input("\n Toque Enter para volver: ")
-    while exit != "":
-        exit = input("Respuesta inválida. Presione ENTER: ")
-    if exit=="": 
-        clear_screen()
-        gestion_locales()
+    exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
+    enter(gestion_locales())
 
 #------------------------GESTIONES-------------------------
 def gestion_locales(): 
@@ -723,30 +776,34 @@ def gestion_locales():
     match opcloc:
         case "a":
             clear_screen()
-            print("---Crear locales---")
-            exit = input("\n ¿Desea ver los locales cargados? (S/N): ").upper()
+            centrar_texto(Style.BRIGHT + Fore.WHITE + "---Crear locales---")
+            exit = input('\n ¿Desea ver los locales cargados? ('+ Fore.GREEN + 'S' + Fore.WHITE + '/' + Fore.RED + 'N'+ Fore.WHITE+'): ').upper()
+            
             while exit.upper() != "S" and exit.upper() != "N":
                 exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ").upper()
             size=os.path.getsize(afl)
             if exit=="S" and size==0:
-                print("\n       No hay locales cargados hasta el momento.\n ")
+                centrar_texto(Fore.WHITE + Style.BRIGHT + "No hay locales cargados hasta el momento.")
             else:
                 if exit=="S":
                     locales_cargados()
             if(contowner==0):
-                print("No hay dueños registrados. Primero debe crear una cuenta de dueño de local...")
+                centrar_texto(Style.BRIGHT + "No hay dueños registrados. Primero debe crear una cuenta de dueño de local...")
+                exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
+                exit(gestion_locales())
             else:
                 crear_locales()
-            gestion_locales()
         case "b":
             clear_screen()
-            print("---Modificar locales---")
-            exit = input("\n ¿Desea ver los locales cargados? (S/N): ").upper()
+            centrar_texto(Style.BRIGHT + Fore.WHITE + "---Modificar locales---")
+            exit = input('\n ¿Desea ver los locales cargados? ('+ Fore.GREEN + 'S' + Fore.WHITE + '/' + Fore.RED + 'N'+ Fore.WHITE+'): ').upper()
+
             while exit.upper() != "S" and exit.upper() != "N":
                 exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ").upper()
             size=os.path.getsize(afl)
+            
             if exit=="S" and size==0:
-                print("\n       No hay locales cargados hasta el momento.\n")
+                centrar_texto(Fore.WHITE + Style.BRIGHT + "No hay locales cargados hasta el momento.")
             else:
                 if exit=="S" and size!=0:
                     locales_cargados()
@@ -772,11 +829,8 @@ def gestion_locales():
         case "d":
             clear_screen()
             mapa(shopping_loc)
-            exit = input("\n Toque Enter para volver: ")
-            while exit != "":
-                exit = input("Respuesta inválida. Presione ENTER: ")
-            if exit=="": 
-                gestion_locales()
+            exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
+            enter(gestion_locales())
         case "e":
             menu_admin()
     all.close()     
@@ -849,23 +903,23 @@ def signin(user):
     pickle.dump(regUser, alu)
     alu.flush()
     alu.close()
-    print("\nPerfil creado exitosamente!")
-    print("Volviendo...")
+    centrar_texto(Fore.GREEN + Style.BRIGHT + 'La cuenta ha sido creada EXITOSAMENTE!')
+    time.sleep(1.7)
 
 #-------------------------MENU'S----------------------------
 def menu_admin():
    global contowner
+   barracarga()
    pantalla_adm()
    valid_adm()
    match opcadm:
       case "1":
         #clear_screen()
-        print("\nGestión de locales")
         gestion_locales()
         #orden_rub(shopping_loc)
       case "2":
         clear_screen()
-        print("\nCrear cuentas de dueños de locales")
+        centrar_texto(Fore.WHITE + Style.BRIGHT + '---Crear cuentas de dueños de locales---')
         signin("Dueño de local")
         contowner=contowner+1
         menu_admin()
@@ -883,35 +937,18 @@ def menu_admin():
         menu_admin()
       case "0":
         clear_screen()
-        chau_franchu=f"""{Fore.RED}
-        ▒╔═╦═╦═╦╦╦═╦══╗▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒║╬║║║╔╣╔╣╦╩╗╔╝▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒
-        ▒║╗╣║║╚╣╚╣╩╗║║▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄██▒▒
-        ▒╚╩╩═╩═╩╩╩═╝╚╝▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▀██▀█▀█▀███
-        ▒╔══╦═╦══╦═╦═╗▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀▀▀▀▀████▀▀▀▒
-        ▒╚╗╔╣╦╣╔╗║║║║║▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▒▒▒▀██▒▒▒▒
-        ▒▒║║║╩╣╠╣║║║║║▒▒▒▒▒▒▒▒▒▒▒███▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒▒╚╝╚═╩╝╚╩╩═╩╝▒▒▒▒▒▒▄▒▒▒─███▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐█▌▒▒▒▒▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒▒▒▒▒▒▒▒▒▒▒▒▒▒█▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒▒▒▒▒▒▒▒▒▒▒▒▐█▒▒▒▒▒▒▒▒▄▄▄▒▒▒█▒▒▒▒▄▒▒▒▒▒▒▒
-        ▒▒▒▒█████████▒▒▒▒▒▒▒▒█▀█▀█▒█▀█▒▒█▀█▒▄███▄
-        ▒▒▒████████████▒▒▒▒▒░█▀█▀█░█▀██░█▀█░█▄█▄█
-        ▒▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▒▒▒░█▀█▀█░█▀████▀█░█▄█▄█
-        ▐████████████████▒▒▒████████▀████████████
-"""
-        print(chau_franchu)
-        
-        exit = input("\n Toque Enter para salir: ")
+        mainMenu()
+
+        """ centrar_texto(chau_franchu)
+        exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
         while exit != "":
                 exit = input("Respuesta inválida. Presione ENTER: ")
-        print("\nSaliendo...")
+        print("\nSaliendo...") """
 
 
 #Main Menu
 def mainMenu():
-    #clear_screen()
+    clear_screen()
     mostrar_menu()
     ingreso_main_menu(valid_opc())
 
