@@ -142,7 +142,7 @@ regNov = novedades()
 
 
 #-------------------------PRECARGAS/CARGAS---------------------------
-"""pickle.dump(regLoc,all)
+pickle.dump(regLoc,all)
 all.flush()
 all.seek(0,0)
 regLoc.codLocal=1
@@ -157,7 +157,7 @@ regLoc.nombreLocal="Nombre2".ljust(100)
 regLoc.ubicacionLocal="narniaconenanos".ljust(100)
 regLoc.rubroLocal="Perfumeria".ljust(12)
 regLoc.codUsuario=2
-regLoc.estado="A"
+regLoc.estado="B"
 pickle.dump(regLoc,all)
 regLoc.codLocal=3
 regLoc.nombreLocal="Nombre3".ljust(100)
@@ -165,7 +165,7 @@ regLoc.ubicacionLocal="sex".ljust(100)
 regLoc.rubroLocal="Comidas".ljust(12)
 regLoc.codUsuario=2
 regLoc.estado="A"
-pickle.dump(regLoc,all)"""
+pickle.dump(regLoc,all)
 
 
 all.flush()
