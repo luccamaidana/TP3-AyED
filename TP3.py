@@ -368,9 +368,11 @@ def buscadicotomica(elem):
 def buscadorLoc(cod): #NO TOCAR, JUSTIN TE MATA SI LO HACES
     all=open(afl,"r+b")
     all.seek(0,0)
+    point=all.tell()
     regLoc=locales()
     regLoc=pickle.load(all)
     all.seek(0,0)
+    point=all.tell()
     while regLoc.codLocal!=cod:
         point=all.tell()
         regLoc=pickle.load(all)
@@ -547,11 +549,12 @@ def crear_locales():
 def modificar_local():
     global bandera, med,campo,codloc,coduser,rubrolocal,codLoc
  #ver que pasa si no hay locales cargados
+    
     all=open(afl,"r+b")
     regLoc=locales()
     all.seek(0,0)
     size=os.path.getsize(afl)
-
+    orden()
     bandera=1
     while bandera==1:
         codLoc=int(input("Ingrese el codigo del local a modificar:"))
@@ -647,12 +650,11 @@ def modificar_local():
     pickle.dump(regLoc,all)
     all.flush()
     all.seek(point,0)
-
+    orden()
     locales_cargados()
     print(f"{Fore.GREEN}\n\n     La modificación fue EXITOSA.")
-
-    #rubros()
-    #orden_rub(rubrolocal)
+    rubros()
+    orden_rub(rubrolocal)
 
     exit = input("\n Toque Enter para volver: ")
     while exit != "":
