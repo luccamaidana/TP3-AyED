@@ -260,15 +260,6 @@ alu.close()
 
 
 #----Locales----
-""" def locales_cargados(): #agregar linduras p/
-    all = open (afl,"r+b")
-    size= os.path.getsize(afl)
-    all.seek(0,0)
-    print(Fore.BLUE + Style.BRIGHT + Back.BLACK + 'Código del Local |         Nombre         |        Ubicación         |  Rubro Código del Dueño Estado')
-    while all.tell() < size:
-        regLoc = pickle.load(all)
-        print('       ',regLoc.codLocal,'       |',   '       ',regLoc.nombreLocal.rstrip(),'       |','       ' ,regLoc.ubicacionLocal.rstrip(),'         |',regLoc.rubroLocal.rstrip(),regLoc.codUsuario,regLoc.estado)
-    all.close() """
 def locales_cargados():
     all = open(afl, "r+b")
     size = os.path.getsize(afl)
@@ -279,7 +270,7 @@ def locales_cargados():
     col_nombreLocal = 40
     col_ubicacionLocal = 40
     col_rubroLocal = 20
-    col_codUsuario = 20
+    col_codUsuario = 16
     col_estado = 10
 
     # Encabezados de la tabla
@@ -298,6 +289,7 @@ def locales_cargados():
 
         # Formatear y centrar cada columna en la tabla
         formatted_row = (
+            Fore.WHITE + Style.BRIGHT + 
             f'{str(regLoc.codLocal).center(col_codLocal)} | ' +
             f'{regLoc.nombreLocal.strip().center(col_nombreLocal)} | ' +
             f'{regLoc.ubicacionLocal.strip().center(col_ubicacionLocal)} | ' +
@@ -470,8 +462,12 @@ def orden_rub(matriz):
                     aux = matriz[k][i]
                     matriz[k][i] = matriz[k][j]
                     matriz[k][j] = aux
-    print(matriz[0])
-    print(matriz[1])
+    for fila in matriz:
+        for elemento in fila:
+            print(elemento, end=' ')
+        print()
+    #print(matriz[0])
+    #print(matriz[1])
 
 #----------------------------CONTADURIA RUBROS-----------------------------
 def rubros():
@@ -544,7 +540,9 @@ def crear_locales():
         regLoc.ubicacionLocal=ubi.ljust(100)
 
 
-        rubro = input("\nIngrese el RUBRO 1_Indumentaria 2_Perfumeria 3_Comidas ")
+        rubro = input('\nIngrese el' + Fore.WHITE + Style.BRIGHT + ' RUBRO' + Style.RESET_ALL + Fore.YELLOW + '\n1_ ' + Fore.RESET +'Indumentaria' + Fore.YELLOW + '\n2_ '+ Fore.RESET +'Perfumeria'+ Fore.YELLOW +  '\n3_ '+ Fore.RESET + 'Comidas\n\nOPCION: ')
+        #campo = int(input('\nIngrese el campo que desea' + Fore.WHITE + Style.BRIGHT + ' Modificar' + Style.RESET_ALL + Fore.YELLOW + '\n1_ ' + Fore.RESET + 'Nombre' + Fore.YELLOW + '\n2_ ' + Fore.RESET + 'Ubicación' + Fore.YELLOW + '\n3_ ' + Fore.RESET + 'Rubro' + Fore.YELLOW + '\n4_ ' + Fore.RESET + 'Código de usuario' + Fore.YELLOW + '\n0_ ' + Fore.RESET + 'Volver\n\nOPCION: '))
+
         while rubro!= "1" and rubro != "2" and rubro != "3":
             rubro = input("Mal ingresado. Repetir opción. OPCION: ")
         match rubro:
@@ -657,7 +655,7 @@ def modificar_local():
                     ubi = input("No se permiten espacios vacios: ").ljust(100)
 
             case 3: #RUBRO
-                rubro = input("\nIngrese el RUBRO 1_Indumentaria 2_Perfumeria 3_Comidas ")
+                rubro = input('\nIngrese el' + Fore.WHITE + Style.BRIGHT + ' RUBRO' + Style.RESET_ALL + Fore.YELLOW + '\n1_ ' + Fore.RESET +'Indumentaria' + Fore.YELLOW + '\n2_ '+ Fore.RESET +'Perfumeria'+ Fore.YELLOW +  '\n3_ '+ Fore.RESET + 'Comidas\n\nOPCION: ')
                 while rubro!= "1" and rubro != "2" and rubro != "3":
                     rubro = input("Mal ingresado. Repetir opción. OPCION: ")
                 all.seek(point,0)
@@ -703,11 +701,10 @@ def modificar_local():
     all.seek(point,0)
     orden()
     locales_cargados()
-
-    centrar_texto(Fore.GREEN + Style.BRIGHT + 'La modificación fue EXITOSA.')
+    print()
+    centrar_texto(Fore.GREEN + Style.BRIGHT + Back.BLACK + 'La modificación fue EXITOSA.')
+    print()
     rubros()
-    orden_rub(rubrolocal)
-
     exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
     enter(gestion_locales())
 
