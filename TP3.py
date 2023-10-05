@@ -847,6 +847,7 @@ def login():
     nombre=input("\nIngrese el nombre: ")
     password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*")
     regUser=pickle.load(alu)
+    alu.seek(0,0)
     #1
     while correcto!=1 and cont<3:
         alu.seek(0,0)
