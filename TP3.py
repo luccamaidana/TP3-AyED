@@ -539,12 +539,6 @@ def crear_locales():
     alu.close()
     all.close()
 
-
-
-
-
-
-
 #----------------------------MODIFICATIO LOCALATIO-----------------------------
 def modificar_local():
     global bandera, med,campo,codloc,coduser,rubrolocal,codLoc
@@ -557,7 +551,7 @@ def modificar_local():
     orden()
     bandera=1
     while bandera==1:
-        codLoc=int(input("Ingrese el codigo del local a modificar:"))
+        codLoc=int(input("Ingrese el codigo del local a Modificar:"))
         bandera=valid_codLoc(codLoc)
     
     point=buscadorLoc(codLoc)
@@ -573,7 +567,7 @@ def modificar_local():
     campo = int(input("\nDesea cambiar 1.Nombre 2.Ubicacion 3.Rubro 4.Codigo de usuario 0.Volver: "))
     campo=valid_campo(campo)
     
-    print(point,"el anterior")
+  
     all.seek(point,0)
     regLoc=pickle.load(all)
     codLoc=regLoc.codLocal
@@ -663,6 +657,56 @@ def modificar_local():
         clear_screen()
         gestion_locales()
 
+#----------------------------MODIFICATIO LOCALATIO-----------------------------
+def eliminar_loc():
+    all=open(afl,"r+b")
+    regLoc=locales()
+
+    bandera=1
+    while bandera==1:
+        codLoc=int(input("Ingrese el codigo del local a Eliminar:"))
+        bandera=valid_codLoc(codLoc)
+
+    point=buscadorLoc(codLoc)
+    all.seek(point,0)
+    regLoc=pickle.load(all)
+    codLoc=regLoc.codLocal
+    valor=regLoc.nombreLocal.ljust(100)
+    ubi=regLoc.ubicacionLocal.ljust(100)
+    rubro=regLoc.rubroLocal.ljust(12)
+    coduser=regLoc.codLocal
+    estado=regLoc.estado
+
+    if (regLoc.estado == "A"):
+        baja = input("Este local esta activo. Desea darlo de baja? (S/N): ").upper()
+        while baja.upper() != "S" and baja.upper() != "N":
+            baja = input("Respuesta inválida. ¿Desea darlo de baja? (S/N): ")
+        if (baja=="S"):
+            estado="B" 
+
+    all.seek(point,0)
+    regLoc.codLocal=codLoc
+    regLoc.nombreLocal=valor.ljust(100)
+    regLoc.ubicacionLocal=ubi.ljust(100)
+    regLoc.rubroLocal=rubro.ljust(12)
+    regLoc.codLocal=coduser
+    regLoc.estado=estado
+    pickle.dump(regLoc,all)
+    all.flush()
+    all.seek(point,0)
+    
+    print("El local ",regLoc.codLocal, " fue dado de baja.")
+    orden()
+    rubros()
+    orden_rub(rubrolocal)
+
+    exit = input("\n Toque Enter para volver: ")
+    while exit != "":
+        exit = input("Respuesta inválida. Presione ENTER: ")
+    if exit=="": 
+        clear_screen()
+        gestion_locales()
+
 #------------------------GESTIONES-------------------------
 def gestion_locales(): 
     size=os.path.getsize(afl)
@@ -715,21 +759,13 @@ def gestion_locales():
             exit = input("\n ¿Desea ver los locales cargados? (S/N): ").upper()
             while exit.upper() != "S" and exit.upper() != "N":
                 exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ").upper()
-            if exit=="S" and i==0:
+            size=os.path.getsize(afl)
+            if exit=="S" and size==0:
                 print("\n       No hay locales cargados hasta el momento.")
             else:
-                if exit=="S":
-                    all.seek(0,0)
-                    while all.tell() < size:
-                        regLoc = pickle.load(all)
-                        print(regLoc.codLocal)
-                        print(regLoc.nombreLocal)
-                        print(regLoc.ubicacionLocal)
-                        print(regLoc.rubroLocal)
-                        print(regLoc.codUsuario)
-                        print(regLoc.estado)
-
-            eliminar_loc(shopping_loc)
+                if exit=="S" and size!=0:
+                    locales_cargados()
+                    eliminar_loc()
             gestion_locales()
 
         case "d":
