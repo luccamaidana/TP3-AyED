@@ -365,17 +365,15 @@ def buscadicotomica(elem):
         return bandera
 
 #----------------------------BUSQUEDAS-----------------------------
-def buscadorLoc(cod):
-    #global codLoc
+def buscadorLoc(cod): #NO TOCAR, JUSTIN TE MATA SI LO HACES
     all=open(afl,"r+b")
-    regLoc=locales()
     all.seek(0,0)
+    regLoc=locales()
     regLoc=pickle.load(all)
     all.seek(0,0)
-    point=all.tell()
     while regLoc.codLocal!=cod:
-        regLoc=pickle.load(all)
         point=all.tell()
+        regLoc=pickle.load(all)
     return point
 
 
@@ -572,7 +570,7 @@ def modificar_local():
     campo = int(input("\nDesea cambiar 1.Nombre 2.Ubicacion 3.Rubro 4.Codigo de usuario 0.Volver: "))
     campo=valid_campo(campo)
     
-    print(point)
+    print(point,"el anterior")
     all.seek(point,0)
     regLoc=pickle.load(all)
     codLoc=regLoc.codLocal
