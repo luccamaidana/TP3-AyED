@@ -1,5 +1,6 @@
-global cont,contowner,codloc,regLoc
-cont=2
+global cont,contowner,codloc,regLoc,contuser
+con=1
+contuser=1
 contowner=0
 codloc=0
 #------------------------IMPORT-------------------------------
@@ -9,6 +10,8 @@ import os.path
 import io
 import shutil
 import maskpass
+import math
+
 def clear_screen():
     # Comando para limpiar la pantalla en Windows
     if os.name == 'nt':
@@ -139,7 +142,7 @@ regNov = novedades()
 
 
 #-------------------------PRECARGAS/CARGAS---------------------------
-pickle.dump(regLoc,all)
+"""pickle.dump(regLoc,all)
 all.flush()
 all.seek(0,0)
 regLoc.codLocal=1
@@ -162,7 +165,7 @@ regLoc.ubicacionLocal="sex".ljust(100)
 regLoc.rubroLocal="Comidas".ljust(12)
 regLoc.codUsuario=2
 regLoc.estado="A"
-pickle.dump(regLoc,all)
+pickle.dump(regLoc,all)"""
 
 
 all.flush()
@@ -195,6 +198,7 @@ def mostrar_menu():
     print("-" * ancho_ventana)
     print("\nIngrese una opcion 1-3\n")
     print("1_ Ingresar con usuario registrado\n2_ Registrarse como cliente\n3_ Salir")
+
 def pantalla_adm():
     clear_screen()
     print("\n        Menú ADMIN")
@@ -205,6 +209,7 @@ def pantalla_adm():
     print("4_ Gestión de novedades")
     print("5_ Reporte de utilización de descuentos")
     print("0_ Fin de programa")
+
 def pantalla_locales():
     
     print("\n        Gestión de locales")
@@ -215,7 +220,16 @@ def pantalla_locales():
     print("d- Mapa de locales")
     print("e- Volver")
 
-
+def pantalla_costumer():
+    global name, contuser
+    clear_screen()
+    print("        Menú de Cliente")
+    print("       Bienvenido",name, "Codigo de Usuario",contuser)
+    print("\nIngrese una opcion 0-3\n")
+    print("1 Buscar descuentos en local")
+    print("2 Solicitar descuento")
+    print("3 Ver novedades") #SOLO CHAPIN
+    print("0_ Salir")
 
 
 #------------------------LECTURAS-------------------------
@@ -251,7 +265,6 @@ def locales_cargados(): #agregar linduras p/
 
 
 #------------------------VALIDADORES-------------------------
-
 def valid_opc():
     global opc
     opc = input("\nOPCION: ")
@@ -315,6 +328,14 @@ def valid_codUser(): #te dice si esxiste el coduser
         codLoc=int(input("Codigo inexistente, pruebe nuevamente: "))
     else:
         bandera=0
+
+def valid_costumer():
+    global opccostumer
+    opccostumer = input("\nOPCION: ")
+    while opccostumer != "1" and opccostumer != "2" and opccostumer != "3" and opccostumer != "0":
+        opccostumer = input("Mal ingresado. Repetir opción. OPCION: ")
+    clear_screen()
+
 #----------------------------CASE-----------------------------
 def select_menu(m):
     match m:
@@ -323,7 +344,7 @@ def select_menu(m):
         case "Dueño de local":
             menu_owner()
         case "Cliente":
-            menu_client()
+            menu_costumer()
 
 def ingreso_main_menu(k):
     match k:
@@ -338,7 +359,6 @@ def ingreso_main_menu(k):
 #----------------------------BUSQUEDA DICOATOMICA-----------------------------
 def buscadicotomica(elem): 
         global bandera, med
-        print("bonjour")
         all = open (afl,"r+b")
         regLoc=locales()
         bandera=0 
@@ -377,7 +397,6 @@ def buscadorLoc(cod): #NO TOCAR, JUSTIN TE MATA SI LO HACES
         point=all.tell()
         regLoc=pickle.load(all)
     return point
-
 
 #----------------------------ORDEN EN LA SALA-----------------------------
 def orden():  #ordena por campo codigo 
@@ -657,7 +676,7 @@ def modificar_local():
         clear_screen()
         gestion_locales()
 
-#----------------------------MODIFICATIO LOCALATIO-----------------------------
+#----------------------------ELIMINATIO LOCALATIO-----------------------------
 def eliminar_loc():
     all=open(afl,"r+b")
     regLoc=locales()
@@ -706,6 +725,45 @@ def eliminar_loc():
     if exit=="": 
         clear_screen()
         gestion_locales()
+
+#----------------------------GOOGLE MAPS-----------------------------
+def mapa():
+    orden()
+    
+    all = open (afl,"r+b")
+    regLoc = locales()
+    bandera=0 
+    all.seek(0,0)
+    regLoc=pickle.load(all)
+    tamreg=all.tell()
+    tamarch=os.path.getsize(afl)
+    cant=(tamarch//tamreg)
+    cantred=math.ceil((tamarch//tamreg)/5)
+    all.seek(0,0)
+    localesmap = [["0"] * 5 for i in range(cantred)]
+    h = 0
+    j = 0
+    contador = 0
+    #f"{Fore.RED}  0  "
+    while h <= 10 and contador < cant:
+        if (regLoc.estado=="B"):
+            localesmap[h][j] = 0
+        else:
+            regLoc=pickle.load(all)
+            localesmap[h][j] = regLoc.codLocal
+        j = j + 1
+        contador=contador+1
+
+        if j == 5:
+            h = h + 1
+            j = 0
+
+    for fila in localesmap:
+        print("+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+")
+        for elemento in fila:
+            print("|" + str(elemento).center(5), end="")
+        print("|")
+    print("+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+")
 
 #------------------------GESTIONES-------------------------
 def gestion_locales(): 
@@ -767,10 +825,9 @@ def gestion_locales():
                     locales_cargados()
                     eliminar_loc()
             gestion_locales()
-
         case "d":
             clear_screen()
-            mapa(shopping_loc)
+            mapa()
             exit = input("\n Toque Enter para volver: ")
             while exit != "":
                 exit = input("Respuesta inválida. Presione ENTER: ")
@@ -782,6 +839,7 @@ def gestion_locales():
 
 #-------------------------LOGIN----------------------------
 def login():
+    global name,cont
     alu = open (afu, "r+b")
     size=os.path.getsize(afu)
     correcto=0
@@ -802,11 +860,12 @@ def login():
         else:
             nombre=input("\nIngrese el nombre: ")
             password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*")
-            cont=cont+1
+            cont=cont+1 #=?????
             alu.seek(0,0)
     if (regUser.usuario==nombre and regUser.clave==password):  
             correcto=1    
     if(correcto==1):
+        name=regUser.usuario
         select_menu(regUser.tipo)
     else:
         print("Cantidad de maxima de intentos permitidos")
@@ -815,7 +874,7 @@ def login():
 
 #-------------------------SIGN IN----------------------------
 def signin(user):
-    global cont
+    global contuser
     alu = open (afu, "r+b")
     size=os.path.getsize(afu)
     regUser=pickle.load(alu)
@@ -839,8 +898,8 @@ def signin(user):
     while len(password)!=8:
         password = maskpass.askpass(prompt="\nLa contraseña debe contener 8 caracteres: ", mask="*")
 
-    cont=cont+1
-    regUser.cod=cont
+    contuser=contuser+1
+    regUser.cod=contuser
     regUser.usuario = nombre
     regUser.clave = password
     regUser.tipo = user
@@ -861,7 +920,6 @@ def menu_admin():
         #clear_screen()
         print("\nGestión de locales")
         gestion_locales()
-        #orden_rub(shopping_loc)
       case "2":
         clear_screen()
         print("\nCrear cuentas de dueños de locales")
@@ -907,6 +965,32 @@ def menu_admin():
                 exit = input("Respuesta inválida. Presione ENTER: ")
         print("\nSaliendo...")
 
+def menu_costumer():
+    pantalla_costumer()
+    valid_costumer()
+    match opccostumer:
+        case "1":
+            clear_screen()
+            print("Buscar descuentos en local")
+            buscardesc()
+
+        case "2":
+            clear_screen()
+            print("Solicitar descuento")
+            solicitardesc()
+            menu_owner()
+        case "3":
+            clear_screen()
+            print("Ver novedades")
+            print("\nDiagramado en chapin")
+            exit = input("Toque Enter para volver. ")
+            while exit != "":
+                exit = input("Respuesta inválida. Presione ENTER. ")
+            if exit=="": 
+                menu_owner()
+        case "0":
+            barracarga()
+            mainMenu()
 
 #Main Menu
 def mainMenu():
