@@ -157,14 +157,14 @@ regLoc.nombreLocal="Nombre2".ljust(100)
 regLoc.ubicacionLocal="narniaconenanos".ljust(100)
 regLoc.rubroLocal="Perfumeria".ljust(12)
 regLoc.codUsuario=2
-regLoc.estado="B"
+regLoc.estado="A"
 pickle.dump(regLoc,all)
 regLoc.codLocal=3
 regLoc.nombreLocal="Nombre3".ljust(100)
 regLoc.ubicacionLocal="sex".ljust(100)
 regLoc.rubroLocal="Comidas".ljust(12)
 regLoc.codUsuario=2
-regLoc.estado="A"
+regLoc.estado="B"
 pickle.dump(regLoc,all)
 
 
@@ -726,6 +726,10 @@ def eliminar_loc():
         clear_screen()
         gestion_locales()
 
+#----------------------------ES ENTERATIO?-----------------------------
+def es_entero(valor):
+    return isinstance(valor, int)
+
 #----------------------------GOOGLE MAPS-----------------------------
 def mapa():
     orden()
@@ -740,14 +744,16 @@ def mapa():
     cant=(tamarch//tamreg)
     cantred=math.ceil((tamarch//tamreg)/5)
     all.seek(0,0)
-    localesmap = [["0"] * 5 for i in range(cantred)]
+    localesmap = [["0"] * 5 for i in range(50)]
     h = 0
     j = 0
     contador = 0
     #f"{Fore.RED}  0  "
     while h <= 10 and contador < cant:
         if (regLoc.estado=="B"):
-            localesmap[h][j] = 0
+            regLoc=pickle.load(all)
+            localesmap[h][j] = regLoc.codLocal
+            localesmap[h][j]=localesmap[h][j]+0.5
         else:
             regLoc=pickle.load(all)
             localesmap[h][j] = regLoc.codLocal
@@ -761,7 +767,12 @@ def mapa():
     for fila in localesmap:
         print("+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+")
         for elemento in fila:
-            print("|" + str(elemento).center(5), end="")
+            numero=es_entero(elemento)
+            if (numero==True):
+                elemento=math.floor(elemento)
+                print("|" +{Fore.RED}+str(elemento).center(5), end="")
+            else:
+                print("|" + str(elemento).center(5), end="")
         print("|")
     print("+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+")
 
