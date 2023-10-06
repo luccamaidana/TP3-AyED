@@ -70,9 +70,9 @@ class novedades:
 global all
 #------------------------PP-----------------------------------
 #user
-#afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
+afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
 #afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
-afu = "E:\\Users\\Lenovo\\Documents\\GitHub\\TP3-AyED\\USUARIOS.dat"
+#afu = "E:\\Users\\Lenovo\\Documents\\GitHub\\TP3-AyED\\USUARIOS.dat"
 alu = open (afu, "w+b")
 regUser = user()
 
@@ -84,9 +84,9 @@ regUser.tipo= regUser.tipo.ljust(14)
 
 
 #locales
-#afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
+afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
 #afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
-afl="E:\\Users\\Lenovo\\Documents\\GitHub\\TP3-AyED\\LOCALES.dat"
+#afl="E:\\Users\\Lenovo\\Documents\\GitHub\\TP3-AyED\\LOCALES.dat"
 all = open (afl, "w+b")
 size= os.path.getsize(afl)
 print(size)
@@ -275,7 +275,7 @@ def locales_cargados():
 
     # Encabezados de la tabla
     print(
-        Fore.BLUE + Style.BRIGHT + Back.BLACK +
+        Back.BLACK + Fore.BLUE + Style.BRIGHT + Back.BLACK +
         f'{"Código del Local".center(col_codLocal)} | ' +
         f'{"Nombre".center(col_nombreLocal)} | ' +
         f'{"Ubicación".center(col_ubicacionLocal)} | ' +
