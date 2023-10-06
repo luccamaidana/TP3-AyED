@@ -734,7 +734,6 @@ def mapa():
         print("No hay Locales cargados hasta el momento.")
     else:
         orden()
-        
         regLoc = locales()
         bandera=0 
         all.seek(0,0)
