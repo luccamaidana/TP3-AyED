@@ -142,7 +142,7 @@ regNov = novedades()
 
 
 #-------------------------PRECARGAS/CARGAS---------------------------
-pickle.dump(regLoc,all)
+"""pickle.dump(regLoc,all)
 all.flush()
 all.seek(0,0)
 regLoc.codLocal=1
@@ -165,7 +165,7 @@ regLoc.ubicacionLocal="sex".ljust(100)
 regLoc.rubroLocal="Comidas".ljust(12)
 regLoc.codUsuario=3
 regLoc.estado="A"
-pickle.dump(regLoc,all)
+pickle.dump(regLoc,all)"""
 
 
 all.flush()
@@ -726,56 +726,57 @@ def eliminar_loc():
         clear_screen()
         gestion_locales()
 
-#----------------------------ES ENTERATIO?-----------------------------
-def es_entero(valor):
-    return isinstance(valor, int)
-
 #----------------------------GOOGLE MAPS-----------------------------
 def mapa():
-    orden()
     all = open (afl,"r+b")
-    regLoc = locales()
-    bandera=0 
-    all.seek(0,0)
-    regLoc=pickle.load(all)
-    tamreg=all.tell()
     tamarch=os.path.getsize(afl)
-    cant=(tamarch//tamreg)
-    cantred=math.ceil((tamarch//tamreg)/5)
-    all.seek(0,0)
-    localesmap = [["0"] * 5 for i in range(50)]
-    h = 0
-    j = 0
-    contador = 0
-    all.seek(0,0)
-    while h <= 10 and contador < cant:
-        all.seek(contador*tamreg,0)
+    if(tamarch==0):
+        print("No hay Locales cargados hasta el momento.")
+    else:
+        orden()
+        
+        regLoc = locales()
+        bandera=0 
+        all.seek(0,0)
         regLoc=pickle.load(all)
-        if (regLoc.estado=="B"):
-            localesmap[h][j] = regLoc.codLocal+0.5
-            localesmap[h][j]=localesmap[h][j]
-        else:
-            localesmap[h][j] = regLoc.codLocal
-        contador=contador+1
-        j = j + 1
-        if j == 5:
-            h = h + 1
-            j = 0
-    for fila in localesmap:
-        print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+")
-        for elemento in fila:
-            dou=float(elemento)
-            if (dou%1!=0):
-                elemento=str(int(dou-0.5))
-                print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"|" +Fore.RED+Back.BLACK+str(elemento).center(5), end="")
+        tamreg=all.tell()
+        tamarch=os.path.getsize(afl)
+        cant=(tamarch//tamreg)
+        cantred=math.ceil((tamarch//tamreg)/5)
+        all.seek(0,0)
+        localesmap = [["0"] * 5 for i in range(50)]
+        h = 0
+        j = 0
+        contador = 0
+        all.seek(0,0)
+        while h <= 10 and contador < cant:
+            all.seek(contador*tamreg,0)
+            regLoc=pickle.load(all)
+            if (regLoc.estado=="B"):
+                localesmap[h][j] = regLoc.codLocal+0.5
+                localesmap[h][j]=localesmap[h][j]
             else:
-                if(elemento!="0"):
-                    print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"|" + Fore.GREEN+Back.BLACK+str(elemento).center(5), end="")
+                localesmap[h][j] = regLoc.codLocal
+            contador=contador+1
+            j = j + 1
+            if j == 5:
+                h = h + 1
+                j = 0
+        for fila in localesmap:
+            print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+")
+            for elemento in fila:
+                dou=float(elemento)
+                if (dou%1!=0):
+                    elemento=str(int(dou-0.5))
+                    print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"|" +Fore.RED+Back.BLACK+str(elemento).center(5), end="")
                 else:
-                    print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"|"+Fore.WHITE +Back.BLACK+str(elemento).center(5), end="")
-                
-        print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"|")
-    print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+")
+                    if(elemento!="0"):
+                        print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"|" + Fore.GREEN+Back.BLACK+str(elemento).center(5), end="")
+                    else:
+                        print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"|"+Fore.WHITE +Back.BLACK+str(elemento).center(5), end="")
+                    
+            print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"|")
+        print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+")
 
 #------------------------GESTIONES-------------------------
 def gestion_locales(): 
