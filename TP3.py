@@ -21,7 +21,7 @@ def clear_screen():
         os.system('clear')
 
 import colorama
-from colorama import Fore, Style
+from colorama import Fore, Style,Back
 
 # Inicializar colorama
 colorama.init(autoreset=True)
@@ -157,14 +157,14 @@ regLoc.nombreLocal="Nombre2".ljust(100)
 regLoc.ubicacionLocal="narniaconenanos".ljust(100)
 regLoc.rubroLocal="Perfumeria".ljust(12)
 regLoc.codUsuario=2
-regLoc.estado="A"
+regLoc.estado="B"
 pickle.dump(regLoc,all)
 regLoc.codLocal=3
 regLoc.nombreLocal="Nombre3".ljust(100)
 regLoc.ubicacionLocal="sex".ljust(100)
 regLoc.rubroLocal="Comidas".ljust(12)
-regLoc.codUsuario=2
-regLoc.estado="B"
+regLoc.codUsuario=3
+regLoc.estado="A"
 pickle.dump(regLoc,all)
 
 
@@ -733,7 +733,6 @@ def es_entero(valor):
 #----------------------------GOOGLE MAPS-----------------------------
 def mapa():
     orden()
-    
     all = open (afl,"r+b")
     regLoc = locales()
     bandera=0 
@@ -748,33 +747,35 @@ def mapa():
     h = 0
     j = 0
     contador = 0
-    #f"{Fore.RED}  0  "
+    all.seek(0,0)
     while h <= 10 and contador < cant:
+        all.seek(contador*tamreg,0)
+        regLoc=pickle.load(all)
         if (regLoc.estado=="B"):
-            regLoc=pickle.load(all)
-            localesmap[h][j] = regLoc.codLocal
-            localesmap[h][j]=localesmap[h][j]+0.5
+            localesmap[h][j] = regLoc.codLocal+0.5
+            localesmap[h][j]=localesmap[h][j]
         else:
-            regLoc=pickle.load(all)
             localesmap[h][j] = regLoc.codLocal
-        j = j + 1
         contador=contador+1
-
+        j = j + 1
         if j == 5:
             h = h + 1
             j = 0
-
     for fila in localesmap:
-        print("+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+")
+        print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+")
         for elemento in fila:
-            numero=es_entero(elemento)
-            if (numero==True):
-                elemento=math.floor(elemento)
-                print("|" +{Fore.RED}+str(elemento).center(5), end="")
+            dou=float(elemento)
+            if (dou%1!=0):
+                elemento=str(int(dou-0.5))
+                print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"|" +Fore.RED+Back.BLACK+str(elemento).center(5), end="")
             else:
-                print("|" + str(elemento).center(5), end="")
-        print("|")
-    print("+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+")
+                if(elemento!="0"):
+                    print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"|" + Fore.GREEN+Back.BLACK+str(elemento).center(5), end="")
+                else:
+                    print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"|"+Fore.WHITE +Back.BLACK+str(elemento).center(5), end="")
+                
+        print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"|")
+    print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+")
 
 #------------------------GESTIONES-------------------------
 def gestion_locales(): 
