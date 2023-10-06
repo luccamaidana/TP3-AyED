@@ -168,10 +168,10 @@ alu.close()
 
 regProm.codPromo=0
 regProm.textoPromo="hola"
-regProm.fechaDesdePromo=""
-regProm.fechaHastaPromo=""
+regProm.fechaDesdePromo="12/10/2023"
+regProm.fechaHastaPromo="12/11/2023"
 regProm.diasSemana=""
-regProm.estado=""
+regProm.estado="Aprobado"
 regProm.codLocal=1
 regProm.cantUsoPromo=0
 regProm.codUsuario=2
@@ -180,10 +180,10 @@ pickle.dump(regProm, alp)
 
 regProm.codPromo=1
 regProm.textoPromo="hola 2 jaja"
-regProm.fechaDesdePromo=""
-regProm.fechaHastaPromo=""
+regProm.fechaDesdePromo="12/10/2023"
+regProm.fechaHastaPromo="12/11/2023"
 regProm.diasSemana=""
-regProm.estado=""
+regProm.estado="Aprobado"
 regProm.codLocal=3
 regProm.cantUsoPromo=0
 regProm.codUsuario=3
@@ -192,10 +192,10 @@ pickle.dump(regProm, alp)
 
 regProm.codPromo=0
 regProm.textoPromo="putas free"
-regProm.fechaDesdePromo=""
-regProm.fechaHastaPromo=""
+regProm.fechaDesdePromo="12/10/2023"
+regProm.fechaHastaPromo="12/11/2023"
 regProm.diasSemana=""
-regProm.estado=""
+regProm.estado="Aprobado"
 regProm.codLocal=2
 regProm.cantUsoPromo=0
 regProm.codUsuario=2
@@ -786,17 +786,11 @@ def crear_descuento():
 
     alp = open (afp, "r+b")
     all = open (afl, "rb")
-    alu = open(afu, "r+b")
     alp.seek(0,0)
     all.seek(0,0)  
-    alu.seek(0,0)
     regProm = promociones()
     regLoc = locales()
-    #regUser = user()
-
     regLoc = pickle.load(all)
-    #regUser = pickle.load(alu)
-
 
     fecha_actual = datetime.datetime.now()
     fecha_formateada = fecha_actual.strftime("%d/%m/%Y")
@@ -955,30 +949,42 @@ def uso_descuento():
 
     desde_str = input("Ingrese el primer dia del rango: ")
     desde = datetime.datetime.strptime(desde_str, "%d/%m/%Y")
-    while regProm.fechaDesdePromo>=desde and valid_fecha(desde_str)==0:
+    fechaDesdePromo = datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y")
+    while fechaDesdePromo >= desde and valid_fecha(desde_str)==0:
         desde_str = input("Fecha de rango no válida. Ingrese otra fecha: ")
         valid_fecha(desde_str)
         desde = datetime.datetime.strptime(desde_str, "%d/%m/%Y")
 
     hasta_str = input("Ingrese el ultimo dia del rango: ")
     hasta = datetime.datetime.strptime(hasta_str, "%d/%m/%Y")
-    while regProm.fechaHastaPromo <= hasta and valid_fecha(hasta_str)==0:
+    fechaHastaPromo = datetime.datetime.strptime(regProm.fechaHastaPromo, "%d/%m/%Y")
+    while fechaHastaPromo <= hasta and valid_fecha(hasta_str)==0:
         hasta_str = input("Fecha de rango no válida. Ingrese otra fecha: ")
         valid_fecha(hasta_str)
         hasta = datetime.datetime.strptime(hasta_str, "%d/%m/%Y")
 
-    print("Fecha desde:", desde,"    Fecha hasta:", hasta)
-    print("Local", regLoc.codLocal,":", regLoc.nombreLocal)
-    print("|-----------------|----------------------------------------|---------------|---------------|-------------------|")
-    print("| Codigo Promo    |               Texto                    |  Fecha Desde  |  Fecha Hasta  |  Cant. Uso Promo  |")
-    print("|-----------------|----------------------------------------|---------------|---------------|-------------------|")
-    while alp.tell() < size and regProm.estado=="Aprobado" and regProm.codPromo==regUP.codPromo:
-        if regProm.fechaDesdePromo>=desde and regProm.fechaHastaPromo<=hasta:
-           print("|-----------------|----------------------------------------|---------------|---------------|-------------------|")
-           print(f"| {regProm.codPromo:<15} | {regProm.textoPromo:<40} | {regProm.fechaDesdePromo:<15} | {regProm.fechaHastaPromo:<15} | {regProm.cantUsoPromo:<17} |")
+    sizeUP = os.path.getsize(afup)
+    alup.seek(0,0)
+    regUP = pickle.load(alup)
+    tamreg = alup.tell()
+    cantreg = sizeUP//tamreg
+
+
+    sizeloc = os.path.getsize(afl)
+
+    while alp.tell() < size:
         regProm = pickle.load(alp)
-    print("|-----------------|----------------------------------------|---------------|---------------|-------------------|")
-   
+        while all.tell() < sizeloc:
+            regLoc = pickle.load(all)
+            if fechaDesdePromo>=desde and fechaHastaPromo<=hasta and regProm.estado=="Aprobado" :
+                print("Fecha desde:", desde,"    Fecha hasta:", hasta)
+                print("Local", regLoc.codLocal,":", regLoc.nombreLocal)
+                print("|-----------------|----------------------------------------|---------------|---------------|-------------------|")
+                print("| Codigo Promo    |               Texto                    |  Fecha Desde  |  Fecha Hasta  |  Cant. Uso Promo  |")
+                print("|-----------------|----------------------------------------|---------------|---------------|-------------------|")
+                print(f"| {regProm.codPromo:<15} | {regProm.textoPromo:<40} | {regProm.fechaDesdePromo:<15} | {regProm.fechaHastaPromo:<15} | {cantreg:<17} |")
+            print("|-----------------|----------------------------------------|---------------|---------------|-------------------|")
+    
     """print("Fecha desde: ", desde,"    Fecha hasta: ", hasta)
         print("Local ", regLoc.codLocal,": ", regLoc.nombreLocal) #mal
         print(regProm.codPromo)
