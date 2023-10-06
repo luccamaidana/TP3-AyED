@@ -142,7 +142,7 @@ regNov = novedades()
 
 
 #-------------------------PRECARGAS/CARGAS---------------------------
-"""pickle.dump(regLoc,all)
+pickle.dump(regLoc,all)
 all.flush()
 all.seek(0,0)
 regLoc.codLocal=1
@@ -165,8 +165,7 @@ regLoc.ubicacionLocal="sex".ljust(100)
 regLoc.rubroLocal="Comidas".ljust(12)
 regLoc.codUsuario=3
 regLoc.estado="A"
-pickle.dump(regLoc,all)"""
-
+pickle.dump(regLoc,all)
 
 all.flush()
 all.close()
@@ -743,7 +742,7 @@ def mapa():
         cant=(tamarch//tamreg)
         cantred=math.ceil((tamarch//tamreg)/5)
         all.seek(0,0)
-        localesmap = [["0"] * 5 for i in range(50)]
+        localesmap = [["0"] * 5 for i in range(10)]
         h = 0
         j = 0
         contador = 0
