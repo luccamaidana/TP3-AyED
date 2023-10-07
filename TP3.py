@@ -217,7 +217,7 @@ regProm.codLocal=2
 regProm.cantUsoPromo=0
 regProm.codUsuario=2 #valen
 pickle.dump(regProm, alp)"""
-
+print("Bobis que hicistes")
 alp.flush()
 alp.close()
 
