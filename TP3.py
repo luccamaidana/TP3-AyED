@@ -77,37 +77,37 @@ class novedades:
 #------------------------PP-----------------------------------
 #user
 #afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
-#afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
-afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
+afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
+#afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
 alu = open (afu, "w+b")
 regUser = user()
 
 #locales
 #afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
-#afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
-afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
+afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
+#afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
 all = open (afl, "w+b") 
 regLoc = locales()
 
 #promos
 #afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
-#afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
-afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
+afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
+#afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
 alp = open (afp, "w+b")
 regProm = promociones()
 
 
 #uso promos
 #afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
-#afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
-afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
+afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
+#afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
 alup = open (afup, "w+b")
 regUP = uso_promociones()
 
 #novedades
 #afn = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\NOVEDADES.DAT"
-#afn = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\NOVEDADES.DAT"
-afn = "D:\\Descargas\\Facultad\\TP3-AyED\\NOVEDADES.DAT"
+afn = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\NOVEDADES.DAT"
+#afn = "D:\\Descargas\\Facultad\\TP3-AyED\\NOVEDADES.DAT"
 aln = open (afn, "w+b")
 regNov = novedades()
 
@@ -158,6 +158,12 @@ regUser.clave="123"
 regUser.tipo="Dueño de local"
 pickle.dump(regUser,alu)
 
+regUser.cod=4
+regUser.usuario="1"
+regUser.clave="1"
+regUser.tipo="Cliente"
+pickle.dump(regUser,alu)
+
 regUser.cod=cont
 regUser.usuario= input("\nUsuario:")
 regUser.clave= input("\nClave:")
@@ -179,9 +185,9 @@ regProm.codUsuario=3 #123"""
 
 #pickle.dump(regProm, alp)
 
-regProm.codPromo=1
+"""regProm.codPromo=1
 regProm.textoPromo="putas free"
-regProm.fechaDesdePromo="12/10/2023"
+regProm.fechaDesdePromo="06/10/2023"
 regProm.fechaHastaPromo="12/11/2023"
 regProm.diasSemana=""
 regProm.estado="Aprobado"
@@ -210,7 +216,7 @@ regProm.estado="Aprobado"
 regProm.codLocal=2
 regProm.cantUsoPromo=0
 regProm.codUsuario=2 #valen
-pickle.dump(regProm, alp)
+pickle.dump(regProm, alp)"""
 
 alp.flush()
 alp.close()
@@ -423,11 +429,11 @@ def valid_codLoc(codLoc): #te dice si existe el codloc
     bandera=1
     while all.tell()<size and codLoc!=regLoc.codLocal and bandera==1:
         regLoc=pickle.load(all)
-    if(codLoc!=regLoc.codLocal):
-        bandera=1
-        all.seek(0,0)
-    else:
-        bandera=0
+        if(codLoc!=regLoc.codLocal):
+            bandera=1
+            all.seek(0,0)
+        else:
+            bandera=0
     return bandera
 
 def busquedaUser(codigo): #te dice si esxiste el coduser
@@ -788,7 +794,7 @@ def carga_dias(matriz,day):
     return (matriz)
 
 def crear_descuento():
-    global nombredia, fecha_actual, fecha_formateada, nombredia, codpromo, dias, cod
+    global nombredia, fecha_actual, fecha_formateada, nombredia, codpromo, dias, cod,desde_str
     bandera=0
 
     size = os.path.getsize(afp)
@@ -844,16 +850,20 @@ def crear_descuento():
     exitmain = "N"
     codigo = int(input("Identifique el código del local al que quiere cargar un descuento o 0 si quiere salir: "))
     bandera = valid_codLoc(codigo)
+    print(bandera,"antes")
     flag2 = 1
     all.seek(0, 0)
     
     if codigo==0:
         menu_owner()
 
+    print(bandera,"antes")
     while bandera==1:
+        print(bandera)
         print("Código de local no existe.")
         codigo = int(input("Vuelva a ingresar el código de local: "))
         bandera = valid_codLoc(codigo)
+    print(bandera)
 
     while all.tell() < sizeloc and bandera == 0 and flag2 == 1:
         regLoc = pickle.load(all)
@@ -894,13 +904,13 @@ def crear_descuento():
                 valid_fecha(hasta_str)
             hasta = datetime.datetime.strptime(hasta_str, "%d/%m/%Y")
             regProm.fechaHastaPromo = hasta.strftime("%d/%m/%Y")
-            while desde > hasta:
+            while desde >= hasta:
                 hasta_str = input("Fecha de finalización de la promoción no válida. Ingrese otra fecha: ")
                 hasta = datetime.datetime.strptime(hasta_str, "%d/%m/%Y")
                 regProm.fechaHastaPromo = hasta.strftime("%d/%m/%Y")
 
-            regProm.estado = "Pendiente"
-
+            regProm.estado = "Aprobado"
+            ######poner pendiente####
             regProm.codLocal=codigo
 
             regProm.codPromo=codpromo
@@ -1085,7 +1095,7 @@ def buscadorLoc(cod): #NO TOCAR, JUSTIN TE MATA SI LO HACES
     return point
 
 def buscardesc():
-    global fecha_actual
+    global fecha_actual, desde_str
     bandera=0
     alp = open (afp, "r+b")
     alp.seek(0,0)
@@ -1109,7 +1119,7 @@ def buscardesc():
             alp.seek(0,0)
     bandera = 1 #creo que la bandera es al pedo
 
-    if regProm.codLocal==regLoc.codLocal and regProm.cod==0:
+    if regProm.codLocal==regLoc.codLocal and regProm.codLocal==0:
         print("El local no tiene promociones creadas.")
         exit = input("Toque Enter para volver. ")
         while exit != "":
@@ -1119,6 +1129,7 @@ def buscardesc():
 
     fecha_str = input("Ingrese una fecha para buscar descuentos: ")
     fecha = datetime.datetime.strptime(fecha_str, "%d/%m/%Y")
+    fecha_actual=datetime.datetime.now()
     while fecha >= fecha_actual and valid_fecha(desde_str)==0:
         fecha_str = input("Fecha no válida. Ingrese otra fecha: ")
         valid_fecha(fecha_str)
@@ -1127,17 +1138,29 @@ def buscardesc():
     dia_semana = fecha.strftime("%A")
 
     alp.seek(0,0)
+    datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y")
+    if(fecha >= datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y")):
+        if(fecha <= datetime.datetime.strptime(regProm.fechaHastaPromo, "%d/%m/%Y")):
+            print(regProm.diasSemana)
+            print(num_dias(dia_semana))
+            print(dia_semana)
 
-    print(f"{'Codigo Promo':<15}{'Texto':<40}{'Fecha Desde':<15}{'Fecha Hasta':<15}")
-    while alp.tell() < size and regProm.codLoc==codigo and regProm.estado=="Aprobado" and fecha >= regProm.fechaDesdePromo and fecha <= regProm.fechaHastaPromo and regProm.diasSemana[num_dias(dia_semana)]==1:
+
+
+
+
+    
+    while alp.tell() < size and regProm.codLocal==codigo and regProm.estado=="Aprobado" and fecha >= datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y") and fecha <= datetime.datetime.strptime(regProm.fechaHastaPromo, "%d/%m/%Y"):# and regProm.diasSemana[num_dias(dia_semana)]==1:
+        regProm = pickle.load(alp)
+        print(f"{'Codigo Promo':<15}{'Texto':<40}{'Fecha Desde':<15}{'Fecha Hasta':<15}")
         print(f"{regProm.codPromo:<15}{regProm.textoPromo:<40}{regProm.fechaDesdePromo:<15}{regProm.fechaHastaPromo:<15}")
-        regProm = pickle.load(alp)   
         
-        """print("\nLas promociones del local", regLoc.nombreLocal,"son:")
-        print("Codigo de la promoción:", regProm.codPromo)
-        print("Texto de la promoción:", regProm.textoPromo)
-        print("Promoción valida desde:", regProm.fechaDesdePromo)
-        print("Promoción valida hasta:", regProm.fechaHastaPromo)"""
+        #print("\nLas promociones del local", regLoc.nombreLocal)
+        #print("Codigo de la promoción:", regProm.codPromo)
+        #print("Texto de la promoción:", regProm.textoPromo)
+        #print("Promoción valida desde:", regProm.fechaDesdePromo)
+        #print("Promoción valida hasta:", regProm.fechaHastaPromo)
+          
     
     alp.close()
 
