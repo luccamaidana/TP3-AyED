@@ -231,7 +231,27 @@ pickle.dump(regUP, alup)
 alup.flush()
 alup.close()
 #------------------------PANTALLAS-------------------------
+def centrar_texto(texto):
+    ancho_consola, _ = shutil.get_terminal_size()
+    espacio_adicional = max(0, (ancho_consola - len(texto)) // 2)
+    texto_centrado = " " * espacio_adicional + texto
+    print(texto_centrado)
+
+def centrar_texto_var(texto, var):
+    ancho_consola, _ = shutil.get_terminal_size()
+    ancho_t = len(texto)
+    ancho_v = len(var)
+    espacio_disponible = ancho_consola - ancho_t - ancho_v
+    espacio_adicional_izquierda = (espacio_disponible // 2) -5 
+    espacio_adicional_derecha = espacio_disponible - espacio_adicional_izquierda
+    texto_centrado = " " * espacio_adicional_izquierda + texto + var + " " * espacio_adicional_derecha 
+    print(texto_centrado)
+
 def mostrar_menu():
+    
+    fecha_actual = datetime.datetime.today()
+    fecha_formateada = fecha_actual.strftime("%d/%m/%Y")
+
     ancho_ventana = shutil.get_terminal_size().columns
 
     menu_texto = "Menú"
@@ -239,45 +259,51 @@ def mostrar_menu():
     espacio_blancos = (ancho_ventana - len(menu_texto) - 2) // 2
 
     print("-" * ancho_ventana)
-    print(f"|{' ' * espacio_blancos}{menu_texto}{' ' * espacio_blancos}|")
+    print(f"|{' ' * espacio_blancos}{Fore.WHITE+Style.BRIGHT+menu_texto}{' ' * espacio_blancos}|")
     print("-" * ancho_ventana)
-    print("\nIngrese una opcion 1-3\n")
-    print("1_ Ingresar con usuario registrado\n2_ Registrarse como cliente\n3_ Salir")
+    print(fecha_formateada)
+    print(Style.BRIGHT +'\nIngrese una opción ' +  Fore.YELLOW + '1-3\n')
+    print(Style.BRIGHT + Fore.YELLOW + '1_' + Fore.WHITE + ' Ingresar con usuario registrado')
+    print(Style.BRIGHT + Fore.YELLOW + '2_' + Fore.WHITE +' Registrarse como cliente')
+    print(Style.BRIGHT + Fore.YELLOW + '3_' + Fore.WHITE +' Salir')
+
+
 
 def pantalla_adm():
     global name
     clear_screen()
-    print("        Menú ADMIN")
-    print("      Bienvenido",name)   
-    print("\nIngrese una opcion 0-5\n")
-    print("1_ Gestión de locales")
-    print("2_ Crear cuentas de dueños de locales")
-    print("3_ Aprobar / Denegar solicitud de descuento")
-    print("4_ Gestión de novedades")
-    print("5_ Reporte de utilización de descuentos")
-    print("0_ Volver al menú principal")
+    centrar_texto(Style.BRIGHT  + Fore.WHITE +'Menú ADMIN')
+    centrar_texto_var('Bienvenido, ',name)
+    print(Style.BRIGHT +'Ingrese una opción ' +  Fore.YELLOW + '0-5\n')
+    print(Style.BRIGHT + Fore.YELLOW + '1_' + Fore.RESET + ' Gestión de locales')
+    print(Style.BRIGHT + Fore.YELLOW + '2_' + Fore.RESET +' Crear cuentas de dueños de locales')
+    print(Style.BRIGHT + Fore.YELLOW + '3_' + Fore.RESET +' Aprobar / Denegar solicitud de descuento')
+    print(Style.BRIGHT + Fore.YELLOW + '4_' + Fore.RESET +' Gestión de novedades')
+    print(Style.BRIGHT + Fore.YELLOW + '5_' + Fore.RESET +' Reporte de utilización de descuentos')
+    print(Style.BRIGHT + Fore.YELLOW + '0_' + Fore.RESET +' Volver al Menú Principal')
 
 def pantalla_owner():
     global name
     clear_screen()
-    print("        Menú de Dueño")
-    print("       Bienvenido",name)
-    print("\nIngrese una opcion 0-3\n")
-    print("1_ Crear descuento")
-    print("2_ Reporte de uso de descuento")
-    print("3_ Ver novedades") #SOLO CHAPIN
-    print("0_ Salir")
+    centrar_texto(Style.BRIGHT  + Fore.WHITE +'Menú DUEÑO')
+    centrar_texto_var('Bienvenido, ',name)
+    print(Style.BRIGHT +'Ingrese una opción ' +  Fore.YELLOW + '0-3\n')
+    print(Style.BRIGHT + Fore.YELLOW + '1_' + Fore.RESET + ' Crear descuento')
+    print(Style.BRIGHT + Fore.YELLOW + '2_' + Fore.RESET +' Reporte de uso de descuento')
+    print(Style.BRIGHT + Fore.YELLOW + '3_' + Fore.RESET +' Ver novedades')
+    print(Style.BRIGHT + Fore.YELLOW + '0_' + Fore.RESET +' Volver al Menú Principal')
 
 def pantalla_costumer():
     global name
     clear_screen()
-    print("        Menú de Cliente")
-    print("       Bienvenido",name)
-    print("\nIngrese una opcion 0-3\n")
-    print("1_ Buscar descuentos en local")
-    print("2_ Solicitar descuento")
-    print("3_ Ver novedades") #SOLO CHAPIN
-    print("0_ Salir")
+    centrar_texto(Style.BRIGHT  + Fore.WHITE +'Menú CLIENTE')
+    centrar_texto_var('Bienvenido, ',name)
+    print(Style.BRIGHT +'Ingrese una opción ' +  Fore.YELLOW + '0-3\n')
+    print(Style.BRIGHT + Fore.YELLOW + '1_' + Fore.RESET + ' Buscar descuentos en local')
+    print(Style.BRIGHT + Fore.YELLOW + '2_' + Fore.RESET +' Reporte de uso de descuento')
+    print(Style.BRIGHT + Fore.YELLOW + '3_' + Fore.RESET +' Ver novedades')
+    print(Style.BRIGHT + Fore.YELLOW + '0_' + Fore.RESET +' Volver al Menú Principal')
+
 
 
 def pantalla_locales():
@@ -297,13 +323,13 @@ def barracarga():
     for i in range(bar_len+1):
         frame =i%len(elements)
         print(Fore.GREEN + Style.BRIGHT + f'\r[{elements[frame]*i:=^{bar_len}}]', end='')
-        time.sleep(0.05)
+        time.sleep(0.07)
 
 
 
 #------------------------LECTURAS-------------------------
 #----Usuarios----
-alu = open (afu,"r+b")
+""" alu = open (afu,"r+b")
 size= os.path.getsize(afu)
 
 while alu.tell() < size:
@@ -313,7 +339,7 @@ while alu.tell() < size:
     print(regUser.clave)
     print(regUser.tipo)
 
-alu.close()
+alu.close() """
 
 #----Locales----
 def locales_cargados():
@@ -783,7 +809,57 @@ def gestion_locales():
         case "e":
             menu_adm()
     all.close()     
+#------------------------APROBAR O DENEGAR DESCUENTOS-------------------------
+def aprob_den_desc():
+    alp=open(afp,"r+b")
+    all=open(afl,"r+b")
+    regProm=promociones()
+    regLoc=locales()
+    alp.seek(0,0)
+    all.seek(0,0)
+    sizeloc=os.path.getsize(afl)
+    sizeprom=os.path.getsize(afp)
+    if (sizeloc==0 or sizeprom==0):
+        if(sizeloc==0):
+            print("No hay locales creados aun.")
+        else:
+            print("No hay promociones creadas aun.")
+    else:
+        alp.seek(0,0)
+        all.seek(0,0)
+        while alp.tell()<sizeprom:
+            regProm=pickle.load(alp)
+            all.seek(0,0)
+            if(regProm.estado=="Pendiente"):
+                while all.tell()<sizeloc and regProm.codUsuario!=regLoc.codUsuario: #busca el nombre del local
+                    regLoc=pickle.load(all)
+                print(regLoc.nombreLocal,regProm.codPromo,regProm.textoPromo) #agregar el print piola
 
+        codlocal=int(input("Ingrese el codigo de promocion para Aprobar/Denegar"))
+        bandera=valid_codProm(codlocal)
+        while bandera==1:
+            codlocal=int(input("Ingrese un codigo de promocion existente para Aprobar/Denegar"))#hacer un clear screen y que vuelva a mostrar los locales cargados ) hacer un def 805-813? 
+            bandera=valid_codProm(codlocal)
+
+        alp.seek(0,0)
+        while alp.tell()<sizeprom and codlocal!=regProm.codLocal:# si o si tiene que encontrar la promo y pone el puntero regprom en el descuento 
+            regProm=pickle.load(alp)
+        print("sdasdas")# printear la data del descuento si quieren hacemos la busqueda del nombre tambien
+        exit = input("\n ¿Desea APROBAR el descuento? (S/N): ").upper()
+        while exit.upper() != "S" and exit.upper() != "N":
+            exit = input("Respuesta inválida. ¿Desea APROBAR el descuento? (S/N): ").upper()
+        if(exit=="S"):
+            regLoc.codPromo = regLoc.codPromo
+            regLoc.textoPromo = regLoc.textoPromo
+            regLoc.fechaDesdePromo = regLoc.fechaDesdePromo
+            regLoc.fechaHastaPromo = regLoc.fechaHastaPromo
+            regLoc.diasSemana = regLoc.diasSemana
+            regLoc.estado = "Aprobado"
+            regLoc.codLocal = regLoc.codLocal
+            regLoc.cantUsoPromo= regLoc.cantUsoPromo
+            regLoc.codUsuario = regLoc.codUsuario
+            pickle.dump(regLoc,alp)
+            alp.flush()
 #------------------------MENU OWNER------------------------------------------------------------------------------------------
 def carga_dias(matriz,day):
     matriz = [0]*7
@@ -821,7 +897,9 @@ def crear_descuento(): #semi done revisar anotaciones
 
     fecha_actual = datetime.datetime.today()
     fecha_formateada = fecha_actual.strftime("%d/%m/%Y")
-    print(fecha_formateada)
+    fecha_datetime = datetime.datetime.strptime(fecha_formateada, "%d/%m/%Y")#nueva manera
+
+    
 
     if regLoc.codLocal == 0:
         print("\nNo existen locales creados. Cree uno para poder continuar.")
@@ -906,8 +984,6 @@ def crear_descuento(): #semi done revisar anotaciones
                 valid_fecha(desde_str)
             
             desde = datetime.datetime.strptime(desde_str, "%d/%m/%Y")
-            fecha_datetime = datetime.datetime.strptime(fecha_formateada, "%d/%m/%Y")#nueva manera
-            print("desde:",desde_str,"actual:",fecha_datetime)
 
             while desde < fecha_datetime:#aca esta lo de que no se puede la fecha actual LO cambie por fecha_datetime antes era fecha_actual
                 desde_str = input("Fecha de inicio de la promoción no válida. Ingrese otra fecha: ")
@@ -1343,6 +1419,7 @@ def menu_admin():
       case "3":
         clear_screen()
         print("\nAprobar / Denegar solicitud de descuento")
+        aprob_den_desc()
         menu_admin()
       case "4":
         clear_screen()
@@ -1362,17 +1439,17 @@ def menu_owner():
     match opcown:
         case "1":
             clear_screen()
-            print("Crear descuento")
+            centrar_texto(Style.BRIGHT + Fore.WHITE + "---Crear Descuento---")
             crear_descuento()
             menu_owner()
         case "2":
             clear_screen()
-            print("Reporte de uso de descuento")
+            centrar_texto(Style.BRIGHT + Fore.WHITE + "---Reporte de uso de descuento---")
             uso_descuento()
         case "3":
             clear_screen()
-            print("Ver novedades")
-            print("\nDiagramado en chapin") 
+            centrar_texto(Style.BRIGHT + Fore.WHITE + "---Ver Novedades---")
+            centrar_texto("\nDiagramado en chapin") 
             exit = input("Toque Enter para volver. ")
             while exit != "":
                 exit = input("Respuesta inválida. Presione ENTER. ")
