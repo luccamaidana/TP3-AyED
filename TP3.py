@@ -268,7 +268,6 @@ def mostrar_menu():
     print(Style.BRIGHT + Fore.YELLOW + '3_' + Fore.WHITE +' Salir')
 
 
-
 def pantalla_adm():
     global name
     clear_screen()
@@ -305,7 +304,6 @@ def pantalla_costumer():
     print(Style.BRIGHT + Fore.YELLOW + '0_' + Fore.RESET +' Volver al Menú Principal')
 
 
-
 def pantalla_locales():
     print("\n        Gestión de locales")
     print("\nIngrese una opción a-d\n")
@@ -324,7 +322,6 @@ def barracarga():
         frame =i%len(elements)
         print(Fore.GREEN + Style.BRIGHT + f'\r[{elements[frame]*i:=^{bar_len}}]', end='')
         time.sleep(0.07)
-
 
 
 #------------------------LECTURAS-------------------------
@@ -717,7 +714,6 @@ def crear_locales():
     alu.close()
     all.close()
 
-
 #------------------------GESTIONES-------------------------
 def gestion_locales(): 
     
@@ -860,6 +856,62 @@ def aprob_den_desc():
             regLoc.codUsuario = regLoc.codUsuario
             pickle.dump(regLoc,alp)
             alp.flush()
+
+#------------------------REPORTE UTILIZACION ADMIN-------------------------
+def reporteadmin():
+    alp=open(afp,"r+b")
+    all=open(afl,"r+b")
+    alup=open(afup,"r+b")
+    regProm=promociones()
+    regLoc=locales()
+    regUP=uso_promociones()
+    alp.seek(0,0)
+    all.seek(0,0)
+
+    sizeprom=os.path.getsize(afp)
+    if(sizeprom==0):
+        print("No hay promociones creadas")
+        menu_admin()
+    else:
+        fecha_actual = datetime.datetime.today()
+        fecha_formateada = fecha_actual.strftime("%d/%m/%Y")
+        fecha_datetime = datetime.datetime.strptime(fecha_formateada, "%d/%m/%Y")#nueva manera
+
+        desde_str = input("Ingrese día que inicia el rango de promociones: ")
+        while valid_fecha(desde_str)==0:
+            desde_str = input("Fecha no valida: ")
+            valid_fecha(desde_str)
+
+        desde = datetime.datetime.strptime(desde_str, "%d/%m/%Y")
+        ####ver que el desde no me deja meter fechas anteriores al a de ahora 
+        while desde < fecha_datetime:#aca esta lo de que no se puede la fecha actual LO cambie por fecha_datetime antes era fecha_actual
+            desde_str = input("Fecha de inicio del rango de promoción no válida. Ingrese otra fecha: ")
+            desde = datetime.datetime.strptime(desde_str, "%d/%m/%Y")
+
+        hasta_str = input("Ingrese día que finaliza el rango de promociónes: ")
+        while valid_fecha(hasta_str)==0:
+            hasta_str = input("Fecha no valida: ")
+            valid_fecha(hasta_str)
+        hasta = datetime.datetime.strptime(hasta_str, "%d/%m/%Y")
+        while desde >= hasta:
+            hasta_str = input("Fecha de finalización de rango de promociónes no válida. Ingrese otra fecha: ")
+            hasta = datetime.datetime.strptime(hasta_str, "%d/%m/%Y")
+
+        alp.seek(0,0)
+        sizeprom=os.path.getsize(afp)
+        while alp.tell()<sizeprom:
+            regProm=pickle.load(alp)
+            if(desde>=datetime.datetime.strptime(regProm.fechaDesdePromo,"%d/%m/%Y") and hasta<=datetime.datetime.strptime(regProm.fechaHastaPromo,"%d/%m/%Y") and regProm.estado=="Aprobado"):# cambiar el regprom a formato datetime
+                alup.seek(0,0)
+                sizeuprom=os.path.getsize(afup)
+                cantusos=0
+                while alup.tell()<sizeuprom:
+                    regUP=pickle.load(alup)
+                    if(regProm.codPromo==regUP.codPromo and datetime.datetime.strptime(regUP.fechaUsoPromo,"%d/%m/%Y")<=hasta and datetime.datetime.strptime(regUP.fechaUsoPromo,"%d/%m/%Y")>=desde):#cambiar le regprom a formato datetime
+                        cantusos=cantusos+1
+                print(regProm.codLocal)#hacer el print de todo todito
+                print(cantusos) #####este print y el de arriba van juntitos
+
 #------------------------MENU OWNER------------------------------------------------------------------------------------------
 def carga_dias(matriz,day):
     matriz = [0]*7
@@ -1427,8 +1479,8 @@ def menu_admin():
         gestion_novedades()
       case "5":
         clear_screen()
-        print("\nEn construcción…")
-        menu_admin()
+        print("\nReporte de utilizacion de descuentos")
+        reporteadmin()
       case "0":
         clear_screen()
         mainMenu()
