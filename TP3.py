@@ -784,6 +784,65 @@ def gestion_locales():
             menu_adm()
     all.close()     
 
+
+
+#------------------------APROBAR O DENEGAR DESCUENTOS-------------------------
+def aprob_den_desc():
+    alp=open(afp,"r+b")
+    all=open(afl,"r+b")
+    regProm=promociones()
+    regLoc=locales()
+    alp.seek(0,0)
+    all.seek(0,0)
+    sizeloc=os.path.getsize(afl)
+    sizeprom=os.path.getsize(afp)
+    if (sizeloc==0 or sizeprom==0):
+        if(sizeloc==0):
+            print("No hay locales creados aun.")
+        else:
+            print("No hay promociones creadas aun.")
+    else:
+        alp.seek(0,0)
+        all.seek(0,0)
+        while alp.tell()<sizeprom:
+            regProm=pickle.load(alp)
+            all.seek(0,0)
+            if(regProm.estado=="Pendiente"):
+                while all.tell()<sizeloc and regProm.codUsuario!=regLoc.codUsuario: #busca el nombre del local
+                    regLoc=pickle.load(all)
+                print(regLoc.nombreLocal,regProm.codPromo,regProm.textoPromo) #agregar el print piola
+
+        codlocal=int(input("Ingrese el codigo de promocion para Aprobar/Denegar"))
+        bandera=valid_codProm(codlocal)
+        while bandera==1:
+            codlocal=int(input("Ingrese un codigo de promocion existente para Aprobar/Denegar"))#hacer un clear screen y que vuelva a mostrar los locales cargados ) hacer un def 805-813? 
+            bandera=valid_codProm(codlocal)
+
+        alp.seek(0,0)
+        while alp.tell()<sizeprom and codlocal!=regProm.codLocal:# si o si tiene que encontrar la promo y pone el puntero regprom en el descuento 
+            regProm=pickle.load(alp)
+        print("sdasdas")# printear la data del descuento si quieren hacemos la busqueda del nombre tambien
+        exit = input("\n ¿Desea APROBAR el descuento? (S/N): ").upper()
+        while exit.upper() != "S" and exit.upper() != "N":
+            exit = input("Respuesta inválida. ¿Desea APROBAR el descuento? (S/N): ").upper()
+        if(exit=="S"):
+            regLoc.codPromo = regLoc.codPromo
+            regLoc.textoPromo = regLoc.textoPromo
+            regLoc.fechaDesdePromo = regLoc.fechaDesdePromo
+            regLoc.fechaHastaPromo = regLoc.fechaHastaPromo
+            regLoc.diasSemana = regLoc.diasSemana
+            regLoc.estado = "Aprobado"
+            regLoc.codLocal = regLoc.codLocal
+            regLoc.cantUsoPromo= regLoc.cantUsoPromo
+            regLoc.codUsuario = regLoc.codUsuario
+            pickle.dump(regLoc,alp)
+            alp.flush()
+            
+
+
+
+
+
 #------------------------MENU OWNER------------------------------------------------------------------------------------------
 def carga_dias(matriz,day):
     matriz = [0]*7
@@ -1304,7 +1363,8 @@ def menu_admin():
       case "3":
         clear_screen()
         print("\nAprobar / Denegar solicitud de descuento")
-        menu_admin()
+        aprob_den_desc()
+        #menu_admin()
       case "4":
         clear_screen()
         print("\nGestión de novedades")
