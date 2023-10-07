@@ -306,10 +306,10 @@ def valid_codLoc(codLoc): #te dice si existe el codloc
     while all.tell()<size and codLoc!=regLoc.codLocal and bandera==1:
         regLoc=pickle.load(all)
     if(codLoc!=regLoc.codLocal):
-        bandera=1
+        bandera=1 #no encontro
         all.seek(0,0)
     else:
-        bandera=0
+        bandera=0 #encontro
     return bandera
 
 def valid_codUser(): #te dice si esxiste el coduser
