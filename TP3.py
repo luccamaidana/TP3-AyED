@@ -63,7 +63,6 @@ class uso_promociones:
         self.codCliente = 0
         self.codPromo = ""
         self.fechaUsoPromo = ""
-"""        self.cantUsoPromo= 0"""
 
 class novedades:
     def __init__(self):
@@ -551,7 +550,6 @@ def ingreso_datos():
 def buscadicotomica(elem): 
     global bandera, med
     bandera=0 
-    #all = open (afu,"r+b")
     regLoc=pickle.load(all)   
     tamreg=all.tell()
     tamarch=os.path.getsize(afl)
@@ -573,7 +571,7 @@ def buscadicotomica(elem):
     return bandera
 
 #----------------------------ORDEN EN LA SALA-----------------------------
-def orden(archivo,archfis,campo):#duda si parametro y duda si seek 0,0 #sacar parametros si no funca
+def orden(archivo,archfis,campo):
     archivo.seek(0,0)
     reg=pickle.load(archivo)   
     tamreg=archivo.tell()
@@ -583,7 +581,7 @@ def orden(archivo,archfis,campo):#duda si parametro y duda si seek 0,0 #sacar pa
     j=0
     for i in range (cantreg-1):
             for j in range(i+1,cantreg):
-                if archivo.campo[i]>archivo.campo[j]:#ver si parametro .nombreloc
+                if archivo.campo[i]>archivo.campo[j]:
                         aux = archivo[i]
                         archivo[i] = archivo[j]
                         archivo[j] = aux
@@ -921,7 +919,7 @@ def reporteadmin():
 
         desde = datetime.datetime.strptime(desde_str, "%d/%m/%Y")
         ####ver que el desde no me deja meter fechas anteriores al a de ahora 
-        while desde < fecha_datetime:#aca esta lo de que no se puede la fecha actual LO cambie por fecha_datetime antes era fecha_actual
+        while desde <= fecha_datetime:#aca esta lo de que no se puede la fecha actual LO cambie por fecha_datetime antes era fecha_actual
             desde_str = input("Fecha de inicio del rango de promoción no válida. Ingrese otra fecha: ")
             desde = datetime.datetime.strptime(desde_str, "%d/%m/%Y")
 
@@ -1101,10 +1099,8 @@ def crear_descuento(): #semi done revisar anotaciones
             regProm.textoPromo = texto
             regProm.fechaDesdePromo = desde.strftime("%d/%m/%Y")
             regProm.fechaHastaPromo = hasta.strftime("%d/%m/%Y")
-            #diassemana
-            regProm.estado = "Pendiente"######poner pendiente##########poner pendiente####
+            regProm.estado = "Pendiente"
             regProm.codLocal=codigo
-            #cant uso promo?
             regProm.codUsuario=cod
             pickle.dump(regProm, alp)
             alp.flush()
