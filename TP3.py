@@ -313,23 +313,24 @@ def pantalla_costumer():
     print(Style.BRIGHT + Fore.YELLOW + '0_' + Fore.RESET +' Volver al Menú Principal')
 
 def pantalla_locales():
-    print("\n        Gestión de locales")
-    print("\nIngrese una opción a-d\n")
-    print("a- Crear locales")
-    print("b- Modificar local")
-    print("c- Eliminar local")
-    print("d- Mapa de locales")
-    print("e- Volver")
+    clear_screen()
+    centrar_texto(Fore.WHITE + Style.BRIGHT + "Gestión de locales")
+    print(Style.BRIGHT +'Ingrese una opción ' +  Fore.YELLOW + 'a-d\n')
+    print(Style.BRIGHT + Fore.YELLOW + 'a_' + Fore.RESET + ' Crear locales')
+    print(Style.BRIGHT + Fore.YELLOW + 'b_' + Fore.RESET + ' Modificar local')
+    print(Style.BRIGHT + Fore.YELLOW + 'c_' + Fore.RESET + ' Eliminar local')
+    print(Style.BRIGHT + Fore.YELLOW + 'd_' + Fore.RESET + ' Mapa de locales')
+    print(Style.BRIGHT + Fore.YELLOW + 'e_' + Fore.RESET + ' Volver')
 
 def barracarga():
     clear_screen()
-    print(Style.BRIGHT + "         CARGANDO...")
+    print(Style.BRIGHT + Fore.WHITE + "         CARGANDO...")
     bar_len = 25
     elements = ['-','\\', '|', '/']
     for i in range(bar_len+1):
         frame =i%len(elements)
         print(Fore.GREEN + Style.BRIGHT + f'\r[{elements[frame]*i:=^{bar_len}}]', end='')
-        time.sleep(0.07)
+        time.sleep(0.07) 
 
 
 
@@ -507,6 +508,15 @@ def valid_costumer():
     while opccostumer != "1" and opccostumer != "2" and opccostumer != "3" and opccostumer != "0":
         opccostumer = input("Mal ingresado. Repetir opción. OPCION: ")
     clear_screen()
+
+def enter(menu):
+    #COPIAR ESTA LINEA DE ABAJO PARA CADA EXIT
+    #exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
+    while exit != "":
+        exit = input("Respuesta inválida. Presione ENTER: ")
+    if exit=="":
+        clear_screen()
+        menu
 
 #----------------------------CASE-----------------------------
 def select_menu(m):
@@ -723,8 +733,7 @@ def crear_locales():
             ubi = input("No se permiten espacios vacios: ").ljust(100)
         regLoc.ubicacionLocal=ubi.ljust(100)
 
-
-        rubro = input("\nIngrese el RUBRO 1_Indumentaria 2_Perfumeria 3_Comidas ")
+        rubro = input('\nIngrese el' + Fore.WHITE + Style.BRIGHT + ' RUBRO' + Style.RESET_ALL + Fore.YELLOW + '\n1_ ' + Fore.RESET +'Indumentaria' + Fore.YELLOW + '\n2_ '+ Fore.RESET +'Perfumeria'+ Fore.YELLOW +  '\n3_ '+ Fore.RESET + 'Comidas\n\nOPCION: ')
         while rubro!= "1" and rubro != "2" and rubro != "3":
             rubro = input("Mal ingresado. Repetir opción. OPCION: ")
         match rubro:
@@ -771,12 +780,8 @@ def crear_locales():
     locales_cargados()
     
     #rubros()
-    exit = input("\n Toque Enter para volver: ")
-    while exit != "":
-        exit = input("Respuesta inválida. Presione ENTER: ")
-    if exit=="": 
-        clear_screen()
-        gestion_locales()
+    exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
+    enter(gestion_locales())
     alu.close()
     all.close()
 
@@ -792,7 +797,7 @@ def modificar_local():
     orden()
     bandera=1
     while bandera==1:
-        codLoc=int(input("Ingrese el codigo del local a Modificar:"))
+        codLoc=int(input('\nIngrese el código del local a' + Fore.WHITE + Style.BRIGHT + ' Modificar' + Fore.RESET + Style.RESET_ALL + ': '))
         bandera=valid_codLoc(codLoc)
     
     point=buscadorLoc(codLoc)
@@ -805,7 +810,7 @@ def modificar_local():
         if (alta=="S"):
             regLoc.estado="A" 
 
-    campo = int(input("\nDesea cambiar 1.Nombre 2.Ubicacion 3.Rubro 4.Codigo de usuario 0.Volver: "))
+    campo = int(input('\nIngrese el campo que desea' + Fore.WHITE + Style.BRIGHT + ' Modificar' + Style.RESET_ALL + Fore.YELLOW + '\n1_ ' + Fore.RESET + 'Nombre' + Fore.YELLOW + '\n2_ ' + Fore.RESET + 'Ubicación' + Fore.YELLOW + '\n3_ ' + Fore.RESET + 'Rubro' + Fore.YELLOW + '\n4_ ' + Fore.RESET + 'Código de usuario' + Fore.YELLOW + '\n0_ ' + Fore.RESET + 'Volver\n\nOPCION: '))
     campo=valid_campo(campo)
     
   
@@ -841,7 +846,7 @@ def modificar_local():
                     ubi = input("No se permiten espacios vacios: ").ljust(100)
 
             case 3: #RUBRO
-                rubro = input("\nIngrese el RUBRO 1_Indumentaria 2_Perfumeria 3_Comidas ")
+                rubro = input('\nIngrese el' + Fore.WHITE + Style.BRIGHT + ' RUBRO' + Style.RESET_ALL + Fore.YELLOW + '\n1_ ' + Fore.RESET +'Indumentaria' + Fore.YELLOW + '\n2_ '+ Fore.RESET +'Perfumeria'+ Fore.YELLOW +  '\n3_ '+ Fore.RESET + 'Comidas\n\nOPCION: ')
                 while rubro!= "1" and rubro != "2" and rubro != "3":
                     rubro = input("Mal ingresado. Repetir opción. OPCION: ")
                 all.seek(point,0)
@@ -868,7 +873,7 @@ def modificar_local():
                     coduser = int(input("\nNo existe el codigo, Ingrese nuevamente: "))
                     bandera=1
                     alu.seek(0,0)
-        campo=int(input("Desea cambiar 1.Nombre 2.Ubicacion 3.Rubro 4.Codigo de usuario 0.Volver: "))
+        campo = int(input('\nIngrese el campo que desea' + Fore.WHITE + Style.BRIGHT + ' Modificar' + Style.RESET_ALL + Fore.YELLOW + '\n1_ ' + Fore.RESET + 'Nombre' + Fore.YELLOW + '\n2_ ' + Fore.RESET + 'Ubicación' + Fore.YELLOW + '\n3_ ' + Fore.RESET + 'Rubro' + Fore.YELLOW + '\n4_ ' + Fore.RESET + 'Código de usuario' + Fore.YELLOW + '\n0_ ' + Fore.RESET + 'Volver\n\nOPCION: '))
         campo=valid_campo(campo)
     
     
@@ -887,16 +892,12 @@ def modificar_local():
     all.seek(point,0)
     orden()
     locales_cargados()
-    print(f"{Fore.GREEN}\n\n     La modificación fue EXITOSA.")
+    centrar_texto(Fore.GREEN + Style.BRIGHT + Back.BLACK + 'La modificación fue EXITOSA.')
     rubros()
     orden_rub(rubrolocal)
 
-    exit = input("\n Toque Enter para volver: ")
-    while exit != "":
-        exit = input("Respuesta inválida. Presione ENTER: ")
-    if exit=="": 
-        clear_screen()
-        gestion_locales()
+    exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
+    enter(gestion_locales())
 
 #----------------------------ELIMINATIO LOCALATIO-----------------------------
 def eliminar_loc():
@@ -905,7 +906,7 @@ def eliminar_loc():
 
     bandera=1
     while bandera==1:
-        codLoc=int(input("Ingrese el codigo del local a Eliminar:"))
+        codLoc=int(input(f"Ingrese el código del local a {Fore.RED + 'Eliminar:' }{Style.RESET_ALL}"))
         bandera=valid_codLoc(codLoc)
 
     point=buscadorLoc(codLoc)
@@ -936,17 +937,14 @@ def eliminar_loc():
     all.flush()
     all.seek(point,0)
     
-    print("El local ",regLoc.codLocal, " fue dado de baja.")
+    codStr=str(regLoc.codLocal)
+    print(f"El local {Fore.RED + codStr}{Style.RESET_ALL} fue dado de baja.")
     orden()
     rubros()
     orden_rub(rubrolocal)
 
-    exit = input("\n Toque Enter para volver: ")
-    while exit != "":
-        exit = input("Respuesta inválida. Presione ENTER: ")
-    if exit=="": 
-        clear_screen()
-        gestion_locales()
+    exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
+    enter(gestion_locales())
 
 #----------------------------GOOGLE MAPS-----------------------------
 def mapa():
@@ -1014,30 +1012,32 @@ def gestion_locales():
     match opcloc:
         case "a":
             clear_screen()
-            print("---Crear locales---")
-            exit = input("\n ¿Desea ver los locales cargados? (S/N): ").upper()
+            centrar_texto(Style.BRIGHT + Fore.WHITE + "---Crear locales---")
+            exit = input('\n ¿Desea ver los locales cargados? ('+ Fore.GREEN + 'S' + Fore.WHITE + '/' + Fore.RED + 'N'+ Fore.WHITE+'): ').upper()
             while exit.upper() != "S" and exit.upper() != "N":
                 exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ").upper()
             size=os.path.getsize(afl)
             if exit=="S" and size==0:
-                print("\n       No hay locales cargados hasta el momento.\n ")
+                centrar_texto(Fore.WHITE + Style.BRIGHT + "No hay locales cargados hasta el momento.")
+
             else:
                 if exit=="S":
                     locales_cargados()
             if(contowner==0):
-                print("No hay dueños registrados. Primero debe crear una cuenta de dueño de local...")
+                centrar_texto(Style.BRIGHT + "No hay dueños registrados. Primero debe crear una cuenta de dueño de local...")
             else:
                 crear_locales()
             gestion_locales()
         case "b":
             clear_screen()
-            print("---Modificar locales---")
-            exit = input("\n ¿Desea ver los locales cargados? (S/N): ").upper()
+            centrar_texto(Style.BRIGHT + Fore.WHITE + "---Modificar locales---")
+            exit = input('\n ¿Desea ver los locales cargados? ('+ Fore.GREEN + 'S' + Fore.WHITE + '/' + Fore.RED + 'N'+ Fore.WHITE+'): ').upper()
             while exit.upper() != "S" and exit.upper() != "N":
                 exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ").upper()
             size=os.path.getsize(afl)
             if exit=="S" and size==0:
-                print("\n       No hay locales cargados hasta el momento.\n")
+                centrar_texto(Fore.WHITE + Style.BRIGHT + "No hay locales cargados hasta el momento.")
+
             else:
                 if exit=="S" and size!=0:
                     locales_cargados()
@@ -1047,13 +1047,14 @@ def gestion_locales():
             gestion_locales()
         case "c":
             clear_screen()
-            print("---Eliminar locales---")
-            exit = input("\n ¿Desea ver los locales cargados? (S/N): ").upper()
+            centrar_texto(Style.BRIGHT + Fore.WHITE + "---Eliminar locales---")
+            exit = input('\n ¿Desea ver los locales cargados? ('+ Fore.GREEN + 'S' + Fore.WHITE + '/' + Fore.RED + 'N'+ Fore.WHITE+'): ').upper()
             while exit.upper() != "S" and exit.upper() != "N":
                 exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ").upper()
             size=os.path.getsize(afl)
             if exit=="S" and size==0:
-                print("\n       No hay locales cargados hasta el momento.")
+                centrar_texto(Fore.WHITE + Style.BRIGHT + "No hay locales cargados hasta el momento.")
+
             else:
                 if exit=="S" and size!=0:
                     locales_cargados()
@@ -1062,12 +1063,8 @@ def gestion_locales():
         case "d":
             clear_screen()
             mapa()
-            exit = input("\n Toque Enter para volver: ")
-            while exit != "":
-                exit = input("Respuesta inválida. Presione ENTER: ")
-            if exit=="": 
-                clear_screen()
-                gestion_locales()
+            exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
+            enter(gestion_locales())
         case "e":
             menu_admin()
     all.close()     
@@ -1751,8 +1748,8 @@ def signin(user):
     pickle.dump(regUser, alu)
     alu.flush()
     alu.close()
-    print("\nPerfil creado exitosamente!")
-    print("Volviendo...")
+    centrar_texto(Fore.GREEN + Style.BRIGHT + 'La cuenta ha sido creada EXITOSAMENTE!')
+    time.sleep(1.7)
 
 #-------------------------MENU'S----------------------------
 def menu_admin():
@@ -1767,17 +1764,18 @@ def menu_admin():
         #orden_rub(shopping_loc)
       case "2":
         clear_screen()
-        print("\nCrear cuentas de dueños de locales")
+        centrar_texto(Fore.WHITE + Style.BRIGHT + '---Crear cuentas de dueños de locales---')
         signin("Dueño de local")
         contowner=contowner+1
         menu_admin()
       case "3":
         clear_screen()
-        print("\nAprobar / Denegar solicitud de descuento")
+        centrar_texto(Fore.WHITE + Style.BRIGHT + '---Aprobar / Denegar solicitud de descuento---')
         aprob_den_desc()
         menu_admin()
       case "4":
         clear_screen()
+        centrar_texto(Fore.WHITE + Style.BRIGHT + '---Ver Novedades---')
         print("\nDiagramado en chapin")
         exit = input("Toque Enter para volver. ")
         while exit != "":
@@ -1786,7 +1784,7 @@ def menu_admin():
             menu_admin()
       case "5":
         clear_screen()
-        print("\nReporte de utilizacion de descuentos")
+        centrar_texto(Fore.WHITE + Style.BRIGHT + '---Reporte de utilizacion de descuentos---')
         reporteadmin()
       case "0":
         clear_screen()
