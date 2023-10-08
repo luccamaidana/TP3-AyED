@@ -1112,13 +1112,23 @@ def aprob_den_desc():
             bandera=valid_codProm(codpromo)
         
         point=buscadordesc(codpromo)
-        print(point)
         alp.seek(point,0)
         regProm=pickle.load(alp)
         alp.seek(point,0)
+        print(Fore.BLUE+Back.BLACK+Style.BRIGHT+'-----------------------------------------')
+        print(f"{Fore.BLUE+Style.BRIGHT}Código promoción: {Fore.WHITE+str(regProm.codPromo)}")
+        print(f"{Fore.BLUE+Style.BRIGHT}Texto promoción: {Fore.WHITE+regProm.textoPromo}")
+        print(f"{Fore.BLUE+Style.BRIGHT}Fecha Desde: {Fore.WHITE+regProm.fechaDesdePromo}")
+        print(f"{Fore.BLUE+Style.BRIGHT}Fecha Hasta: {Fore.WHITE+regProm.fechaHastaPromo}")
+        match regProm.estado.rstrip():
+            case "Aprobado":
+                print(f"{Fore.BLUE+Style.BRIGHT}Estado promoción: {Fore.GREEN+Style.BRIGHT+regProm.estado}")
+            case "Rechazado":
+                print(f"{Fore.BLUE+Style.BRIGHT}Estado promoción: {Fore.RED+Style.BRIGHT+regProm.estado}")
+            case "Pendiente":
+                print(f"{Fore.BLUE+Style.BRIGHT}Estado promoción: {Fore.YELLOW+Style.BRIGHT+regProm.estado}")
+        print(Fore.BLUE+Back.BLACK+Style.BRIGHT+'-----------------------------------------')
         
-        print(regProm.estado,regProm.textoPromo,"aca estoy")
-        print("sdasdas")# printear la data del descuento si quieren hacemos la busqueda del nombre tambien, se hace con el puntero de reg prom que ya esta bien
         exit = input("\n ¿Desea APROBAR el descuento? (S/N): ").upper()
         while exit.upper() != "S" and exit.upper() != "N":
             exit = input("Respuesta inválida. ¿Desea APROBAR el descuento? (S/N): ").upper()
@@ -1136,6 +1146,8 @@ def aprob_den_desc():
             pickle.dump(regProm,alp)
             alp.flush()
             alp.seek(0,0)
+            centrar_texto(Fore.GREEN + Style.BRIGHT + 'La promoción fue APROBADA EXITOSAMENTE.')
+            time.sleep(1.7)
         else:
             regProm.codPromo = regProm.codPromo
             regProm.textoPromo = regProm.textoPromo.ljust(100)
@@ -1149,6 +1161,8 @@ def aprob_den_desc():
             pickle.dump(regProm,alp)
             alp.flush()
             alp.seek(0,0)
+            centrar_texto(Fore.RED + Style.BRIGHT + 'La promoción fue RECHAZADA EXITOSAMENTE.')
+            time.sleep(1.7)
     alp.close()
     all.close()   
 
@@ -1274,11 +1288,17 @@ def crear_descuento(): #semi done revisar anotaciones
             regProm = pickle.load(alp)
             if regProm.codUsuario==cod:
                 print(Fore.BLUE+Back.BLACK+Style.BRIGHT+'-----------------------------------------')
-                print(f"{Fore.BLUE+Back.BLACK+Style.BRIGHT}Código promoción: {Fore.WHITE+str(regProm.codPromo)}")
-                print(f"{Fore.BLUE+Back.BLACK+Style.BRIGHT}Texto promoción: {Fore.WHITE+regProm.textoPromo}")
-                print(f"{Fore.BLUE+Back.BLACK+Style.BRIGHT}Fecha Desde: {Fore.WHITE+regProm.fechaDesdePromo}")
-                print(f"{Fore.BLUE+Back.BLACK+Style.BRIGHT}Fecha Hasta: {Fore.WHITE+regProm.fechaHastaPromo}")
-                print(f"{Fore.BLUE+Back.BLACK+Style.BRIGHT}Estado promoción: {Fore.GREEN+Style.BRIGHT+regProm.estado}")
+                print(f"{Fore.BLUE+Style.BRIGHT}Código promoción: {Fore.WHITE+str(regProm.codPromo)}")
+                print(f"{Fore.BLUE+Style.BRIGHT}Texto promoción: {Fore.WHITE+regProm.textoPromo}")
+                print(f"{Fore.BLUE+Style.BRIGHT}Fecha Desde: {Fore.WHITE+regProm.fechaDesdePromo}")
+                print(f"{Fore.BLUE+Style.BRIGHT}Fecha Hasta: {Fore.WHITE+regProm.fechaHastaPromo}")
+                match regProm.estado.rstrip():
+                    case "Aprobado":
+                        print(f"{Fore.BLUE+Style.BRIGHT}Estado promoción: {Fore.GREEN+Style.BRIGHT+regProm.estado}")
+                    case "Rechazado":
+                        print(f"{Fore.BLUE+Style.BRIGHT}Estado promoción: {Fore.RED+Style.BRIGHT+regProm.estado}")
+                    case "Pendiente":
+                        print(f"{Fore.BLUE+Style.BRIGHT}Estado promoción: {Fore.YELLOW+Style.BRIGHT+regProm.estado}")
                 print(Fore.BLUE+Back.BLACK+Style.BRIGHT+'-----------------------------------------')
         alp.seek(0,0)
         all.seek(0,0)
