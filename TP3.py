@@ -171,6 +171,7 @@ regNov = novedades()
 
 
 #-------------------------PRECARGAS/CARGAS---------------------------
+#--------Locales-------------
 pickle.dump(regLoc,all)
 all.flush()
 all.seek(0,0)
@@ -186,31 +187,55 @@ regLoc.nombreLocal="Nombre2".ljust(100)
 regLoc.ubicacionLocal="narniaconenanos".ljust(100)
 regLoc.rubroLocal="Perfumeria".ljust(12)
 regLoc.codUsuario=2
-regLoc.estado="B"
+regLoc.estado="A"
 pickle.dump(regLoc,all)
 regLoc.codLocal=3
 regLoc.nombreLocal="Nombre3".ljust(100)
 regLoc.ubicacionLocal="sex".ljust(100)
 regLoc.rubroLocal="Comidas".ljust(12)
-regLoc.codUsuario=3
+regLoc.codUsuario=3 #123
 regLoc.estado="A"
 pickle.dump(regLoc,all)
-
 all.flush()
 all.close()
 
+#-------Usuarios----------
 regUser.cod=1
 regUser.usuario="5"
 regUser.clave="6"
 regUser.tipo="Administrador"
 pickle.dump(regUser,alu)
 
+regUser.cod=2
+regUser.usuario="valen"
+regUser.clave=""
+regUser.tipo="Dueño de local"
+pickle.dump(regUser,alu)
 
+regUser.cod=3
+regUser.usuario="123"
+regUser.clave="123"
+regUser.tipo="Dueño de local"
+pickle.dump(regUser,alu)
 
-
+regUser.cod=4
+regUser.usuario="1"
+regUser.clave="1"
+regUser.tipo="Cliente"
+pickle.dump(regUser,alu)
 
 alu.flush()
 alu.close()
+alp.flush()
+alp.close()
+
+regUP.codCliente = 0
+regUP.codPromo = ""
+regUP.fechaUsoPromo = ""
+
+
+alup.flush()
+alup.close()
 
 
 #------------------------PANTALLAS-------------------------
