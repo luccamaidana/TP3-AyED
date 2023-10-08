@@ -660,7 +660,7 @@ def orden_rub(matriz):
                     aux = matriz[k][i]
                     matriz[k][i] = matriz[k][j]
                     matriz[k][j] = aux
-    print(matriz[0])
+    print(matriz[0])#poner lindo el print
     print(matriz[1])
 
 #----------------------------CONTADURIA RUBROS-----------------------------
@@ -747,7 +747,6 @@ def crear_locales():
 
         size= os.path.getsize(afu)
         bandera=0
-        print(regUser.cod)
         cod = int(input("\nIngrese el CÓDIGO de dueño de local: "))
         while bandera==0:
             alu.seek(0,0)
@@ -779,7 +778,7 @@ def crear_locales():
     clear_screen()
     locales_cargados()
     
-    #rubros()
+    rubros()
     exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
     enter(gestion_locales())
     alu.close()
