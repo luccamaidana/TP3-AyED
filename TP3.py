@@ -1115,22 +1115,12 @@ def aprob_den_desc():
             codpromo=int(input("Ingrese un codigo de promocion existente para Aprobar/Denegar"))#hacer un clear screen y que vuelva a mostrar los locales cargados ) hacer un def 805-813? 
             bandera=valid_codProm(codpromo)
         
-        """alp.seek(0,0)
-        sizeprom=os.path.getsize(afp)
-        alp.seek(0,0)
-        point=alp.tell()
-        while alp.tell()<sizeprom and codpromo!=regProm.codPromo:# si o si tiene que encontrar la promo y pone el puntero regprom en el descuento 
-            point=alp.tell()
-            regProm=pickle.load(alp)
-            print(codpromo!=regProm.codPromo,"codigos promo")"""
-
         point=buscadordesc(codpromo)
         print(point)
         alp.seek(point,0)
         regProm=pickle.load(alp)
         alp.seek(point,0)
         
-        #print(alp.tell(),"sale con")
         print(regProm.estado,regProm.textoPromo,"aca estoy")
         print("sdasdas")# printear la data del descuento si quieren hacemos la busqueda del nombre tambien, se hace con el puntero de reg prom que ya esta bien
         exit = input("\n ¿Desea APROBAR el descuento? (S/N): ").upper()
