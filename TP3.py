@@ -1,8 +1,13 @@
-global cont,contowner,codloc,regLoc,contuser
-con=1
+global cont,contowner,codloc,regLoc,contuser,codpromo,dias
+con=1 #cont 2 en el de valen? 
 contuser=1
 contowner=0
 codloc=0
+codpromo=0
+contuser=1
+dias = [0]*7
+
+
 #------------------------IMPORT-------------------------------
 import os
 import pickle
@@ -11,7 +16,16 @@ import io
 import shutil
 import maskpass
 import math
+import datetime
+import time
+import colorama
+from colorama import Fore, Style, Back,init
+# Inicializar colorama
+colorama.init(autoreset=True)
+init()
 
+
+#--------------------------CLEAR SCREEN------------------------------
 def clear_screen():
     # Comando para limpiar la pantalla en Windows
     if os.name == 'nt':
@@ -19,13 +33,6 @@ def clear_screen():
     # Comando para limpiar la pantalla en sistemas basados en Unix (Linux, macOS, etc.)
     else:
         os.system('clear')
-
-import colorama
-from colorama import Fore, Style,Back
-
-# Inicializar colorama
-colorama.init(autoreset=True)
-
 
 #--------------------------CLASS------------------------------
 class user:
@@ -50,9 +57,11 @@ class promociones:
         self.textoPromo = ""
         self.fechaDesdePromo = ""
         self.fechaHastaPromo = ""
-        self.diasSemana = ""
+        self.diasSemana = dias
         self.estado = ""
         self.codLocal = 0
+        self.cantUsoPromo= 0
+        self.codUsuario = 0
 
 class uso_promociones: 
     def __init__(self):
@@ -68,11 +77,13 @@ class novedades:
         self.fechaHastaNovedad = ""
         self.tipoUsuario = ""
         self.estado = ""
+
 global all
 #------------------------PP-----------------------------------
 #user
 #afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
 afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
+#afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
 alu = open (afu, "w+b")
 regUser = user()
 
@@ -86,16 +97,34 @@ regUser.tipo= regUser.tipo.ljust(14)
 #locales
 #afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
 afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
-all = open (afl, "w+b")
-size= os.path.getsize(afl)
-print(size)
-#allaux = open (afl, "w+b")
+#afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
+all = open (afl, "w+b") 
 regLoc = locales()
-regLocAux = regLoc
-#pickle.dump(regLocAux,all)
-#pickle.dump(regLoc,all)
-all.flush()
-#allaux.flush()
+
+#promos
+#afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
+afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
+#afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
+alp = open (afp, "w+b")
+regProm = promociones()
+
+#uso promos
+#afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
+afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
+#afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
+alup = open (afup, "w+b")
+regUP = uso_promociones()
+
+#novedades
+#afn = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\NOVEDADES.DAT"
+#afn = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\NOVEDADES.DAT"
+#afn = "D:\\Descargas\\Facultad\\TP3-AyED\\NOVEDADES.DAT"
+#aln = open (afn, "w+b")
+#regNov = novedades()
+
+
+
+
 size= os.path.getsize(afl)
 print(size)
 regLoc.nombreLocal = regLoc.nombreLocal.ljust(100)
@@ -185,7 +214,27 @@ alu.close()
 
 
 #------------------------PANTALLAS-------------------------
+def centrar_texto(texto):
+    ancho_consola, _ = shutil.get_terminal_size()
+    espacio_adicional = max(0, (ancho_consola - len(texto)) // 2)
+    texto_centrado = " " * espacio_adicional + texto
+    print(texto_centrado)
+
+def centrar_texto_var(texto, var):
+    ancho_consola, _ = shutil.get_terminal_size()
+    ancho_t = len(texto)
+    ancho_v = len(var)
+    espacio_disponible = ancho_consola - ancho_t - ancho_v
+    espacio_adicional_izquierda = (espacio_disponible // 2) -5 
+    espacio_adicional_derecha = espacio_disponible - espacio_adicional_izquierda
+    texto_centrado = " " * espacio_adicional_izquierda + texto + var + " " * espacio_adicional_derecha 
+    print(texto_centrado)
+
 def mostrar_menu():
+    
+    fecha_actual = datetime.datetime.today()
+    fecha_formateada = fecha_actual.strftime("%d/%m/%Y")
+
     ancho_ventana = shutil.get_terminal_size().columns
 
     menu_texto = "Menú"
@@ -193,47 +242,77 @@ def mostrar_menu():
     espacio_blancos = (ancho_ventana - len(menu_texto) - 2) // 2
 
     print("-" * ancho_ventana)
-    print(f"|{' ' * espacio_blancos}{menu_texto}{' ' * espacio_blancos}|")
+    print(f"|{' ' * espacio_blancos}{Fore.WHITE+Style.BRIGHT+menu_texto}{' ' * espacio_blancos}|")
     print("-" * ancho_ventana)
-    print("\nIngrese una opcion 1-3\n")
-    print("1_ Ingresar con usuario registrado\n2_ Registrarse como cliente\n3_ Salir")
+    print(fecha_formateada)
+    print(Style.BRIGHT +'\nIngrese una opción ' +  Fore.YELLOW + '1-3\n')
+    print(Style.BRIGHT + Fore.YELLOW + '1_' + Fore.WHITE + ' Ingresar con usuario registrado')
+    print(Style.BRIGHT + Fore.YELLOW + '2_' + Fore.WHITE +' Registrarse como cliente')
+    print(Style.BRIGHT + Fore.YELLOW + '3_' + Fore.WHITE +' Salir')
 
 def pantalla_adm():
+    global name
     clear_screen()
-    print("\n        Menú ADMIN")
-    print("Ingrese una opcion 0-5\n")
-    print("1_ Gestión de locales")
-    print("2_ Crear cuentas de dueños de locales")
-    print("3_ Aprobar / Denegar solicitud de descuento")
-    print("4_ Gestión de novedades")
-    print("5_ Reporte de utilización de descuentos")
-    print("0_ Fin de programa")
+    centrar_texto(Style.BRIGHT  + Fore.WHITE +'Menú ADMIN')
+    centrar_texto_var('Bienvenido, ',name)
+    print(Style.BRIGHT +'Ingrese una opción ' +  Fore.YELLOW + '0-5\n')
+    print(Style.BRIGHT + Fore.YELLOW + '1_' + Fore.RESET + ' Gestión de locales')
+    print(Style.BRIGHT + Fore.YELLOW + '2_' + Fore.RESET +' Crear cuentas de dueños de locales')
+    print(Style.BRIGHT + Fore.YELLOW + '3_' + Fore.RESET +' Aprobar / Denegar solicitud de descuento')
+    print(Style.BRIGHT + Fore.YELLOW + '4_' + Fore.RESET +' Gestión de novedades')
+    print(Style.BRIGHT + Fore.YELLOW + '5_' + Fore.RESET +' Reporte de utilización de descuentos')
+    print(Style.BRIGHT + Fore.YELLOW + '0_' + Fore.RESET +' Volver al Menú Principal')
+
+def pantalla_owner():
+    global name
+    clear_screen()
+    centrar_texto(Style.BRIGHT  + Fore.WHITE +'Menú DUEÑO')
+    centrar_texto_var('Bienvenido, ',name)
+    print(Style.BRIGHT +'Ingrese una opción ' +  Fore.YELLOW + '0-3\n')
+    print(Style.BRIGHT + Fore.YELLOW + '1_' + Fore.RESET + ' Crear descuento')
+    print(Style.BRIGHT + Fore.YELLOW + '2_' + Fore.RESET +' Reporte de uso de descuento')
+    print(Style.BRIGHT + Fore.YELLOW + '3_' + Fore.RESET +' Ver novedades')
+    print(Style.BRIGHT + Fore.YELLOW + '0_' + Fore.RESET +' Volver al Menú Principal')
+
+def pantalla_costumer():
+    global name
+    clear_screen()
+    centrar_texto(Style.BRIGHT  + Fore.WHITE +'Menú CLIENTE')
+    centrar_texto_var('Bienvenido, ',name)
+    print(Style.BRIGHT +'Ingrese una opción ' +  Fore.YELLOW + '0-3\n')
+    print(Style.BRIGHT + Fore.YELLOW + '1_' + Fore.RESET + ' Buscar descuentos en local')
+    print(Style.BRIGHT + Fore.YELLOW + '2_' + Fore.RESET +' Solicitar descuentos')
+    print(Style.BRIGHT + Fore.YELLOW + '3_' + Fore.RESET +' Ver novedades')
+    print(Style.BRIGHT + Fore.YELLOW + '0_' + Fore.RESET +' Volver al Menú Principal')
 
 def pantalla_locales():
-    
     print("\n        Gestión de locales")
-    print("Ingrese una opción a-d\n")
+    print("\nIngrese una opción a-d\n")
     print("a- Crear locales")
     print("b- Modificar local")
     print("c- Eliminar local")
     print("d- Mapa de locales")
     print("e- Volver")
 
-def pantalla_costumer():
-    global name, contuser
+def barracarga():
     clear_screen()
-    print("        Menú de Cliente")
-    print("       Bienvenido",name, "Codigo de Usuario",contuser)
-    print("\nIngrese una opcion 0-3\n")
-    print("1 Buscar descuentos en local")
-    print("2 Solicitar descuento")
-    print("3 Ver novedades") #SOLO CHAPIN
-    print("0_ Salir")
+    print(Style.BRIGHT + "         CARGANDO...")
+    bar_len = 25
+    elements = ['-','\\', '|', '/']
+    for i in range(bar_len+1):
+        frame =i%len(elements)
+        print(Fore.GREEN + Style.BRIGHT + f'\r[{elements[frame]*i:=^{bar_len}}]', end='')
+        time.sleep(0.07)
+
+
+
+
+
 
 
 #------------------------LECTURAS-------------------------
 #----Usuarios----
-alu = open (afu,"r+b")
+"""alu = open (afu,"r+b")
 size= os.path.getsize(afu)
 
 while alu.tell() < size:
@@ -243,25 +322,51 @@ while alu.tell() < size:
     print(regUser.clave)
     print(regUser.tipo)
 
-alu.close()
+alu.close()"""
 
 
 #----Locales----
-def locales_cargados(): #agregar linduras p/
-    all = open (afl,"r+b")
-    size= os.path.getsize(afl)
-    all.seek(0,0)
+def locales_cargados():
+    all = open(afl, "r+b")
+    size = os.path.getsize(afl)
+    all.seek(0, 0)
+
+    # Definir ancho de cada columna de la tabla
+    col_codLocal = 20
+    col_nombreLocal = 40
+    col_ubicacionLocal = 40
+    col_rubroLocal = 20
+    col_codUsuario = 16
+    col_estado = 10
+
+    # Encabezados de la tabla
+    print(
+        Back.BLACK + Fore.BLUE + Style.BRIGHT + Back.BLACK +
+        f'{"Código del Local".center(col_codLocal)} | ' +
+        f'{"Nombre".center(col_nombreLocal)} | ' +
+        f'{"Ubicación".center(col_ubicacionLocal)} | ' +
+        f'{"Rubro".center(col_rubroLocal)} | ' +
+        f'{"Código del Dueño".center(col_codUsuario)} | ' +
+        f'{"Estado".center(col_estado)}'
+    )
+
     while all.tell() < size:
         regLoc = pickle.load(all)
-        print(regLoc.codLocal,regLoc.nombreLocal.rstrip(),regLoc.ubicacionLocal.rstrip(),regLoc.rubroLocal.rstrip(),regLoc.codUsuario,regLoc.estado)
+
+        # Formatear y centrar cada columna en la tabla
+        formatted_row = (
+            Fore.WHITE + Style.BRIGHT + 
+            f'{str(regLoc.codLocal).center(col_codLocal)} | ' +
+            f'{regLoc.nombreLocal.strip().center(col_nombreLocal)} | ' +
+            f'{regLoc.ubicacionLocal.strip().center(col_ubicacionLocal)} | ' +
+            f'{regLoc.rubroLocal.strip().center(col_rubroLocal)} | ' +
+            f'{str(regLoc.codUsuario).center(col_codUsuario)} | ' +
+            f'{regLoc.estado.center(col_estado)}'
+        )
+
+        print(formatted_row)
+
     all.close()
-
-
-
-
-
-
-
 
 #------------------------VALIDADORES-------------------------
 def valid_opc():
@@ -287,6 +392,47 @@ def valid_campo(opc):
         opc = int(input("Mal ingresado. Repetir opción. OPCION: "))
     clear_screen()
     return opc
+
+def valid_owner():
+    global opcown
+    opcown = input("\nOPCION: ")
+    while opcown != "1" and opcown != "2" and opcown != "3" and opcown != "0":
+        opcown = input("Mal ingresado. Repetir opción. OPCION: ")
+    clear_screen()
+
+def valid_dia(opcdia):
+    opcdia = opcdia.upper()
+    while opcdia != "LUNES" and opcdia != "MARTES" and opcdia != "MIERCOLES" and opcdia != "JUEVES" and opcdia != "VIERNES" and opcdia != "SABADO" and opcdia != "DOMINGO":
+        opcdia = input("Mal ingresado. Repetir opción: ")
+        opcdia = opcdia.upper()
+
+def valid_fecha(fecha_str):
+    es_valida = 1
+    partes = fecha_str.split('/')
+    if len(partes) != 3:
+        es_valida = 0
+    else:
+        día, mes, año = map(int, partes)
+        if año < 2023 or mes < 1 or mes > 12 or día < 1:
+            es_valida = 0
+        else:
+            if día > 31 or (mes in [4, 6, 9, 11] and día > 30) or (mes == 2 and (año % 4 != 0 or (año % 100 == 0 and año % 400 != 0)) and día > 28) or (mes == 2 and día > 29):
+                es_valida = 0
+    
+    return es_valida
+
+def valid_codProm(cod):#este es nuevo revisar
+    alp = open (afp, "r+b")
+    regProm = promociones()
+    alp.seek(0,0)
+    size=os.path.getsize(afp)
+    while alp.tell() < size and cod!=regProm.codPromo:
+        regProm = pickle.load(alp)
+    if (cod!=regProm.codPromo): 
+        bandera=1
+    else:
+        bandera=0
+    return bandera
 
 def valid_opc_loc():
     global opcloc
@@ -384,6 +530,37 @@ def buscadicotomica(elem):
         return bandera
 
 #----------------------------BUSQUEDAS-----------------------------
+def busquedaUser(codigo): #te dice si esxiste el coduser
+    global coduser
+    alp=open(afp,"r+b")
+    regProm=promociones()
+    alp.seek(0,0)
+    size=os.path.getsize(afp)
+    bandera=1
+    while alp.tell()<size and codigo!=regProm.codUsuario and bandera==1:
+        regProm=pickle.load(alp)
+    if(codigo!=regProm.codUsuario):
+        bandera=1
+        alp.seek(0,0)
+    else:
+        bandera=0
+    return bandera
+
+def busquedaUserLoc(coduser): #te dice si existe el codloc
+    all=open(afl,"r+b")
+    regLoc=locales()
+    all.seek(0,0)
+    size=os.path.getsize(afl)
+    bandera=1
+    while all.tell()<size and coduser!=regLoc.codUsuario and bandera==1:
+        regLoc=pickle.load(all)
+    if(coduser!=regLoc.codUsuario):
+        bandera=1
+        all.seek(0,0)
+    else:
+        bandera=0
+    return bandera
+
 def buscadorLoc(cod): #NO TOCAR, JUSTIN TE MATA SI LO HACES
     all=open(afl,"r+b")
     all.seek(0,0)
@@ -848,6 +1025,602 @@ def gestion_locales():
             menu_admin()
     all.close()     
 
+#------------------------APROBAR O DENEGAR DESCUENTOS-------------------------
+def aprob_den_desc():
+    alp=open(afp,"r+b")
+    all=open(afl,"r+b")
+    regProm=promociones()
+    regLoc=locales()
+    alp.seek(0,0)
+    all.seek(0,0)
+    sizeloc=os.path.getsize(afl)
+    sizeprom=os.path.getsize(afp)
+    if (sizeloc==0 or sizeprom==0):
+        if(sizeloc==0):
+            print("No hay locales creados aun.")
+        else:
+            print("No hay promociones creadas aun.")
+    else:
+        regProm=pickle.load(alp)
+        regLoc=pickle.load(all)
+        alp.seek(0,0)
+        all.seek(0,0)
+        
+        while alp.tell()<sizeprom:
+            regProm=pickle.load(alp)
+            regLoc=pickle.load(all)
+            all.seek(0,0)
+            if(regProm.estado=="Pendiente"):
+                while all.tell()<sizeloc and regProm.codLocal!=regLoc.codLocal: #busca el nombre del local
+                    regLoc=pickle.load(all)
+                
+                print(regLoc.nombreLocal,regProm.codPromo,regProm.textoPromo) #agregar el print piola
+        ##### aca estan todos los locales en pendiente mostrados 
+        codpromo=int(input("Ingrese el codigo de promocion para Aprobar/Denegar"))
+        bandera=valid_codProm(codpromo)
+        while bandera==1:
+            codpromo=int(input("Ingrese un codigo de promocion existente para Aprobar/Denegar"))#hacer un clear screen y que vuelva a mostrar los locales cargados ) hacer un def 805-813? 
+            bandera=valid_codProm(codpromo)
+        
+        alp.seek(0,0)
+        while alp.tell()<sizeprom and codpromo!=regProm.codPromo:# si o si tiene que encontrar la promo y pone el puntero regprom en el descuento 
+            regProm=pickle.load(alp)
+            print(alp.tell())
+        print(alp.tell())
+        print(regProm.estado)
+        print("sdasdas")# printear la data del descuento si quieren hacemos la busqueda del nombre tambien, se hace con el puntero de reg prom que ya esta bien
+        exit = input("\n ¿Desea APROBAR el descuento? (S/N): ").upper()
+        while exit.upper() != "S" and exit.upper() != "N":
+            exit = input("Respuesta inválida. ¿Desea APROBAR el descuento? (S/N): ").upper()
+        if(exit=="S"):
+            print(alp.tell())
+            regProm.codPromo = regProm.codPromo
+            regProm.textoPromo = regProm.textoPromo
+            regProm.fechaDesdePromo = regProm.fechaDesdePromo
+            regProm.fechaHastaPromo = regProm.fechaHastaPromo
+            regProm.diasSemana = regProm.diasSemana
+            regProm.estado = "Aprobado".ljust(9)
+            regProm.codLocal = regProm.codLocal
+            regProm.cantUsoPromo= regProm.cantUsoPromo
+            regProm.codUsuario = regProm.codUsuario
+            pickle.dump(regProm,alp)
+            alp.flush()
+            alp.seek(0,0)
+        else:
+            regProm.codPromo = regProm.codPromo
+            regProm.textoPromo = regProm.textoPromo
+            regProm.fechaDesdePromo = regProm.fechaDesdePromo
+            regProm.fechaHastaPromo = regProm.fechaHastaPromo
+            regProm.diasSemana = regProm.diasSemana
+            regProm.estado = "Rechazado".ljust(9)
+            regProm.codLocal = regProm.codLocal
+            regProm.cantUsoPromo= regProm.cantUsoPromo
+            regProm.codUsuario = regProm.codUsuario
+            pickle.dump(regProm,alp)
+            alp.flush()
+            alp.seek(0,0)
+    alp.close()
+    all.close()   
+
+#------------------------REPORTE UTILIZACION ADMIN-------------------------
+def reporteadmin():
+    alp=open(afp,"r+b")
+    all=open(afl,"r+b")
+    alup=open(afup,"r+b")
+    regProm=promociones()
+    regLoc=locales()
+    regUP=uso_promociones()
+    alp.seek(0,0)
+    all.seek(0,0)
+
+    sizeprom=os.path.getsize(afp)
+    if(sizeprom==0):
+        print("No hay promociones creadas")
+        menu_admin()
+    else:
+        fecha_actual = datetime.datetime.today()
+        fecha_formateada = fecha_actual.strftime("%d/%m/%Y")
+        fecha_datetime = datetime.datetime.strptime(fecha_formateada, "%d/%m/%Y")#nueva manera
+
+        desde_str = input("Ingrese día que inicia el rango de promociones: ")
+        while valid_fecha(desde_str)==0:
+            desde_str = input("Fecha no valida: ")
+            valid_fecha(desde_str)
+
+        desde = datetime.datetime.strptime(desde_str, "%d/%m/%Y")
+        ####ver que el desde no me deja meter fechas anteriores al a de ahora 
+        while desde <= fecha_datetime:#aca esta lo de que no se puede la fecha actual LO cambie por fecha_datetime antes era fecha_actual
+            desde_str = input("Fecha de inicio del rango de promoción no válida. Ingrese otra fecha: ")
+            desde = datetime.datetime.strptime(desde_str, "%d/%m/%Y")
+
+        hasta_str = input("Ingrese día que finaliza el rango de promociónes: ")
+        while valid_fecha(hasta_str)==0:
+            hasta_str = input("Fecha no valida: ")
+            valid_fecha(hasta_str)
+        hasta = datetime.datetime.strptime(hasta_str, "%d/%m/%Y")
+        while desde >= hasta:
+            hasta_str = input("Fecha de finalización de rango de promociónes no válida. Ingrese otra fecha: ")
+            hasta = datetime.datetime.strptime(hasta_str, "%d/%m/%Y")
+
+        alp.seek(0,0)
+        sizeprom=os.path.getsize(afp)
+        while alp.tell()<sizeprom:
+            regProm=pickle.load(alp)
+            if(desde>=datetime.datetime.strptime(regProm.fechaDesdePromo,"%d/%m/%Y") and hasta<=datetime.datetime.strptime(regProm.fechaHastaPromo,"%d/%m/%Y") and regProm.estado=="Aprobado"):# cambiar el regprom a formato datetime
+                alup.seek(0,0)
+                sizeuprom=os.path.getsize(afup)
+                cantusos=0
+                while alup.tell()<sizeuprom:
+                    regUP=pickle.load(alup)
+                    if(regProm.codPromo==regUP.codPromo and datetime.datetime.strptime(regUP.fechaUsoPromo,"%d/%m/%Y")<=hasta and datetime.datetime.strptime(regUP.fechaUsoPromo,"%d/%m/%Y")>=desde):#cambiar le regprom a formato datetime
+                        cantusos=cantusos+1
+                print(regProm.codLocal)#hacer el print de todo todito
+                print(cantusos) #####este print y el de arriba van juntitos
+
+#------------------------MENU OWNER------------------------------------------------------------------------------------------
+def carga_dias(matriz,day):
+    d = day.upper()
+    match d:
+        case "LUNES":
+            matriz[0]=1
+        case "MARTES":
+            matriz[1]=1
+        case "MIERCOLES":
+            matriz[2]=1
+        case "JUEVES":
+            matriz[3]=1
+        case "VIERNES":
+            matriz[4]=1
+        case "SABADO":
+            matriz[5]=1
+        case "DOMINGO":
+            matriz[6]=1
+    return (matriz)
+
+def crear_descuento(): #semi done revisar anotaciones
+    global nombredia, fecha_actual, fecha_formateada, nombredia, codpromo, dias, cod,desde_str
+    bandera=0
+
+    size = os.path.getsize(afp)
+
+    alp = open (afp, "r+b")
+    all = open (afl, "rb")
+    alp.seek(0,0)
+    all.seek(0,0)  
+    regProm = promociones()
+    regLoc = locales()
+    regLoc = pickle.load(all)
+
+    fecha_actual = datetime.datetime.today()
+    fecha_formateada = fecha_actual.strftime("%d/%m/%Y")
+    fecha_datetime = datetime.datetime.strptime(fecha_formateada, "%d/%m/%Y")#nueva manera
+
+    
+
+    if regLoc.codLocal == 0:
+        print("\nNo existen locales creados. Cree uno para poder continuar.")
+        exit = input("Toque Enter para volver. ")
+        while exit != "":
+            exit = input("Respuesta inválida. Presione ENTER. ")
+        if exit=="": 
+            menu_owner()
+
+    size = os.path.getsize(afp)
+    sizeloc = os.path.getsize(afl)
+    if size==0:
+        print("No hay promociones cargadas aún.")
+    else:
+        alp = open (afp,"r+b")
+        size= os.path.getsize(afp)
+        alp.seek(0,0)
+        while alp.tell() < size :
+            regProm = pickle.load(alp)
+            if regProm.codUsuario==cod:
+                print(Fore.BLUE+Back.BLACK+Style.BRIGHT+'-----------------------------------------')
+                print(f"{Fore.BLUE+Back.BLACK+Style.BRIGHT}Código promoción: {Fore.WHITE+str(regProm.codPromo)}")
+                print(f"{Fore.BLUE+Back.BLACK+Style.BRIGHT}Texto promoción: {Fore.WHITE+regProm.textoPromo}")
+                print(f"{Fore.BLUE+Back.BLACK+Style.BRIGHT}Fecha Desde: {Fore.WHITE+regProm.fechaDesdePromo}")
+                print(f"{Fore.BLUE+Back.BLACK+Style.BRIGHT}Fecha Hasta: {Fore.WHITE+regProm.fechaHastaPromo}")
+                print(f"{Fore.BLUE+Back.BLACK+Style.BRIGHT}Estado promoción: {Fore.GREEN+Style.BRIGHT+regProm.estado}")
+                print(Fore.BLUE+Back.BLACK+Style.BRIGHT+'-----------------------------------------')
+    alp.seek(0,0)
+    all.seek(0,0)
+
+    locales_cargados()
+
+    exitmain = "N"
+    codigo = int(input("Identifique el código del local al que quiere cargar un descuento o 0 si quiere salir: "))
+    bandera = valid_codLoc(codigo)
+
+    flag2 = 1
+    all.seek(0, 0)
+    
+    if codigo==0:
+        menu_owner()
+
+    while bandera==1:
+        print("Código de local no existe.")
+        codigo = int(input("Vuelva a ingresar el código de local: "))
+        bandera = valid_codLoc(codigo)
+
+    all.seek(0, 0)
+    while all.tell() < sizeloc and bandera == 0 and flag2 == 1:
+        regLoc = pickle.load(all)
+        if codigo == regLoc.codLocal:
+            match cod:
+                case regLoc.codUsuario:
+                    match codigo:
+                        case regLoc.codLocal:
+                            flag2 = 0
+                case _:
+                    print("Código de local no válido o no pertenece al dueño.")
+                    codigo = int(input("Vuelva a ingresar el código de local: "))
+                    bandera = valid_codLoc(codigo)
+                    all.seek(0, 0)
+
+    
+    if flag2 == 0:
+        exitmain = "S"
+        alp.seek(0, 0)
+        size= os.path.getsize(afp)
+        while alp.tell() < size and exitmain == "S" or size==0: 
+            alp.seek(0,2)
+            texto = input("Ingrese texto de la promocion: ")
+
+            desde_str = input("Ingrese día que inicia la promoción: ")
+            while valid_fecha(desde_str)==0:
+                desde_str = input("Fecha no valida: ")
+                valid_fecha(desde_str)
+            
+            desde = datetime.datetime.strptime(desde_str, "%d/%m/%Y")
+
+            while desde < fecha_datetime:#aca esta lo de que no se puede la fecha actual LO cambie por fecha_datetime antes era fecha_actual
+                desde_str = input("Fecha de inicio de la promoción no válida. Ingrese otra fecha: ")
+                desde = datetime.datetime.strptime(desde_str, "%d/%m/%Y")
+            
+            hasta_str = input("Ingrese día que finaliza la promoción: ")
+            while valid_fecha(hasta_str)==0:
+                hasta_str = input("Fecha no valida: ")
+                valid_fecha(hasta_str)
+            hasta = datetime.datetime.strptime(hasta_str, "%d/%m/%Y")
+            while desde >= hasta:
+                hasta_str = input("Fecha de finalización de la promoción no válida. Ingrese otra fecha: ")
+                hasta = datetime.datetime.strptime(hasta_str, "%d/%m/%Y")
+
+            dias=[0]*7
+            exit="S"
+            while exit=="S":
+                dia=input("Dias habiles de la promocion: ")
+                valid_dia(dia)
+                carga_dias(dias, dia)
+                regProm.diasSemana = dias
+                exit=input("¿Desea cargar más dias? (S/N): ")
+                exit=exit.upper()
+                while exit.upper() != "S" and exit.upper() != "N":
+                    exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ")
+            
+            exitmain=input("¿Desea cargar más promociones? (S/N): ")
+            exitmain=exitmain.upper()
+            while exitmain.upper() != "S" and exitmain.upper() != "N":
+                exitmain = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ")
+            
+            regProm.codPromo=codpromo
+            codpromo=codpromo+1
+            regProm.textoPromo = texto
+            regProm.fechaDesdePromo = desde.strftime("%d/%m/%Y")
+            regProm.fechaHastaPromo = hasta.strftime("%d/%m/%Y")
+            regProm.estado = "Pendiente"
+            regProm.codLocal=codigo
+            regProm.codUsuario=cod
+            pickle.dump(regProm, alp)
+            alp.flush()
+            size= os.path.getsize(afp)
+        print(Fore.GREEN + Style.BRIGHT +'¡Promoción creada exitosamente!')
+        time.sleep(1.5)
+    alp.close()
+    alu.close()
+    all.close()
+
+def uso_descuento(): #ver mañana todo ok ver si funca
+    global cod
+    alp = open (afp, "r+b")
+    alup = open (afup, "r+b")
+    all = open(afl, "r+b")
+    regProm = promociones()
+    regUP=uso_promociones()
+    regLoc=locales()
+    alp.seek(0,0)
+    all.seek(0,0)
+    alup.seek(0,0)
+    size = os.path.getsize(afp)
+    sizeloc = os.path.getsize(afl)
+    sizeUP = os.path.getsize(afup)
+
+    if size==0: 
+        print("\nNo hay promociones cargadas aún.")
+        exit = input("Toque Enter para volver. ")
+        while exit != "":
+            exit = input("Respuesta inválida. Presione ENTER. ")
+        if exit=="": 
+            menu_owner()
+    else:
+        flag2=1 
+        alp.seek(0,0)
+        while alp.tell() < size:
+            regProm = pickle.load(alp)
+            all.seek(0,0)
+            while all.tell() < sizeloc and flag2 == 1:
+                regLoc = pickle.load(all)
+                if cod == regLoc.codUsuario:
+                    match regLoc.codLocal:
+                        case regProm.codLocal:
+                            match cod:
+                                case regLoc.codUsuario:
+                                    flag2 = 0
+        
+        if flag2==0:
+            desde_str = input("Ingrese el primer dia del rango: ")
+            desde = datetime.datetime.strptime(desde_str, "%d/%m/%Y")
+            fechaDesdePromo = datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y")
+            while fechaDesdePromo >= desde and valid_fecha(desde_str)==0:
+                desde_str = input("Fecha de rango no válida. Ingrese otra fecha: ")
+                valid_fecha(desde_str)
+                desde = datetime.datetime.strptime(desde_str, "%d/%m/%Y")
+
+            hasta_str = input("Ingrese el ultimo dia del rango: ")
+            hasta = datetime.datetime.strptime(hasta_str, "%d/%m/%Y")
+            fechaHastaPromo = datetime.datetime.strptime(regProm.fechaHastaPromo, "%d/%m/%Y")
+            while fechaHastaPromo <= hasta and valid_fecha(hasta_str)==0:
+                hasta_str = input("Fecha de rango no válida. Ingrese otra fecha: ")
+                valid_fecha(hasta_str)
+                hasta = datetime.datetime.strptime(hasta_str, "%d/%m/%Y")
+            
+            hasta1 = datetime.datetime.strftime(hasta, "%d/%m/%Y")
+            desde1 = datetime.datetime.strftime(desde, "%d/%m/%Y")
+            print("Fecha desde:", desde1,"    Fecha hasta:", hasta1)
+
+
+        sizeUP=os.path.getsize(afup)
+        if(sizeUP==0):
+            print("No se uso ningun descuento")
+            exit = input("Toque Enter para volver. ")
+            while exit != "":
+                exit = input("Respuesta inválida. Presione ENTER. ")
+            if exit=="": 
+                menu_owner()
+        else:
+            alup.seek(0,0)
+            regUP = pickle.load(alup)
+            tamreg = alup.tell()
+            cantreg = sizeUP//tamreg
+            flag2=1
+
+            all.seek(0,0)
+            alp.seek(0,0)
+
+            var=0
+            var2=0
+            while alp.tell() < size:
+                ban2=0
+                ban=0
+                regProm = pickle.load(alp)
+                all.seek(0,0)
+                while all.tell() < sizeloc and flag2 == 1:
+                    regLoc = pickle.load(all)
+                    var2=regLoc.codLocal
+                    if cod == regLoc.codUsuario:
+                        ban=1
+                        match regLoc.codLocal:
+                            case regProm.codLocal:
+                                match cod:
+                                    case regLoc.codUsuario:
+                                        flag2 = 0
+
+                if ban!=0 and flag2==0 and ban2==0 and var!=var2:
+                    print("Local", regLoc.codLocal,":", regLoc.nombreLocal)
+                    print("|-----------------|----------------------------------------|---------------|---------------|-------------------|")
+                    print("| Codigo Promo    |               Texto                    |  Fecha Desde  |  Fecha Hasta  |  Cant. Uso Promo  |")
+                    print("|-----------------|----------------------------------------|---------------|---------------|-------------------|") 
+                    ban2=1                             
+                                    
+                if flag2==1:
+                    print("El usuario no tiene promociones creadas.")
+                    exit = input("\nToque Enter para volver. ")
+                    while exit != "":
+                        exit = input("Respuesta inválida. Presione ENTER. ")
+                    if exit == "":
+                        menu_owner()
+
+                if fechaDesdePromo>=desde and fechaHastaPromo<=hasta and regProm.estado=="Aprobado" and flag2==0:
+                    print(f"| {regProm.codPromo:<15} | {regProm.textoPromo:<38} | {regProm.fechaDesdePromo:<15} | {regProm.fechaHastaPromo:<15} | {cantreg:<17} |")
+                    print("|-----------------|----------------------------------------|---------------|---------------|-------------------|")
+                    flag2=1
+                var=regProm.codLocal
+            
+        
+        alp.close()
+        all.close()
+        alup.close()
+
+    exit = input("\nToque Enter para volver. ")
+    while exit != "":
+        exit = input("Respuesta inválida. Presione ENTER. ")
+    if exit=="": 
+        menu_owner()
+    
+#------------------------MENU CLIENTE------------------------------------------------------------------------------------------
+def num_dias(day):
+    match day:
+        case "Monday":
+            num_dia=0
+        case "Tuesday":
+            num_dia=1
+        case "Wednesday":
+            num_dia=2
+        case "Thursday":
+            num_dia=3
+        case "Friday":
+            num_dia=4
+        case "Saturday":
+            num_dia=5
+        case "Sunday":
+            num_dia=6
+    return num_dia
+
+def buscadorLoc(cod): #NO TOCAR, JUSTIN TE MATA SI LO HACES
+    alp=open(afp,"r+b")
+    alp.seek(0,0)
+    point=alp.tell()
+    regProm=promociones()
+    regProm=pickle.load(alp)
+    alp.seek(0,0)
+    point=alp.tell()
+    while regProm.codPromo!=cod:
+        point=alp.tell()
+        regProm=pickle.load(alp)
+    return point
+
+def buscardesc(): #else agregado ver primera entrada al else y final 
+    global fecha_actual, desde_str,fecha_datetime
+    bandera=0
+    alp = open (afp, "r+b")
+    regProm=promociones()
+    alp.seek(0,0)
+    size = os.path.getsize(afp) 
+    if size == 0:
+        print("No hay promociones creadas")
+        exit = input("Toque Enter para volver. ")
+        while exit != "":
+            exit = input("Respuesta inválida. Presione ENTER. ")
+        if exit=="": 
+            menu_costumer()
+    else:
+        regProm = pickle.load(alp) #preguntar que hace y pq no se hace un buscar def codProm
+        codigo=int(input("\nIdentifique el código del local para buscar descuentos: "))
+        while alp.tell() < size and codigo!=regProm.codLocal and bandera==0:
+            regProm = pickle.load(alp)
+            if (codigo!=regProm.codLocal): 
+                codigo=int(input('Código de local no válido, volver a ingresar. CÓDIGO: '))
+                alp.seek(0,0)
+        bandera = 1 #creo que la bandera es al pedo
+
+        if regProm.codLocal==regLoc.codLocal and regProm.codLocal==0:
+            print("El local no tiene promociones creadas.")
+            exit = input("Toque Enter para volver. ")
+            while exit != "":
+                exit = input("Respuesta inválida. Presione ENTER. ")
+            if exit=="": 
+                menu_costumer()
+
+        fecha_str = input("Ingrese una fecha para buscar descuentos: ")
+        fecha = datetime.datetime.strptime(fecha_str, "%d/%m/%Y")
+
+        fecha_actual=datetime.datetime.now()#obtiene fecha del sist
+        fecha_formateada= fecha_actual.strftime("%d/%m/%Y")#la transforma en str para poder aplicarle formato
+        fecha_datetime = datetime.datetime.strptime(fecha_formateada, "%d/%m/%Y")#nueva manera. Lo transforma de vuelta en datetime
+
+        while fecha >= fecha_datetime and valid_fecha(desde_str)==0:
+            fecha_str = input("Fecha no válida. Ingrese otra fecha: ")
+            valid_fecha(fecha_str)
+            fecha = datetime.datetime.strptime(fecha_str, "%d/%m/%Y")
+
+        dia_semana = fecha.strftime("%A")
+
+        alp.seek(0,0)
+        datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y")
+        if(fecha >= datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y")):
+            if(fecha <= datetime.datetime.strptime(regProm.fechaHastaPromo, "%d/%m/%Y")):
+                print(regProm.diasSemana,"registro")
+                print(dia_semana,"diasemana")      
+                print(num_dias(dia_semana),"numdia diasemana")                                
+                print(regProm.diasSemana[num_dias(dia_semana)]==1,"choclo")#ver q se buguea en regProm.diasSemana[num_dias(dia_semana)]==1 y datetime.datetime.strptime fueron agregados en el while de abajo
+
+
+        while alp.tell() < size and regProm.codLocal == codigo and regProm.estado == "Aprobado" and fecha >= datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y") and fecha <= datetime.datetime.strptime(regProm.fechaHastaPromo, "%d/%m/%Y") and regProm.diasSemana[num_dias(dia_semana)]==1:
+            regProm = pickle.load(alp)
+            
+            # Definir ancho de cada columna de la tabla
+            col_codPromo = 20
+            col_textoPromo = 40
+            col_fechaDesdePromo = 15
+            col_fechaHastaPromo = 15
+
+            # Encabezados de la tabla
+            print(
+            (Back.BLACK + Fore.BLUE + Style.BRIGHT  +
+            f'{"Código Promo".center(col_codPromo)} | ' +
+            f'{"Texto".center(col_textoPromo)} | ' +
+            f'{"Fecha Desde".center(col_fechaDesdePromo)} | ' +
+            f'{"Fecha Hasta".center(col_fechaHastaPromo)}'))
+            
+            
+            # Formatear y centrar cada columna en la tabla
+            print((Fore.WHITE + Style.BRIGHT +
+             f'{str(regProm.codPromo).center(col_codPromo)} | ' +
+             f'{regProm.textoPromo.strip().center(col_textoPromo)} | ' +
+             f'{regProm.fechaDesdePromo.center(col_fechaDesdePromo)} | ' +
+             f'{regProm.fechaHastaPromo.center(col_fechaHastaPromo)}'))
+            #print(formatted_row)
+        if(regProm.diasSemana[num_dias(dia_semana)]!=1):
+            print("No hay descuentos disponibles para ",fecha_str)
+        #while alp.tell() < size and regProm.codLocal==codigo and regProm.estado=="Aprobado" and fecha >= datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y") and fecha <= datetime.datetime.strptime(regProm.fechaHastaPromo, "%d/%m/%Y"):# and regProm.diasSemana[num_dias(dia_semana)]==1:
+         #   regProm = pickle.load(alp)
+          #  print(f"{Fore.BLUE+Back.BLACK+Style.BRIGHT+'Codigo Promo':^15}{'Texto':^20}{'Fecha Desde':^15}{'Fecha Hasta':^15}")
+           # print(f"{Fore.BLACK+Back.GREEN+str(regProm.codPromo):^15}{regProm.textoPromo:^10}{regProm.fechaDesdePromo:^15}{regProm.fechaHastaPromo:^15}")
+            
+        exit = input("\nToque Enter para volver. ")
+        while exit != "":
+            exit = input("Respuesta inválida. Presione ENTER. ")
+        if exit=="":
+            menu_costumer()
+        
+        alp.close()
+
+def solicitardesc(): #else agregado 
+    global fecha_formateada, fecha_datetime
+
+    alp = open (afp, "r+b")
+    alup = open (afup, "r+b")
+    alu = open (afu, "r+b")
+    regProm = promociones()
+    regUP = uso_promociones()
+    regUser = user() # antes era un pickle load why?
+    alp.seek(0,0)
+    alup.seek(0,0)
+    alu.seek(0,0)
+    
+    codigo=int(input("Código de la promoción: "))
+    size = os.path.getsize(afp)
+    if size == 0:
+        print("No hay promociones creadas")
+        exit = input("Toque Enter para volver. ")
+        while exit != "":
+            exit = input("Respuesta inválida. Presione ENTER. ")
+        if exit=="":
+            menu_costumer()
+    else:
+        regProm = pickle.load(alp)#pq pickle load si no es por seek 0(agregado) el puntero arranca en registro 1 
+        dia_semana = fecha_datetime.strftime("%A")#cambiado a date_time antes:fecha_formateada
+
+        print(dia_semana)
+
+        alp.seek(0,0)
+        codigo=int(input("Ingresar código de promoción: "))
+        bandera=valid_codProm(codigo)
+        while bandera==1:
+            codigo=int(input("Código de promoción no válido, volver a ingresar. CÓDIGO: "))
+            bandera=valid_codProm(codigo)
+        #ver correccion done by 1D fans 
+        #no recorre todo y vuelve a entrar esta mal, hay que hacer un def, solo recorre el primer registro y vuelve a 0 
+        #revisar problemas del while mismos que el while del def anterior you and i, I love 1D
+        while codigo==regProm.codPromo and regProm.estado=="Aprobado" and fecha_formateada >= regProm.fechaDesdePromo and fecha_formateada <= regProm.fechaHastaPromo and regProm.diasSemana[num_dias(dia_semana)]==1:
+            regUP.codCliente = regUser.cod
+            regUP.codPromo = codigo
+            regUP.fechaUsoPromo = fecha_formateada
+            point=buscadorLoc(codigo)
+            alp.seek(point,0)
+            regProm.cantUsoPromo = regProm.cantUsoPromo + 1
+   
 #-------------------------LOGIN----------------------------
 def login():
     global name,cont
@@ -932,6 +1705,7 @@ def menu_admin():
         #clear_screen()
         print("\nGestión de locales")
         gestion_locales()
+        #orden_rub(shopping_loc)
       case "2":
         clear_screen()
         print("\nCrear cuentas de dueños de locales")
@@ -941,6 +1715,7 @@ def menu_admin():
       case "3":
         clear_screen()
         print("\nAprobar / Denegar solicitud de descuento")
+        aprob_den_desc()
         menu_admin()
       case "4":
         clear_screen()
@@ -948,34 +1723,37 @@ def menu_admin():
         gestion_novedades()
       case "5":
         clear_screen()
-        print("\nEn construcción…")
-        menu_admin()
+        print("\nReporte de utilizacion de descuentos")
+        reporteadmin()
       case "0":
         clear_screen()
-        chau_franchu=f"""{Fore.RED}
-        ▒╔═╦═╦═╦╦╦═╦══╗▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒║╬║║║╔╣╔╣╦╩╗╔╝▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒
-        ▒║╗╣║║╚╣╚╣╩╗║║▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄██▒▒
-        ▒╚╩╩═╩═╩╩╩═╝╚╝▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▀██▀█▀█▀███
-        ▒╔══╦═╦══╦═╦═╗▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀▀▀▀▀████▀▀▀▒
-        ▒╚╗╔╣╦╣╔╗║║║║║▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▒▒▒▀██▒▒▒▒
-        ▒▒║║║╩╣╠╣║║║║║▒▒▒▒▒▒▒▒▒▒▒███▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒▒╚╝╚═╩╝╚╩╩═╩╝▒▒▒▒▒▒▄▒▒▒─███▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐█▌▒▒▒▒▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒▒▒▒▒▒▒▒▒▒▒▒▒▒█▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-        ▒▒▒▒▒▒▒▒▒▒▒▒▐█▒▒▒▒▒▒▒▒▄▄▄▒▒▒█▒▒▒▒▄▒▒▒▒▒▒▒
-        ▒▒▒▒█████████▒▒▒▒▒▒▒▒█▀█▀█▒█▀█▒▒█▀█▒▄███▄
-        ▒▒▒████████████▒▒▒▒▒░█▀█▀█░█▀██░█▀█░█▄█▄█
-        ▒▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▒▒▒░█▀█▀█░█▀████▀█░█▄█▄█
-        ▐████████████████▒▒▒████████▀████████████
-"""
-        print(chau_franchu)
-        
-        exit = input("\n Toque Enter para salir: ")
-        while exit != "":
-                exit = input("Respuesta inválida. Presione ENTER: ")
-        print("\nSaliendo...")
+        mainMenu()
+
+def menu_owner():
+    pantalla_owner()
+    valid_owner()
+    match opcown:
+        case "1":
+            clear_screen()
+            centrar_texto(Style.BRIGHT + Fore.WHITE + "---Crear Descuento---")
+            crear_descuento()
+            menu_owner()
+        case "2":
+            clear_screen()
+            centrar_texto(Style.BRIGHT + Fore.WHITE + "---Reporte de uso de descuento---")
+            uso_descuento()
+        case "3":
+            clear_screen()
+            centrar_texto(Style.BRIGHT + Fore.WHITE + "---Ver Novedades---")
+            centrar_texto("\nDiagramado en chapin") 
+            exit = input("Toque Enter para volver. ")
+            while exit != "":
+                exit = input("Respuesta inválida. Presione ENTER. ")
+            if exit=="": 
+                menu_owner()
+        case "0":
+            barracarga()
+            mainMenu()
 
 def menu_costumer():
     pantalla_costumer()
@@ -1006,7 +1784,7 @@ def menu_costumer():
 
 #Main Menu
 def mainMenu():
-    #clear_screen()
+    clear_screen()
     mostrar_menu()
     ingreso_main_menu(valid_opc())
 
