@@ -244,6 +244,7 @@ def enter(menu):
 
 
 
+
 #------------------------LECTURAS-------------------------
 #----Usuarios----
 alu = open (afu,"r+b")
