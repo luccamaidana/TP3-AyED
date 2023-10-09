@@ -8,6 +8,7 @@ contuser=1
 dias = [0]*7
 
 
+
 #------------------------IMPORT-------------------------------
 import os
 import pickle
@@ -171,7 +172,7 @@ regNov = novedades()
 
 #-------------------------PRECARGAS/CARGAS---------------------------
 #--------Locales-------------
-pickle.dump(regLoc,all)
+"""pickle.dump(regLoc,all)
 all.flush()
 all.seek(0,0)
 regLoc.codLocal=1
@@ -196,7 +197,7 @@ regLoc.codUsuario=3 #123
 regLoc.estado="A"
 pickle.dump(regLoc,all)
 all.flush()
-all.close()
+all.close()"""
 
 #-------Usuarios----------
 regUser.cod=1
@@ -206,7 +207,7 @@ regUser.tipo="Administrador"
 pickle.dump(regUser,alu)
 alu.flush()
 
-regUser.cod=2
+"""regUser.cod=2
 regUser.usuario="valen"
 regUser.clave=""
 regUser.tipo="Dueño de local"
@@ -222,7 +223,7 @@ regUser.cod=4
 regUser.usuario="1"
 regUser.clave="1"
 regUser.tipo="Cliente"
-pickle.dump(regUser,alu)
+pickle.dump(regUser,alu)"""
 
 alu.flush()
 
@@ -1460,11 +1461,14 @@ def uso_descuento(): #ver mañana todo ok ver si funca
                                         flag2 = 0
 
                 if ban!=0 and flag2==0 and ban2==0 and var!=var2:
-                    print("Local", regLoc.codLocal,":", regLoc.nombreLocal)
-                    print("|-----------------|----------------------------------------|---------------|---------------|-------------------|")
-                    print("| Codigo Promo    |               Texto                    |  Fecha Desde  |  Fecha Hasta  |  Cant. Uso Promo  |")
-                    print("|-----------------|----------------------------------------|---------------|---------------|-------------------|") 
-                    ban2=1                             
+                    if fechaDesdePromo>=desde and fechaHastaPromo<=hasta and regProm.estado.rstrip()=="Aprobado" and fechaHastaPromo<=hasta :    
+                        print("Local", regLoc.codLocal,":", regLoc.nombreLocal)
+                        print("|-----------------|----------------------------------------|---------------|---------------|-------------------|")
+                        print("| Codigo Promo    |               Texto                    |  Fecha Desde  |  Fecha Hasta  |  Cant. Uso Promo  |")
+                        print("|-----------------|----------------------------------------|---------------|---------------|-------------------|") 
+                        ban2=1           
+                    else:
+                        print("No se encuentra ninguna promoción entre las fechas proporcionadas.")                  
                                     
                 if flag2==1:
                     print("El usuario no tiene promociones creadas.")
@@ -1474,10 +1478,11 @@ def uso_descuento(): #ver mañana todo ok ver si funca
                     if exit == "":
                         menu_owner()
 
-                if fechaDesdePromo>=desde and fechaHastaPromo<=hasta and regProm.estado=="Aprobado" and flag2==0:
-                    print(f"| {regProm.codPromo:<15} | {regProm.textoPromo:<38} | {regProm.fechaDesdePromo:<15} | {regProm.fechaHastaPromo:<15} | {cantreg:<17} |")
-                    print("|-----------------|----------------------------------------|---------------|---------------|-------------------|")
-                    flag2=1
+                if fechaDesdePromo>=desde and fechaHastaPromo<=hasta and regProm.estado.rstrip()=="Aprobado" and fechaHastaPromo<=hasta :
+                    if flag2==0:
+                        print(f"| {regProm.codPromo:<15} | {regProm.textoPromo:<38} | {regProm.fechaDesdePromo:<15} | {regProm.fechaHastaPromo:<15} | {cantreg:<17} |")
+                        print("|-----------------|----------------------------------------|---------------|---------------|-------------------|")
+                        flag2=1
                 var=regProm.codLocal
             
         
@@ -1540,6 +1545,7 @@ def buscardesc(): #else agregado ver primera entrada al else y final
     else:
         regProm = pickle.load(alp) #preguntar que hace y pq no se hace un buscar def codProm
         codigo=int(input("\nIdentifique el código del local para buscar descuentos: "))
+        valid_codLoc(codigo) ##terminar el valid cod
         while alp.tell() < size and codigo!=regProm.codLocal and bandera==0:
             regProm = pickle.load(alp)
             if (codigo!=regProm.codLocal): 
@@ -1571,60 +1577,46 @@ def buscardesc(): #else agregado ver primera entrada al else y final
 
         alp.seek(0,0)
         datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y")
-        if(fecha >= datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y")):
-            if(fecha <= datetime.datetime.strptime(regProm.fechaHastaPromo, "%d/%m/%Y")):
-                print(regProm.diasSemana,"registro")
-                print(dia_semana,"diasemana")      
-                print(num_dias(dia_semana),"numdia diasemana")                                
-                print(regProm.diasSemana[num_dias(dia_semana)]==1,"choclo")#ver q se buguea en regProm.diasSemana[num_dias(dia_semana)]==1 y datetime.datetime.strptime fueron agregados en el while de abajo
-
         
-        print(regProm.codLocal)
-        print(codigo)
-        print(regProm.estado)
-        print(fecha)
-        print(datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y"))
-        print(datetime.datetime.strptime(regProm.fechaHastaPromo, "%d/%m/%Y"))
         alp.seek(0,0) #no entra al while
-        while alp.tell() < size and regProm.codLocal == codigo and regProm.estado.rstrip() == "Aprobado" and fecha >= datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y") and fecha <= datetime.datetime.strptime(regProm.fechaHastaPromo, "%d/%m/%Y") and regProm.diasSemana[num_dias(dia_semana)]==1:
+        while alp.tell() < size :
+            if regProm.codLocal == codigo and regProm.estado.rstrip() == "Aprobado" and fecha >= datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y") and fecha <= datetime.datetime.strptime(regProm.fechaHastaPromo, "%d/%m/%Y") and regProm.diasSemana[num_dias(dia_semana)]==1:
+                regProm = pickle.load(alp)
+                # Definir ancho de cada columna de la tabla
+                col_codPromo = 20
+                col_textoPromo = 40
+                col_fechaDesdePromo = 15
+                col_fechaHastaPromo = 15
 
-            regProm = pickle.load(alp)
-            # Definir ancho de cada columna de la tabla
-            col_codPromo = 20
-            col_textoPromo = 40
-            col_fechaDesdePromo = 15
-            col_fechaHastaPromo = 15
-            print("xd")
-            # Encabezados de la tabla
-            print(
-            (Back.BLACK + Fore.BLUE + Style.BRIGHT  +
-            f'{"Código Promo".center(col_codPromo)} | ' +
-            f'{"Texto".center(col_textoPromo)} | ' +
-            f'{"Fecha Desde".center(col_fechaDesdePromo)} | ' +
-            f'{"Fecha Hasta".center(col_fechaHastaPromo)}'))
-            
-            
-            # Formatear y centrar cada columna en la tabla
-            print((Fore.WHITE + Style.BRIGHT +
-            f'{str(regProm.codPromo).center(col_codPromo)} | ' +
-            f'{regProm.textoPromo.strip().center(col_textoPromo)} | ' +
-            f'{regProm.fechaDesdePromo.center(col_fechaDesdePromo)} | ' +
-            f'{regProm.fechaHastaPromo.center(col_fechaHastaPromo)}'))
+                # Encabezados de la tabla
+                print(
+                (Back.BLACK + Fore.BLUE + Style.BRIGHT  +
+                f'{"Código Promo".center(col_codPromo)} | ' +
+                f'{"Texto".center(col_textoPromo)} | ' +
+                f'{"Fecha Desde".center(col_fechaDesdePromo)} | ' +
+                f'{"Fecha Hasta".center(col_fechaHastaPromo)}'))
+                
+                
+                # Formatear y centrar cada columna en la tabla
+                print((Fore.WHITE + Style.BRIGHT +
+                f'{str(regProm.codPromo).center(col_codPromo)} | ' +
+                f'{regProm.textoPromo.strip().center(col_textoPromo)} | ' +
+                f'{regProm.fechaDesdePromo.center(col_fechaDesdePromo)} | ' +
+                f'{regProm.fechaHastaPromo.center(col_fechaHastaPromo)}'))
                 #print(formatted_row)
-        if(regProm.diasSemana[num_dias(dia_semana)]!=1):
-            print("No hay descuentos disponibles para ",fecha_str)
-        #while alp.tell() < size and regProm.codLocal==codigo and regProm.estado=="Aprobado" and fecha >= datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y") and fecha <= datetime.datetime.strptime(regProm.fechaHastaPromo, "%d/%m/%Y"):# and regProm.diasSemana[num_dias(dia_semana)]==1:
-         #   regProm = pickle.load(alp)
-          #  print(f"{Fore.BLUE+Back.BLACK+Style.BRIGHT+'Codigo Promo':^15}{'Texto':^20}{'Fecha Desde':^15}{'Fecha Hasta':^15}")
-           # print(f"{Fore.BLACK+Back.GREEN+str(regProm.codPromo):^15}{regProm.textoPromo:^10}{regProm.fechaDesdePromo:^15}{regProm.fechaHastaPromo:^15}")
-            
-        exit = input("\nToque Enter para volver. ")
-        while exit != "":
-            exit = input("Respuesta inválida. Presione ENTER. ")
-        if exit=="":
-            menu_costumer()
-        
-        alp.close()
+            else: 
+                if regProm.diasSemana[num_dias(dia_semana)]==0:
+                    print("No hay descuentos disponibles para",fecha_str)
+                else:
+                    print("No hay promociones en el local buscado.")
+
+            alp.close()
+            exit = input("\nToque Enter para volver. ")
+            while exit != "":
+                exit = input("Respuesta inválida. Presione ENTER. ")
+            if exit=="":
+                menu_costumer()
+     
 
 def solicitardesc(): #else agregado 
     global fecha_formateada, fecha_datetime
@@ -1655,7 +1647,6 @@ def solicitardesc(): #else agregado
         dia_semana = fecha_datetime.strftime("%A")#cambiado a date_time antes:fecha_formateada
         
 
-        print(dia_semana)
 
         alp.seek(0,0)
         codigo=int(input("Ingresar código de promoción: "))
@@ -1669,28 +1660,36 @@ def solicitardesc(): #else agregado
         fechovich=datetime.datetime.strptime(fecha_formateada, "%d/%m/%Y")
         fechaDesdePromo = datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y")
         fechaHastaPromo = datetime.datetime.strptime(regProm.fechaHastaPromo, "%d/%m/%Y")
-        print(regProm.diasSemana[num_dias(dia_semana)]==1)
+
 
 
         alp.seek(0,0)
-        while alp.tell()<size and  codigo==regProm.codPromo and regProm.estado.rstrip()=="Aprobado" and fechovich >= fechaDesdePromo and fechovich <= fechaHastaPromo and regProm.diasSemana[num_dias(dia_semana)]==1:
+        while alp.tell()<size :
             regProm=pickle.load(alp)
-            regUP.codCliente = regUser.cod
-            regUP.codPromo = codigo
-            regUP.fechaUsoPromo = fecha_formateada
-            point=buscadorLoc(codigo)
-            alp.seek(point,0)
-            regProm.cantUsoPromo = regProm.cantUsoPromo + 1
-            print(dia_semana)
-            time.sleep(5)
-
+            if codigo==regProm.codPromo and regProm.estado.rstrip()=="Aprobado" and fechovich >= fechaDesdePromo and fechovich <= fechaHastaPromo and regProm.diasSemana[num_dias(dia_semana)]==1:
+                regUP.codCliente = regUser.cod
+                regUP.codPromo = codigo
+                regUP.fechaUsoPromo = fecha_formateada
+                point=buscadorLoc(codigo)
+                alp.seek(point,0)
+                regProm.cantUsoPromo = regProm.cantUsoPromo + 1
+                pickle.dump(regProm, alp)
+                pickle.dump(regUP, alup)
+                alp.flush()
+                alup.flush()
+                alup.close()
+                alp.close()
+                alu.close()
+                print("¡La promoción se aplico con exito!")
+            else:
+                print("La promoción no es valida el dia de hoy.")
+                
             exit = input("\nToque Enter para volver. ")
             while exit != "":
                 exit = input("Respuesta inválida. Presione ENTER. ")
             if exit=="":
                 menu_costumer()
-
-
+    
 
 
 #-------------------------LOGIN----------------------------
