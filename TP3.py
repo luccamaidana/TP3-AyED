@@ -1,10 +1,9 @@
 global cont,contowner,codloc,regLoc,contuser,codpromo,dias
 con=1 #cont 2 en el de valen? 
-contuser=1
+contuser=0
 contowner=0
 codloc=0
 codpromo=1
-contuser=1
 dias = [0]*7
 
 
@@ -90,63 +89,36 @@ global all
 
 #afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
 #afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
-afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
+#afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
+#afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat" #este
 alu = open (afu, "w+b")
 regUser = user()
 
 #locales
 #afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
 #afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
-afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
+#afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
+#afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat" #este
 all = open (afl, "w+b") 
 regLoc = locales()
 
 #promos
 #afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
 #afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
-afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
+#afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
+#afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT" #este
 alp = open (afp, "w+b")
 regProm = promociones()
 
 #uso promos
 #afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
 #afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
-afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
+#afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
+#afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT" #este
 alup = open (afup, "w+b")
 regUP = uso_promociones()
 
 #-------------------------EL AJUSTE---------------------------
-
-
-
-
-
-
-#-------------------------PRECARGAS/CARGAS---------------------------
-#--------Locales-------------
-
-
-#-------Usuarios----------
-def precarga_admin():
-    alu=open(afu,"w+b")
-    alu.seek(0,0)
-    regUser= user()
-    alu.seek(0,0)
-    cod=1
-    usuario="admin@shopping.com"
-    clave="12345"
-    tipo="Administrador"
-    regUser.cod=cod
-    regUser.usuario=usuario.ljust(100)
-    regUser.clave=clave.ljust(8)
-    regUser.tipo=tipo.ljust(14)
-    alu.seek(0,0)
-    pickle.dump(regUser,alu)
-    alu.flush()
-    alu.close()
-precarga_admin()
-
-
 def usercargados():
     alu=open(afu,"r+b")
     alu.seek(0,0)
@@ -156,6 +128,147 @@ def usercargados():
     while alu.tell()<size:
         regUser=pickle.load(alu)
         print(regUser.cod,regUser.usuario.rstrip(),regUser.clave.rstrip(),regUser.tipo.rstrip())
+
+#----Locales----
+def locales_cargados():
+    all = open(afl, "r+b")
+    size = os.path.getsize(afl)
+    all.seek(0, 0)
+
+    # Definir ancho de cada columna de la tabla
+    col_codLocal = 20
+    col_nombreLocal = 40
+    col_ubicacionLocal = 40
+    col_rubroLocal = 20
+    col_codUsuario = 16
+    col_estado = 10
+
+    # Encabezados de la tabla
+    print(
+        Back.BLACK + Fore.BLUE + Style.BRIGHT + Back.BLACK +
+        f'{"Código del Local".center(col_codLocal)} | ' +
+        f'{"Nombre".center(col_nombreLocal)} | ' +
+        f'{"Ubicación".center(col_ubicacionLocal)} | ' +
+        f'{"Rubro".center(col_rubroLocal)} | ' +
+        f'{"Código del Dueño".center(col_codUsuario)} | ' +
+        f'{"Estado".center(col_estado)}'
+    )
+
+    while all.tell() < size:
+        regLoc = pickle.load(all)
+
+        # Formatear y centrar cada columna en la tabla
+        formatted_row = (
+            Fore.WHITE + Style.BRIGHT + 
+            f'{str(regLoc.codLocal).center(col_codLocal)} | ' +
+            f'{regLoc.nombreLocal.strip().center(col_nombreLocal)} | ' +
+            f'{regLoc.ubicacionLocal.strip().center(col_ubicacionLocal)} | ' +
+            f'{regLoc.rubroLocal.strip().center(col_rubroLocal)} | ' +
+            f'{str(regLoc.codUsuario).center(col_codUsuario)} | ' +
+            f'{regLoc.estado.center(col_estado)}'
+        )
+
+        print(formatted_row)
+
+    all.close()
+
+#-------------------------PRECARGAS/CARGAS---------------------------
+#-------Usuarios----------
+def precarga_admin():
+    global contuser
+    alu=open(afu,"w+b")
+    alu.seek(0,0)
+    regUser= user()
+    alu.seek(0,0)
+    usuario="admin@shopping.com"
+    clave="12345"
+    tipo="Administrador"
+    contuser=contuser+1
+    regUser.cod=contuser
+    regUser.usuario=usuario.ljust(100)
+    regUser.clave=clave.ljust(8)
+    regUser.tipo=tipo.ljust(14)
+    alu.seek(0,2)
+    pickle.dump(regUser,alu)
+    alu.flush()
+    alu.close()
+
+precarga_admin()
+
+def precarga_dueño():
+    global contuser,contowner
+    alu=open(afu,"r+b")
+    alu.seek(0,2)
+    regUser= user()
+    usuario="Dueño1"
+    clave="1234578"
+    tipo="Dueño de local"
+    contowner=contowner+1
+    contuser=contuser+1
+    regUser.cod=contuser
+    regUser.usuario=usuario.ljust(100)
+    regUser.clave=clave.ljust(8)
+    regUser.tipo=tipo.ljust(14)
+    pickle.dump(regUser,alu)
+    alu.flush()
+    alu.seek(0,2)
+    regUser= user()
+    usuario="Dueño2"
+    clave="1234578"
+    tipo="Dueño de local"
+    contowner=contowner+1
+    contuser=contuser+1
+    regUser.cod=contuser
+    regUser.usuario=usuario.ljust(100)
+    regUser.clave=clave.ljust(8)
+    regUser.tipo=tipo.ljust(14)
+    pickle.dump(regUser,alu)
+    alu.close()
+    usercargados()
+    car=input("dfsdf")
+
+precarga_dueño()
+
+#--------Locales-------------
+def precarga_locales():
+    global codloc
+    all=open(afl,"w+b")
+    all.seek(0,0)
+    regLoc= locales()
+    nombrelocal="Zara"
+    ubi="Narnia"
+    rubro="Perfumeria"
+    codusuario=2
+    estado="A"
+    codloc=codloc+1
+    regLoc.codLocal=codloc
+    regLoc.nombreLocal=nombrelocal.ljust(100)
+    regLoc.ubicacionLocal=ubi.ljust(100)
+    regLoc.rubroLocal=rubro.ljust(12)
+    regLoc.codUsuario=codusuario
+    regLoc.estado=estado
+    pickle.dump(regLoc,all)
+    alu.flush()
+    alu.seek(0,2)
+    nombrelocal="NutriGo"
+    ubi="Olimpo"
+    rubro="Indumentaria"
+    codusuario=3
+    estado="A"
+    codloc=codloc+1
+    regLoc.codLocal=codloc
+    regLoc.nombreLocal=nombrelocal.ljust(100)
+    regLoc.ubicacionLocal=ubi.ljust(100)
+    regLoc.rubroLocal=rubro.ljust(12)
+    regLoc.codUsuario=codusuario
+    regLoc.estado=estado
+    pickle.dump(regLoc,all)
+    all.flush()
+    all.close()
+    locales_cargados()
+    car=input("dfsdf")
+
+precarga_locales()
 
 
 #------------------------PANTALLAS-------------------------
@@ -255,50 +368,6 @@ def barracarga():
         frame =i%len(elements)
         print(Fore.GREEN+Style.BRIGHT+ f'\r[{elements[frame]*i:=^{bar_len}}]', end='')
         time.sleep(0.05)
-
-#------------------------LECTURAS-------------------------
-#----Locales----
-def locales_cargados():
-    all = open(afl, "r+b")
-    size = os.path.getsize(afl)
-    all.seek(0, 0)
-
-    # Definir ancho de cada columna de la tabla
-    col_codLocal = 20
-    col_nombreLocal = 40
-    col_ubicacionLocal = 40
-    col_rubroLocal = 20
-    col_codUsuario = 16
-    col_estado = 10
-
-    # Encabezados de la tabla
-    print(
-        Back.BLACK + Fore.BLUE + Style.BRIGHT + Back.BLACK +
-        f'{"Código del Local".center(col_codLocal)} | ' +
-        f'{"Nombre".center(col_nombreLocal)} | ' +
-        f'{"Ubicación".center(col_ubicacionLocal)} | ' +
-        f'{"Rubro".center(col_rubroLocal)} | ' +
-        f'{"Código del Dueño".center(col_codUsuario)} | ' +
-        f'{"Estado".center(col_estado)}'
-    )
-
-    while all.tell() < size:
-        regLoc = pickle.load(all)
-
-        # Formatear y centrar cada columna en la tabla
-        formatted_row = (
-            Fore.WHITE + Style.BRIGHT + 
-            f'{str(regLoc.codLocal).center(col_codLocal)} | ' +
-            f'{regLoc.nombreLocal.strip().center(col_nombreLocal)} | ' +
-            f'{regLoc.ubicacionLocal.strip().center(col_ubicacionLocal)} | ' +
-            f'{regLoc.rubroLocal.strip().center(col_rubroLocal)} | ' +
-            f'{str(regLoc.codUsuario).center(col_codUsuario)} | ' +
-            f'{regLoc.estado.center(col_estado)}'
-        )
-
-        print(formatted_row)
-
-    all.close()
 
 #------------------------VALIDADORES-------------------------
 def valid_opc():
@@ -693,7 +762,7 @@ def crear_locales():
 
 #----------------------------MODIFICATIO LOCALATIO-----------------------------
 def modificar_local():
-    global bandera, med,campo,codloc,coduser,rubrolocal,codLoc
+    global bandera,med,campo,coduser,rubrolocal
     
     all=open(afl,"r+b")
     regLoc=locales()
@@ -761,23 +830,27 @@ def modificar_local():
                     case "2":
                         rubro="Perfumeria".ljust(12)
                     case "3":
-                        rubro="Comidas".ljust(12)   
+                        rubro="Comidas".ljust(12)  
+                clear_screen() 
 
             case 4: #CODIGO
-                bandera=0
-                alu=open(afl,"r+b")
+                bandera=1
+                alu=open(afu,"r+b")
                 alu.seek(0,0)
                 regUser=user()
                 size=os.path.getsize(afu)
                 coduser = int(input("\nIngrese el CÓDIGO de usuario: "))
-                while alu.tell()<size and regUser.tipo!="Dueño de Local" and regUser.cod!=coduser and bandera==1:#recorre user p/ver si existe el codigo con dueño de local
-                    regUser=pickle.load(alu)
-                if(regUser.tipo=="Dueño de Local" and regUser.cod!=coduser):
-                    bandera=0
-                else:
-                    coduser = int(input("\nNo existe el codigo, Ingrese nuevamente: "))
-                    bandera=1
+                alu.seek(0,0)
+                while bandera==1:
                     alu.seek(0,0)
+                    while alu.tell()<size and bandera==1 :#recorre user p/ver si existe el codigo con dueño de local
+                        regUser=pickle.load(alu)
+                        if(regUser.tipo=="Dueño de local" and regUser.cod==coduser):
+                            bandera=0
+                    if(bandera==1):
+                        coduser = int(input("\nNo existe el codigo, Ingrese nuevamente: "))
+                        bandera=1
+                        
         campo = int(input('\nIngrese el campo que desea' + Fore.WHITE + Style.BRIGHT + ' Modificar' + Style.RESET_ALL + Fore.YELLOW + '\n1_ ' + Fore.RESET + 'Nombre' + Fore.YELLOW + '\n2_ ' + Fore.RESET + 'Ubicación' + Fore.YELLOW + '\n3_ ' + Fore.RESET + 'Rubro' + Fore.YELLOW + '\n4_ ' + Fore.RESET + 'Código de usuario' + Fore.YELLOW + '\n0_ ' + Fore.RESET + 'Volver\n\nOPCION: '))
         campo=valid_campo(campo)
     
@@ -789,7 +862,7 @@ def modificar_local():
     regLoc.nombreLocal=valor.ljust(100)
     regLoc.ubicacionLocal=ubi.ljust(100)
     regLoc.rubroLocal=rubro.ljust(12)
-    regLoc.codLocal=coduser
+    regLoc.codUsuario=coduser
     regLoc.estado=estado
  
     pickle.dump(regLoc,all)
@@ -844,7 +917,7 @@ def eliminar_loc():
     
     codStr=str(regLoc.codLocal)
     print(f"El local {Fore.RED + codStr}{Style.RESET_ALL} fue dado de baja.")
-    orden()
+    
     rubros()
     orden_rub(rubrolocal)
 
@@ -903,7 +976,8 @@ def mapa():
         print(Style.BRIGHT+Back.BLACK+Fore.BLUE+"+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+" + "-" * 5 + "+")
 
 #------------------------GESTIONES-------------------------
-def gestion_locales(): 
+def gestion_locales():
+    global contowner
     size=os.path.getsize(afl)
     if (size==0):
         all = open (afl,"w+b")
@@ -1520,19 +1594,6 @@ def num_dias(day):
         case "Sunday":
             num_dia=6
     return num_dia
-
-def buscadorLoc(cod): 
-    alp=open(afp,"r+b")
-    alp.seek(0,0)
-    point=alp.tell()
-    regProm=promociones()
-    regProm=pickle.load(alp)
-    alp.seek(0,0)
-    point=alp.tell()
-    while regProm.codPromo!=cod:
-        point=alp.tell()
-        regProm=pickle.load(alp)
-    return point
 
 def buscardesc():  
     global fecha_actual, desde_str,fecha_datetime
