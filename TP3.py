@@ -155,9 +155,9 @@ def precarga_admin():
     clave="9".ljust(8)
     tipo="fhdfhf".ljust(14)
     user1.cod=cod
-    user1.usuario=usuario
-    user1.clave=clave
-    user1.tipo=tipo
+    user1.usuario=usuario.ljust(100)
+    user1.clave=clave.ljust(8)
+    user1.tipo=tipo.ljust(14)
     pickle.dump(user,alu)
 
     alu.flush()
