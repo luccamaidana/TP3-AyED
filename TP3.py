@@ -88,33 +88,33 @@ global all
 
 
 #afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
-afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
+#afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
 #afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
-#afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat" #este
+afu = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\USUARIOS.dat" #este
 alu = open (afu, "w+b")
 regUser = user()
 
 #locales
 #afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
-afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
+#afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
 #afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
-#afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat" #este
+afl = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\LOCALES.dat" #este
 all = open (afl, "w+b") 
 regLoc = locales()
 
 #promos
 #afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
-afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
+#afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
 #afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
-#afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT" #este
+afp = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\PROMOCIONES.DAT" #este
 alp = open (afp, "w+b")
 regProm = promociones()
 
 #uso promos
 #afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
-afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
+#afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
 #afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
-#afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT" #este
+afup = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\USO_PROMOCIONES.DAT" #este
 alup = open (afup, "w+b")
 regUP = uso_promociones()
 
@@ -579,13 +579,10 @@ def buscadorLoc(cod):
     regLoc=locales()
     regLoc=pickle.load(all)
     all.seek(0,0)
-    if(regLoc.codLocal!=cod):
+    
+    while all.tell()<size and regLoc.codLocal!=cod:
         point=all.tell()
-    else:
-        all.seek(0,0)
-        while all.tell()<size and regLoc.codLocal!=cod:
-            point=all.tell()
-            regLoc=pickle.load(all)
+        regLoc=pickle.load(all)
     return point
 
 def buscadordesc(cod): 
@@ -794,6 +791,8 @@ def modificar_local():
     
     point=buscadorLoc(codLoc)
     all.seek(point,0)
+    regLoc=pickle.load(all)
+    all.seek(point,0)
 
     if (regLoc.estado =="B"):
         alta = input("\nEste local esta dado de baja. ¿Desea activarlo? (S/N): ").upper()
@@ -874,8 +873,8 @@ def modificar_local():
         campo=valid_campo(campo)
     
     
-    
-    
+    all.seek(point,0)
+    regLoc=pickle.load(all)
     all.seek(point,0)
     regLoc.codLocal=codLoc
     regLoc.nombreLocal=valor.ljust(100)
@@ -883,7 +882,6 @@ def modificar_local():
     regLoc.rubroLocal=rubro.ljust(12)
     regLoc.codUsuario=coduser
     regLoc.estado=estado
- 
     pickle.dump(regLoc,all)
     all.flush()
     all.seek(point,0)
@@ -1452,7 +1450,7 @@ def crear_descuento():
                 regProm.textoPromo = texto.ljust(100)
                 regProm.fechaDesdePromo = desde.strftime("%d/%m/%Y")
                 regProm.fechaHastaPromo = hasta.strftime("%d/%m/%Y")
-                regProm.estado = "Pendiente".ljust(9)
+                regProm.estado = "Aprobado".ljust(9)
                 regProm.codLocal=codigo
                 regProm.codUsuario=cod
                 pickle.dump(regProm, alp)
