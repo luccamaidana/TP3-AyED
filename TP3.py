@@ -37,8 +37,8 @@ def clear_screen():
 #--------------------------CLASS------------------------------
 class user:
     def __init__(self):
-        self.cod = 0
-        self.usuario = ""
+        self.cod = ""
+        self.usuario  = ""
         self.clave = ""
         self.tipo = ""
 
@@ -132,56 +132,32 @@ regUP = uso_promociones()
 def precarga_admin():
     alu=open(afu,"w+b")
     alu.seek(0,0)
-    size=os.path.getsize(afu)
-    print(size)
-    alu.flush
-    user1= user
-    pickle.dump(user,alu)
-    alu.flush
+    regUser= user()
     alu.seek(0,0)
-    print("puntero",alu.tell())
     cod=1
-    usuario="5".ljust(100)
-    clave="6".ljust(8)
-    tipo="Administrador".ljust(14)
-    user1.cod=cod
-    user1.usuario=usuario
-    user1.clave=clave
-    user1.tipo=tipo
+    usuario="5"
+    clave="6"
+    tipo="Administrador"
+    regUser.cod=cod
+    regUser.usuario=usuario.ljust(100)
+    regUser.clave=clave.ljust(8)
+    regUser.tipo=tipo.ljust(14)
     alu.seek(0,0)
-    pickle.dump(user,alu)
-    cod=1
-    usuario="8".ljust(100)
-    clave="9".ljust(8)
-    tipo="fhdfhf".ljust(14)
-    user1.cod=cod
-    user1.usuario=usuario.ljust(100)
-    user1.clave=clave.ljust(8)
-    user1.tipo=tipo.ljust(14)
-    pickle.dump(user,alu)
-
+    pickle.dump(regUser,alu)
     alu.flush()
-    size=os.path.getsize(afu)
-    print(size)
-    
+    alu.close()
+precarga_admin()
 
-    print("puntero",alu.tell())
-    
+def usercargados():
+    alu=open(afu,"r+b")
+    alu.seek(0,0)
+    size=os.path.getsize(afu)
+    regUser = user()
     alu.seek(0,0)
     while alu.tell()<size:
-        print(user1)
-        user1=pickle.load(alu)
-        
+        regUser=pickle.load(alu)
+        print(regUser.cod,regUser.usuario.rstrip(),regUser.clave.rstrip(),regUser.tipo.rstrip())
 
-    alu.close()
-    exit = input("Toque Enter para volver. ")
-    while exit != "":
-        exit = input("Respuesta inválida. Presione ENTER. ")
-
-precarga_admin()
-exit = input("Toque Enter para volver. ")
-while exit != "":
-    exit = input("Respuesta inválida. Presione ENTER. ")
 
 #------------------------PANTALLAS-------------------------
 def centrar_texto(texto):
@@ -275,12 +251,6 @@ def barracarga():
         print(Fore.GREEN + Style.BRIGHT + f'\r[{elements[frame]*i:=^{bar_len}}]', end='')
         time.sleep(0.07) 
 
-
-
-
-
-
-
 #------------------------LECTURAS-------------------------
 #----Locales----
 def locales_cargados():
@@ -329,12 +299,12 @@ def locales_cargados():
 def valid_opc():
     global opc
     opc = input("\nOPCION: ")
-    #clear_screen()
+    clear_screen()
     while opc != "1" and opc != "2" and opc != "3":
         mostrar_menu()
-        opc = input("\nMal ingresado. Repetir opción. OPCION: ")
-        #clear_screen()
-    #clear_screen()
+        opc = input(Fore.RED+"\nMal ingresado. Repetir opción. OPCION: "+Fore.RESET)
+        clear_screen()
+    clear_screen()
     return opc
 
 def valid_adm():
@@ -462,7 +432,7 @@ def ingreso_main_menu(k):
         case "1":
             login()
         case "2":
-            signin("Cliente")
+            signin("Cliente".ljust(14))
             mainMenu()
         case "3":
             print("\nSaliendo...")
@@ -1658,69 +1628,77 @@ def login():
     size=os.path.getsize(afu)
     correcto=0
     cont=1
-    nombre=input("\nIngrese el nombre: ").ljust(100)
-    password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*").ljust(8)
+    nombre=input("\nIngrese el nombre: ")
+    password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*")
     
     while correcto!=1 and cont<3:
         alu.seek(0,0)
+        bandera=0
+        while(alu.tell() < size) and bandera==0:
+            if(regUser.usuario.rstrip()==nombre.rstrip()):             
+                if(regUser.clave.rstrip()==password.rstrip()):
+                    bandera=1
+                else:
+                    regUser=pickle.load(alu)
+            else:
+                regUser=pickle.load(alu)
 
-        while(alu.tell() < size) and (regUser.usuario.strip()!=nombre.strip()) and (regUser.clave.strip()!=password.strip()):
-            regUser=pickle.load(alu)
-
-        if(regUser.usuario.strip()==nombre.strip() and regUser.clave.strip()==password.strip()):  
+        if(regUser.usuario.rstrip()==nombre.rstrip() and regUser.clave.rstrip()==password.rstrip()):  
             correcto=1
         else:
-            nombre=input("\nIngrese el nombre: ").ljust(100)
-            password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*").ljust(8)
+            nombre=input("\nIngrese el nombre: ")
+            password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*")
             cont=cont+1 #=?????
             alu.seek(0,0)
-    if (regUser.usuario.strip()==nombre.strip() and regUser.clave.strip()==password.strip()):  
+    if (regUser.usuario.rstrip()==nombre.rstrip() and regUser.clave.rstrip()==password.rstrip()):  
             correcto=1    
     if(correcto==1):
-        name=regUser.usuario.strip()
+        name=regUser.usuario.rstrip()
         cod=regUser.cod
-        select_menu(regUser.tipo.strip())
+        select_menu(regUser.tipo.rstrip())
     else:
         print("Cantidad de maxima de intentos permitidos")
 
     alu.close()
 
 #-------------------------SIGN IN----------------------------
-def signin(user):
+def signin(user1):
     global contuser
+
     alu = open (afu, "r+b")
+    regUser= user()
     size=os.path.getsize(afu)
-    regUser=pickle.load(alu)
     flag=0
-
-
-    nombre=input("\nIngrese el nombre: ").ljust(100)
+    nombre=input("\nIngrese el nombre: ")
 
     while flag!=1:
         alu.seek(0,0)
-
         while(alu.tell() < size) and (regUser.usuario.rstrip()!=nombre.rstrip()):
             regUser=pickle.load(alu)
         if(regUser.usuario.rstrip()==nombre.rstrip()):  
-            nombre=input("\nEse nombre ya existe. Ingrese el nombre: ").ljust(100)
+            nombre=input("\nEse nombre ya existe. Ingrese el nombre: ")
         else:
             flag=1
             alu.seek(0,0)
 
-    password = maskpass.askpass(prompt="\nIngrese una contraseña con 8 caracteres: ", mask="*").ljust(8)
+    password = maskpass.askpass(prompt="\nIngrese una contraseña con 8 caracteres: ", mask="*")
     while len(password)!=8:
-        password = maskpass.askpass(prompt="\nLa contraseña debe contener 8 caracteres: ", mask="*").ljust(8)
+        password = maskpass.askpass(prompt="\nLa contraseña debe contener 8 caracteres: ", mask="*")
+
 
     alu.seek(0,2)
     contuser=contuser+1
     regUser.cod=contuser
     regUser.usuario = nombre.ljust(100)
     regUser.clave = password.ljust(8)
-    regUser.tipo = user.ljust(14)
-
-    pickle.dump(regUser, alu)
+    regUser.tipo = user1.ljust(14)
+    pickle.dump(regUser,alu)
     alu.flush()
     alu.close()
+    usercargados()
+    exit = input("Toque Enter para volver. ")
+    while exit != "":
+        exit = input("Respuesta inválida. Presione ENTER. ")
     centrar_texto(Fore.GREEN + Style.BRIGHT + 'La cuenta ha sido creada EXITOSAMENTE!')
     time.sleep(1.7)
 
@@ -1732,7 +1710,7 @@ def menu_admin():
    valid_adm()
    match opcadm:
       case "1":
-        #clear_screen()
+        clear_screen()
         print("\nGestión de locales")
         gestion_locales()
       case "2":
