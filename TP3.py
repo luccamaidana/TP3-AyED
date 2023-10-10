@@ -169,37 +169,34 @@ regUser.usuario="5"
 regUser.clave="6"
 regUser.tipo="Administrador"
 pickle.dump(regUser,alu)
-
-print(len(regUser.usuario),"uzer len")
-print(sys.getsizeof(regUser.cod),"cod")
-print(sys.getsizeof(regUser.usuario),"uzer")
-print(sys.getsizeof(regUser.clave),"clave")
-print(sys.getsizeof(regUser.tipo),"tipo")
-
-print(len(regUser.usuario.rstrip()),"oka")
-
 alu.flush()
-alu.seek(0,2)
-#pickle.dump(regUser,alu)
-size = os.path.getsize(afu)
-
-print(alu.tell(),"Pointer")
-print(size,"Tamaño size")
-alu.close()
-
 
 #------------------------PANTALLAS-------------------------
 def barracarga():
     clear_screen()
-    print(Style.BRIGHT + Fore.WHITE + "         CARGANDO...")
+    print(Style.NORMAL + Fore.MAGENTA +Back.BLACK+ "         CARGANDO...       ")
     bar_len = 25
     elements = ['-','\\', '|', '/']
     for i in range(bar_len+1):
         frame =i%len(elements)
-        print(Fore.GREEN + Style.BRIGHT + f'\r[{elements[frame]*i:=^{bar_len}}]', end='')
+        print(Fore.GREEN+Style.BRIGHT +Back.BLACK+ f'\r[{elements[frame]*i:=^{bar_len}}]', end='')
         time.sleep(0.08) 
 
 
+def centrar_input(prompt):
+    ancho_consola, _ = shutil.get_terminal_size()
+    espacio_adicional = max(0, (ancho_consola - len(prompt) -10) // 2)
+    texto_centrado = " " * espacio_adicional + prompt
+    return input(texto_centrado)
+def centrar_texto_var(texto, var):
+    anchoconsola,  = shutil.get_terminal_size()
+    ancho_t = len(texto)
+    ancho_v = len(var)
+    espacio_disponible = anchoconsola - ancho_t - ancho_v
+    espacio_adicional_izquierda = (espacio_disponible // 2) -5 
+    espacio_adicional_derecha = espacio_disponible - espacio_adicional_izquierda
+    texto_centrado = " " * espacio_adicional_izquierda + texto + var + " " * espacio_adicional_derecha 
+    print(texto_centrado)
 def centrar_texto(texto):
     ancho_consola, _ = shutil.get_terminal_size()
     espacio_adicional = max(0, (ancho_consola - len(texto)) // 2)
@@ -236,7 +233,6 @@ def pantalla_locales():
     print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + 'c_' + Fore.RESET + ' Eliminar local')
     print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + 'd_' + Fore.RESET + ' Mapa de locales')
     print(Style.BRIGHT + Fore.LIGHTYELLOW_EX + 'e_' + Fore.RESET + ' Volver')
-
 def enter(menu):
     #COPIAR ESTA LINEA DE ABAJO PARA CADA EXIT
     #exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
@@ -839,74 +835,104 @@ def gestion_locales():
 
 #-------------------------LOGIN----------------------------
 def login():
+    global name,cont,cod
     alu = open (afu, "r+b")
+    regUser=user()
+    alu.seek(0,0)
+    regUser=pickle.load(alu)
     size=os.path.getsize(afu)
     correcto=0
     cont=1
-    nombre=input("\nIngrese el nombre: ")
-    password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*")
-    regUser=pickle.load(alu)
-    #1
+    clear_screen()
+    centrar_texto(Fore.MAGENTA+Style.BRIGHT+"---Log In---")
+    print()
+    nombre=centrar_input("Ingrese el nombre: ")
+
+    ancho_consola, _ = shutil.get_terminal_size()
+    espacio_adicional = max(0, (ancho_consola  - 33) // 2)
+    texto_centrado =  " " * espacio_adicional +"Ingresar contraseña: "
+
+    password = maskpass.askpass(prompt=texto_centrado, mask="*")
+    
     while correcto!=1 and cont<3:
         alu.seek(0,0)
+        bandera=0
+        while(alu.tell() < size) and bandera==0:
+            if(regUser.usuario.rstrip()==nombre):             
+                if(regUser.clave.rstrip()==password.rstrip()):
+                    bandera=1
+                else:
+                    regUser=pickle.load(alu)
+            else:
+                regUser=pickle.load(alu)
 
-        while(alu.tell() < size) and (regUser.usuario!=nombre) and (regUser.clave!=password):
-            regUser=pickle.load(alu)
-            #si no funca agregar reguser/ty
-
-        if(regUser.usuario==nombre and regUser.clave==password):  
+        if(regUser.usuario.rstrip()==nombre.rstrip() and regUser.clave.rstrip()==password.rstrip()):  
             correcto=1
         else:
-            nombre=input("\nIngrese el nombre: ")
-            password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*")
-            cont=cont+1
+            nombre=centrar_input("Ingrese el nombre: ")
+            password = maskpass.askpass(prompt=texto_centrado, mask="*")
+
+            cont=cont+1 #=?????
             alu.seek(0,0)
-    if (regUser.usuario==nombre and regUser.clave==password):  
+    if (regUser.usuario.rstrip()==nombre.rstrip() and regUser.clave.rstrip()==password.rstrip()):  
             correcto=1    
     if(correcto==1):
-        select_menu(regUser.tipo)
+        name=regUser.usuario.rstrip()
+        cod=regUser.cod
+        select_menu(regUser.tipo.rstrip())
     else:
-        print("Cantidad de maxima de intentos permitidos")
+        centrar_texto(Fore.RED+Style.BRIGHT+"Cantidad de MAXIMA de intentos permitidos")
 
     alu.close()
 
 #-------------------------SIGN IN----------------------------
-def signin(user):
-    global cont
+def signin(user1):
+    global contuser
+
     alu = open (afu, "r+b")
+    regUser= user()
     size=os.path.getsize(afu)
-    regUser=pickle.load(alu)
     flag=0
+    centrar_texto(Fore.MAGENTA+Style.BRIGHT+"---Sign In---")
+    print()
+    nombre=centrar_input("Ingrese el nombre: ")
+    ancho_consola, _ = shutil.get_terminal_size()
+    espacio_adicional = max(0, (ancho_consola  - 50) // 2)
+    texto_centrado =  " " * espacio_adicional +"Ingrese una contraseña con 8 caracteres: "
+    texto_centrado2 =  " " * espacio_adicional +Fore.RED+"La contraseña debe contener 8 caracteres: "+Fore.RESET
 
 
-    nombre=input("\nIngrese el nombre: ")
 
     while flag!=1:
         alu.seek(0,0)
-
-        while(alu.tell() < size) and (regUser.usuario!=nombre):
+        while(alu.tell() < size) and (regUser.usuario.rstrip()!=nombre.rstrip()):
             regUser=pickle.load(alu)
-        if(regUser.usuario==nombre):  
-            nombre=input("\nEse nombre ya existe. Ingrese el nombre: ")  
+        if(regUser.usuario.rstrip()==nombre.rstrip()):  
+            nombre=centrar_input(Fore.RED+"      Ese nombre ya existe. Ingrese el nombre: "+Fore.RESET)
+            print()
         else:
             flag=1
             alu.seek(0,0)
 
-    password = maskpass.askpass(prompt="\nIngrese una contraseña con 8 caracteres: ", mask="*")
+    password = maskpass.askpass(prompt=texto_centrado, mask="*")
     while len(password)!=8:
-        password = maskpass.askpass(prompt="\nLa contraseña debe contener 8 caracteres: ", mask="*")
+        password = maskpass.askpass(prompt=texto_centrado2, mask="*")
 
-    cont=cont+1
-    regUser.cod=cont
-    regUser.usuario = nombre
-    regUser.clave = password
-    regUser.tipo = user
-
-    pickle.dump(regUser, alu)
+    alu.seek(0,2)
+    contuser=contuser+1
+    regUser.cod=contuser
+    regUser.usuario = nombre.ljust(100)
+    regUser.clave = password.ljust(8)
+    regUser.tipo = user1.ljust(14)
+    pickle.dump(regUser,alu)
     alu.flush()
     alu.close()
+    usercargados()
+    exit = input("Toque Enter para volver. ")
+    while exit != "":
+        exit = input("Respuesta inválida. Presione ENTER. ")
     centrar_texto(Fore.GREEN + Style.BRIGHT + 'La cuenta ha sido creada EXITOSAMENTE!')
-    time.sleep(1)
+    time.sleep(1.7)
 
 #-------------------------MENU'S----------------------------
 def menu_admin():
