@@ -42,8 +42,6 @@ class user:
         self.clave = ""
         self.tipo = ""
 
-
-
 class locales:
     def __init__(self):
         self.codLocal = 0
@@ -91,29 +89,29 @@ global all
 
 
 #afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
-afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
-#afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
+#afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
+afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
 alu = open (afu, "w+b")
 regUser = user()
 
 #locales
 #afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
-afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
-#afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
+#afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
+afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
 all = open (afl, "w+b") 
 regLoc = locales()
 
 #promos
 #afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
-afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
-#afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
+#afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
+afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
 alp = open (afp, "w+b")
 regProm = promociones()
 
 #uso promos
 #afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
-afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
-#afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
+#afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
+afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
 alup = open (afup, "w+b")
 regUP = uso_promociones()
 
@@ -135,8 +133,8 @@ def precarga_admin():
     regUser= user()
     alu.seek(0,0)
     cod=1
-    usuario="5"
-    clave="6"
+    usuario="admin@shopping.com"
+    clave="12345"
     tipo="Administrador"
     regUser.cod=cod
     regUser.usuario=usuario.ljust(100)
@@ -147,6 +145,7 @@ def precarga_admin():
     alu.flush()
     alu.close()
 precarga_admin()
+
 
 def usercargados():
     alu=open(afu,"r+b")
@@ -165,6 +164,12 @@ def centrar_texto(texto):
     espacio_adicional = max(0, (ancho_consola - len(texto)) // 2)
     texto_centrado = " " * espacio_adicional + texto
     print(texto_centrado)
+
+def centrar_input(prompt):
+    ancho_consola, _ = shutil.get_terminal_size()
+    espacio_adicional = max(0, (ancho_consola - len(prompt) -10) // 2)
+    texto_centrado = " " * espacio_adicional + prompt
+    return input(texto_centrado)
 
 def centrar_texto_var(texto, var):
     ancho_consola, _ = shutil.get_terminal_size()
@@ -243,13 +248,13 @@ def pantalla_locales():
 
 def barracarga():
     clear_screen()
-    print(Style.BRIGHT + Fore.WHITE + "         CARGANDO...")
+    print(Style.NORMAL + Fore.MAGENTA+ "         CARGANDO...       ")
     bar_len = 25
     elements = ['-','\\', '|', '/']
     for i in range(bar_len+1):
         frame =i%len(elements)
-        print(Fore.GREEN + Style.BRIGHT + f'\r[{elements[frame]*i:=^{bar_len}}]', end='')
-        time.sleep(0.07) 
+        print(Fore.GREEN+Style.BRIGHT+ f'\r[{elements[frame]*i:=^{bar_len}}]', end='')
+        time.sleep(0.05)
 
 #------------------------LECTURAS-------------------------
 #----Locales----
@@ -649,7 +654,7 @@ def crear_locales():
         cod = int(input("\nIngrese el CÓDIGO de dueño de local: "))
         while bandera==0:
             alu.seek(0,0)
-            while alu.tell() < size and regUser.tipo!="Dueño de local" and regUser.cod!=cod:
+            while alu.tell() < size and regUser.tipo.rstrip!="Dueño de local" and regUser.cod!=cod:
                 regUser = pickle.load(alu)
             if(regUser.tipo=="Dueño de local" and regUser.cod==cod):
                 bandera=1
@@ -992,22 +997,50 @@ def aprob_den_desc():
             menu_admin()
              
     else:
-        regProm=pickle.load(alp)
-        regLoc=pickle.load(all)
+        regProm=promociones()
+        regLoc=locales()
         alp.seek(0,0)
         all.seek(0,0)
         
+
+
         while alp.tell()<sizeprom:
             regProm=pickle.load(alp)
             regLoc=pickle.load(all)
             all.seek(0,0)
             if(regProm.estado=="Pendiente"):
+                all.seek(0,0)
                 while all.tell()<sizeloc and regProm.codLocal!=regLoc.codLocal: #busca el nombre del local
                     regLoc=pickle.load(all)
                 
-                print(regLoc.nombreLocal,regProm.codPromo,regProm.textoPromo) #agregar el print piola
+                # Definir ancho de cada columna de la tabla
+                col_codPromo = 20
+                col_nombreLocal = 40
+                col_textoPromo = 40
+
+                # Encabezados de la tabla
+                print(
+                    Back.BLACK + Fore.BLUE + Style.BRIGHT + Back.BLACK +
+                    f'{"Nombre".center(col_nombreLocal)} | ' +
+                    f'{"Codigo Promo".center(col_codPromo)} | ' +
+                    f'{"Texto Promo".center(col_textoPromo)} | ' 
+                )
+                alp.seek(0,0)
+                while alp.tell() < sizeprom:
+                    regProm = pickle.load(alp)
+
+                    # Formatear y centrar cada columna en la tabla
+                    print()
+                    print (
+                        Fore.WHITE + Style.BRIGHT + 
+                        f'{regLoc.nombreLocal.strip().center(col_nombreLocal)} | ' +
+                        f'{str(regProm.codPromo).center(col_codPromo)} | ' +
+                        f'{regProm.textoPromo.strip().center(col_textoPromo)} | '
+                    )
+                    print()
+
         ##### aca estan todos los locales en pendiente mostrados 
-        codpromo=int(input("Ingrese el codigo de promocion para Aprobar/Denegar"))
+        codpromo=int(input("Ingrese el codigo de promocion para Aprobar/Denegar: "))
         bandera=valid_codProm(codpromo)
         while bandera==1:
             codpromo=int(input("Ingrese un codigo de promocion existente para Aprobar/Denegar")) 
@@ -1035,7 +1068,7 @@ def aprob_den_desc():
         while exit.upper() != "S" and exit.upper() != "N":
             exit = input("Respuesta inválida. ¿Desea APROBAR el descuento? (S/N): ").upper()
         if(exit=="S"):
-            print(alp.tell())
+
             regProm.codPromo = regProm.codPromo
             regProm.textoPromo = regProm.textoPromo.ljust(100)
             regProm.fechaDesdePromo = regProm.fechaDesdePromo
@@ -1151,6 +1184,43 @@ def carga_dias(matriz,day):
             matriz[6]=1
     return (matriz)
 
+def most_dias(matriz):
+    for i in range (0,6):
+        if matriz[i]==1:
+            print("L")
+        else:
+            print("LN")
+
+        if matriz[i]==1:
+            print("M")
+        else:
+            print("MN")
+
+        if matriz[i]==1:
+            print("X")
+        else:
+            print("XN")
+
+        if matriz[i]==1:
+            print("J")
+        else:
+            print("JN")
+
+        if matriz[i]==1:
+            print("V")
+        else:
+            print("VN")
+
+        if matriz[i]==1:
+            print("S")
+        else:
+            print("SN")
+
+        if matriz[i]==1:
+            print("D")
+        else:
+            print("DN")
+        
 def crear_descuento(): 
     global nombredia, fecha_actual, fecha_formateada, nombredia, codpromo, dias, cod,desde_str
     bandera=0
@@ -1205,6 +1275,8 @@ def crear_descuento():
                         print(f"{Fore.BLUE+Style.BRIGHT}Estado promoción: {Fore.RED+Style.BRIGHT+regProm.estado}")
                     case "Pendiente":
                         print(f"{Fore.BLUE+Style.BRIGHT}Estado promoción: {Fore.YELLOW+Style.BRIGHT+regProm.estado}")
+                print(most_dias(regProm.diasSemana))
+                print(regProm.diasSemana)
                 print(Fore.BLUE+Back.BLACK+Style.BRIGHT+'-----------------------------------------')
         alp.seek(0,0)
         all.seek(0,0)
@@ -1279,10 +1351,7 @@ def crear_descuento():
                     while exit.upper() != "S" and exit.upper() != "N":
                         exit = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ")
                 
-                exitmain=input("¿Desea cargar más promociones? (S/N): ")
-                exitmain=exitmain.upper()
-                while exitmain.upper() != "S" and exitmain.upper() != "N":
-                    exitmain = input("Respuesta inválida. ¿Desea seguir cargando? (S/N): ")
+                
                 
                 regProm.codPromo=codpromo
                 codpromo=codpromo+1
@@ -1399,9 +1468,9 @@ def uso_descuento():
                 if ban!=0 and flag2==0 and ban2==0 and var!=var2:
                     if fechaDesdePromo>=desde and fechaHastaPromo<=hasta and regProm.estado.rstrip()=="Aprobado" and fechaHastaPromo<=hasta :
                         print("Local", regLoc.codLocal,":", regLoc.nombreLocal)
-                        print("|-----------------|----------------------------------------|---------------|---------------|-------------------|")
-                        print("| Codigo Promo    |               Texto                    |  Fecha Desde  |  Fecha Hasta  |  Cant. Uso Promo  |")
-                        print("|-----------------|----------------------------------------|---------------|---------------|-------------------|") 
+                        print("|-----------------|----------------------------------------|----------------|----------------|-------------------|")
+                        print("|    Cod Promo    |                Texto                   |   Fecha Desde  |  Fecha Hasta   |  Cant. Uso Promo  |")  
+                        print("|-----------------|----------------------------------------|----------------|----------------|-------------------|") 
                         ban2=1
                     else:
                         print("No se encuentra ninguna promoción entre las fechas proporcionadas.")                          
@@ -1416,8 +1485,9 @@ def uso_descuento():
 
                 if fechaDesdePromo>=desde and fechaHastaPromo<=hasta and regProm.estado.rstrip()=="Aprobado" and fechaHastaPromo<=hasta :
                     if flag2==0:
-                        print(f"| {regProm.codPromo:<15} | {regProm.textoPromo.rstrip():<38} | {regProm.fechaDesdePromo:<15} | {regProm.fechaHastaPromo:<15} | {cantreg:<17} |")
-                        print("|-----------------|--------------------------------------|---------------|---------------|-------------------|")
+                        print(f"| {regProm.codPromo:<15} | {regProm.textoPromo.rstrip():<38} | {regProm.fechaDesdePromo:<14} | {regProm.fechaHastaPromo:<14} | {cantreg:<17} |")
+                        print("|-----------------|----------------------------------------|----------------|----------------|-------------------|") 
+                        ban2=1
                         flag2=1
                 var=regProm.codLocal
             
@@ -1510,15 +1580,19 @@ def buscardesc():
 
         dia_semana = fecha.strftime("%A")
 
+        
         alp.seek(0,0)
         datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y")
         
+        var=0 
+        alp.seek(0,0)
+
         while alp.tell() < size :
+            regProm = pickle.load(alp)
+            
             if regProm.codLocal == codigo and regProm.estado.rstrip() == "Aprobado" and fecha >= datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y") and fecha <= datetime.datetime.strptime(regProm.fechaHastaPromo, "%d/%m/%Y") and regProm.diasSemana[num_dias(dia_semana)]==1:
-                
-                regProm = pickle.load(alp)
-                
                 # Definir ancho de cada columna de la tabla
+                var=1
                 col_codPromo = 20
                 col_textoPromo = 40
                 col_fechaDesdePromo = 15
@@ -1540,18 +1614,15 @@ def buscardesc():
                 f'{regProm.fechaDesdePromo.center(col_fechaDesdePromo)} | ' +
                 f'{regProm.fechaHastaPromo.center(col_fechaHastaPromo)}'))
                 #print(formatted_row)
-            else: 
-                    if regProm.diasSemana[num_dias(dia_semana)]==0:
-                        centrar_texto_var("No hay descuentos disponibles para ",fecha_str)
-                    else:
-                        centrar_texto("No hay promociones en el local buscado.")
+        if var==0:
+            print("No hay descuentos en el local ingresado.")
 
-            alp.close()
-            exit = input("\nToque Enter para volver. ")
-            while exit != "":
-                exit = input("Respuesta inválida. Presione ENTER. ")
-            if exit=="":
-                menu_costumer()
+        alp.close()
+        exit = input("\nToque Enter para volver. ")
+        while exit != "":
+            exit = input("Respuesta inválida. Presione ENTER. ")
+        if exit=="":
+            menu_costumer()
 
 def solicitardesc(): 
     global fecha_formateada, fecha_datetime
@@ -1628,14 +1699,22 @@ def login():
     size=os.path.getsize(afu)
     correcto=0
     cont=1
-    nombre=input("\nIngrese el nombre: ")
-    password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*")
+    clear_screen()
+    centrar_texto(Fore.MAGENTA+Style.BRIGHT+"---Log In---")
+    print()
+    nombre=centrar_input("Ingrese el nombre: ")
+
+    ancho_consola, _ = shutil.get_terminal_size()
+    espacio_adicional = max(0, (ancho_consola  - 33) // 2)
+    texto_centrado =  " " * espacio_adicional + "Ingresar contraseña: "
+
+    password = maskpass.askpass(prompt=texto_centrado, mask="*")
     
     while correcto!=1 and cont<3:
         alu.seek(0,0)
         bandera=0
         while(alu.tell() < size) and bandera==0:
-            if(regUser.usuario.rstrip()==nombre.rstrip()):             
+            if(regUser.usuario.rstrip()==nombre):             
                 if(regUser.clave.rstrip()==password.rstrip()):
                     bandera=1
                 else:
@@ -1646,8 +1725,9 @@ def login():
         if(regUser.usuario.rstrip()==nombre.rstrip() and regUser.clave.rstrip()==password.rstrip()):  
             correcto=1
         else:
-            nombre=input("\nIngrese el nombre: ")
-            password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*")
+            nombre=centrar_input("Ingrese el nombre: ")
+            password = maskpass.askpass(prompt=texto_centrado, mask="*")
+
             cont=cont+1 #=?????
             alu.seek(0,0)
     if (regUser.usuario.rstrip()==nombre.rstrip() and regUser.clave.rstrip()==password.rstrip()):  
@@ -1657,7 +1737,7 @@ def login():
         cod=regUser.cod
         select_menu(regUser.tipo.rstrip())
     else:
-        print("Cantidad de maxima de intentos permitidos")
+        centrar_texto(Fore.RED+Style.BRIGHT+"Cantidad de MAXIMA de intentos permitidos")
 
     alu.close()
 
@@ -1669,22 +1749,30 @@ def signin(user1):
     regUser= user()
     size=os.path.getsize(afu)
     flag=0
-    nombre=input("\nIngrese el nombre: ")
+    centrar_texto(Fore.MAGENTA+Style.BRIGHT+"---Sign In---")
+    print()
+    nombre=centrar_input("Ingrese el nombre: ")
+    ancho_consola, _ = shutil.get_terminal_size()
+    espacio_adicional = max(0, (ancho_consola  - 50) // 2)
+    texto_centrado =  " " * espacio_adicional +"Ingrese una contraseña con 8 caracteres: "
+    texto_centrado2 =  " " * espacio_adicional +Fore.RED+"La contraseña debe contener 8 caracteres: "+Fore.RESET
+
+
 
     while flag!=1:
         alu.seek(0,0)
         while(alu.tell() < size) and (regUser.usuario.rstrip()!=nombre.rstrip()):
             regUser=pickle.load(alu)
         if(regUser.usuario.rstrip()==nombre.rstrip()):  
-            nombre=input("\nEse nombre ya existe. Ingrese el nombre: ")
+            nombre=centrar_input(Fore.RED+"      Ese nombre ya existe. Ingrese el nombre: "+Fore.RESET)
+            print()
         else:
             flag=1
             alu.seek(0,0)
 
-    password = maskpass.askpass(prompt="\nIngrese una contraseña con 8 caracteres: ", mask="*")
+    password = maskpass.askpass(prompt=texto_centrado, mask="*")
     while len(password)!=8:
-        password = maskpass.askpass(prompt="\nLa contraseña debe contener 8 caracteres: ", mask="*")
-
+        password = maskpass.askpass(prompt=texto_centrado2, mask="*")
 
     alu.seek(0,2)
     contuser=contuser+1
@@ -1695,10 +1783,7 @@ def signin(user1):
     pickle.dump(regUser,alu)
     alu.flush()
     alu.close()
-    usercargados()
-    exit = input("Toque Enter para volver. ")
-    while exit != "":
-        exit = input("Respuesta inválida. Presione ENTER. ")
+    #usercargados()
     centrar_texto(Fore.GREEN + Style.BRIGHT + 'La cuenta ha sido creada EXITOSAMENTE!')
     time.sleep(1.7)
 
@@ -1806,11 +1891,3 @@ def PP():
     mainMenu()
 
 PP()
-
-
-
-
-
-
-
-
