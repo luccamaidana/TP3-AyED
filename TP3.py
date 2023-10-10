@@ -42,6 +42,8 @@ class user:
         self.clave = ""
         self.tipo = ""
 
+
+
 class locales:
     def __init__(self):
         self.codLocal = 0
@@ -94,13 +96,6 @@ afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
 alu = open (afu, "w+b")
 regUser = user()
 
-regUser.usuario = regUser.usuario.ljust(100)
-regUser.clave = regUser.clave.ljust(8)
-regUser.tipo= regUser.tipo.ljust(14)
-
-
-
-
 #locales
 #afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
 afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
@@ -122,54 +117,6 @@ afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONE
 alup = open (afup, "w+b")
 regUP = uso_promociones()
 
-#novedades
-#afn = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\NOVEDADES.DAT"
-#afn = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\NOVEDADES.DAT"
-#afn = "D:\\Descargas\\Facultad\\TP3-AyED\\NOVEDADES.DAT"
-#aln = open (afn, "w+b")
-#regNov = novedades()
-
-
-
-
-size= os.path.getsize(afl)
-print(size)
-regLoc.nombreLocal = regLoc.nombreLocal.ljust(100)
-regLoc.ubicacionLocal = regLoc.ubicacionLocal.ljust(100)
-regLoc.rubroLocal = regLoc.rubroLocal.ljust(12)
-regLoc.estado = regLoc.estado.ljust(1)
-size= os.path.getsize(afl)
-print(size)
-regLoc.codLocal= 0
-regLoc.nombreLocal=""
-regLoc.ubicacionLocal=""
-regLoc.rubroLocal=""
-regLoc.codUsuario= 0
-regLoc.estado= "A"
-size= os.path.getsize(afl)
-print(size)
-#pickle.dump(regLoc,all)
-all.flush()
-#size= os.path.getsize(afl)
-#print(size)
-#promos
-#afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
-afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
-#alp = open (afp, "w+b")
-regProm = promociones()
-
-#uso promos
-#afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
-afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
-#alup = open (afup, "w+b")
-regUP = uso_promociones()
-
-#novedades
-#afn = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\NOVEDADES.DAT"
-afn = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\NOVEDADES.DAT"
-#aln = open (afn, "w+b")
-regNov = novedades()
-
 #-------------------------EL AJUSTE---------------------------
 
 
@@ -182,13 +129,59 @@ regNov = novedades()
 
 
 #-------Usuarios----------
-regUser.cod=1
-regUser.usuario="admin@shopping.com"
-regUser.clave="12345"
-regUser.tipo="Administrador"
-pickle.dump(regUser,alu)
-alu.flush()
-alu.close()
+def precarga_admin():
+    alu=open(afu,"w+b")
+    alu.seek(0,0)
+    size=os.path.getsize(afu)
+    print(size)
+    alu.flush
+    user1= user
+    pickle.dump(user,alu)
+    alu.flush
+    alu.seek(0,0)
+    print("puntero",alu.tell())
+    cod=1
+    usuario="5".ljust(100)
+    clave="6".ljust(8)
+    tipo="Administrador".ljust(14)
+    user1.cod=cod
+    user1.usuario=usuario
+    user1.clave=clave
+    user1.tipo=tipo
+    alu.seek(0,0)
+    pickle.dump(user,alu)
+    cod=1
+    usuario="8".ljust(100)
+    clave="9".ljust(8)
+    tipo="fhdfhf".ljust(14)
+    user1.cod=cod
+    user1.usuario=usuario
+    user1.clave=clave
+    user1.tipo=tipo
+    pickle.dump(user,alu)
+
+    alu.flush()
+    size=os.path.getsize(afu)
+    print(size)
+    
+
+    print("puntero",alu.tell())
+    
+    alu.seek(0,0)
+    while alu.tell()<size:
+        print(user1)
+        user1=pickle.load(alu)
+        
+
+    alu.close()
+    exit = input("Toque Enter para volver. ")
+    while exit != "":
+        exit = input("Respuesta inválida. Presione ENTER. ")
+
+precarga_admin()
+exit = input("Toque Enter para volver. ")
+while exit != "":
+    exit = input("Respuesta inválida. Presione ENTER. ")
 
 #------------------------PANTALLAS-------------------------
 def centrar_texto(texto):
@@ -289,20 +282,6 @@ def barracarga():
 
 
 #------------------------LECTURAS-------------------------
-#----Usuarios----
-"""alu = open (afu,"r+b")
-size= os.path.getsize(afu)
-
-while alu.tell() < size:
-    regUser = pickle.load(alu)
-    print(regUser.cod)
-    print(regUser.usuario)
-    print(regUser.clave)
-    print(regUser.tipo)
-
-alu.close()"""
-
-
 #----Locales----
 def locales_cargados():
     all = open(afl, "r+b")
@@ -1679,28 +1658,28 @@ def login():
     size=os.path.getsize(afu)
     correcto=0
     cont=1
-    nombre=input("\nIngrese el nombre: ")
-    password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*")
+    nombre=input("\nIngrese el nombre: ").ljust(100)
+    password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*").ljust(8)
     
     while correcto!=1 and cont<3:
         alu.seek(0,0)
 
-        while(alu.tell() < size) and (regUser.usuario!=nombre) and (regUser.clave!=password):
+        while(alu.tell() < size) and (regUser.usuario.strip()!=nombre.strip()) and (regUser.clave.strip()!=password.strip()):
             regUser=pickle.load(alu)
 
-        if(regUser.usuario==nombre and regUser.clave==password):  
+        if(regUser.usuario.strip()==nombre.strip() and regUser.clave.strip()==password.strip()):  
             correcto=1
         else:
-            nombre=input("\nIngrese el nombre: ")
-            password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*")
+            nombre=input("\nIngrese el nombre: ").ljust(100)
+            password = maskpass.askpass(prompt="\nIngresar contraseña: ", mask="*").ljust(8)
             cont=cont+1 #=?????
             alu.seek(0,0)
-    if (regUser.usuario==nombre and regUser.clave==password):  
+    if (regUser.usuario.strip()==nombre.strip() and regUser.clave.strip()==password.strip()):  
             correcto=1    
     if(correcto==1):
-        name=regUser.usuario
+        name=regUser.usuario.strip()
         cod=regUser.cod
-        select_menu(regUser.tipo)
+        select_menu(regUser.tipo.strip())
     else:
         print("Cantidad de maxima de intentos permitidos")
 
@@ -1715,29 +1694,29 @@ def signin(user):
     flag=0
 
 
-    nombre=input("\nIngrese el nombre: ")
+    nombre=input("\nIngrese el nombre: ").ljust(100)
 
     while flag!=1:
         alu.seek(0,0)
 
-        while(alu.tell() < size) and (regUser.usuario!=nombre):
+        while(alu.tell() < size) and (regUser.usuario.rstrip()!=nombre.rstrip()):
             regUser=pickle.load(alu)
-        if(regUser.usuario==nombre):  
-            nombre=input("\nEse nombre ya existe. Ingrese el nombre: ")  
+        if(regUser.usuario.rstrip()==nombre.rstrip()):  
+            nombre=input("\nEse nombre ya existe. Ingrese el nombre: ").ljust(100)
         else:
             flag=1
             alu.seek(0,0)
 
-    password = maskpass.askpass(prompt="\nIngrese una contraseña con 8 caracteres: ", mask="*")
+    password = maskpass.askpass(prompt="\nIngrese una contraseña con 8 caracteres: ", mask="*").ljust(8)
     while len(password)!=8:
-        password = maskpass.askpass(prompt="\nLa contraseña debe contener 8 caracteres: ", mask="*")
+        password = maskpass.askpass(prompt="\nLa contraseña debe contener 8 caracteres: ", mask="*").ljust(8)
 
     alu.seek(0,2)
     contuser=contuser+1
     regUser.cod=contuser
-    regUser.usuario = nombre
-    regUser.clave = password
-    regUser.tipo = user
+    regUser.usuario = nombre.ljust(100)
+    regUser.clave = password.ljust(8)
+    regUser.tipo = user.ljust(14)
 
     pickle.dump(regUser, alu)
     alu.flush()
