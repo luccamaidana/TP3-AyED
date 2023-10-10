@@ -87,7 +87,7 @@ global all
 
 
 
-#afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
+afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
 #afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
 #afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
 #afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat" #este
@@ -95,7 +95,7 @@ alu = open (afu, "w+b")
 regUser = user()
 
 #locales
-#afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
+afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
 #afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
 #afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
 #afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat" #este
@@ -103,7 +103,7 @@ all = open (afl, "w+b")
 regLoc = locales()
 
 #promos
-#afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
+afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
 #afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
 #afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
 #afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT" #este
@@ -111,7 +111,7 @@ alp = open (afp, "w+b")
 regProm = promociones()
 
 #uso promos
-#afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
+afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
 #afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
 #afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
 #afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT" #este
@@ -633,8 +633,41 @@ def orden_rub(matriz):
                     aux = matriz[k][i]
                     matriz[k][i] = matriz[k][j]
                     matriz[k][j] = aux
-    print(matriz[0])#poner lindo el print
-    print(matriz[1])
+    
+    # Obtener el número de columnas
+    num_columnas = len(matriz[0])
+
+    # Calcular la longitud máxima de cada columna
+    longitudes_maximas = [max(len(str(matriz[i][j])) for i in range(len(matriz))) for j in range(num_columnas)]
+    print()
+    print()
+
+    for i in range(len(matriz)):
+        for j in range(num_columnas):
+            elemento = matriz[i][j]
+            # Usar format para alinear y formatear cada elemento
+            elemento_formateado = "{:<{ancho}}".format(elemento, ancho=longitudes_maximas[j])
+            if i == 0:
+                # Si es la primera fila, aplicar estilo de color
+                print(f"{Fore.BLUE}{elemento_formateado}{Style.RESET_ALL}", end=' ')
+            else:
+                print(elemento_formateado, end=' ')
+        print()
+        print()
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
 
 #----------------------------CONTADURIA RUBROS-----------------------------
 def rubros():
