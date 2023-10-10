@@ -87,32 +87,32 @@ global all
 
 
 
-afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
-#afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
+#afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
+afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
 #afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
 #afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat" #este
 alu = open (afu, "w+b")
 regUser = user()
 
 #locales
-afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
-#afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
+#afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
+afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
 #afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
 #afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat" #este
 all = open (afl, "w+b") 
 regLoc = locales()
 
 #promos
-afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
-#afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
+#afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
+afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
 #afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
 #afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT" #este
 alp = open (afp, "w+b")
 regProm = promociones()
 
 #uso promos
-afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
-#afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
+#afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
+afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
 #afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
 #afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT" #este
 alup = open (afup, "w+b")
@@ -201,7 +201,7 @@ def precarga_dueño():
     alu.seek(0,2)
     regUser= user()
     usuario="Dueño1"
-    clave="1234578"
+    clave="12345678"
     tipo="Dueño de local"
     contowner=contowner+1
     contuser=contuser+1
@@ -214,7 +214,7 @@ def precarga_dueño():
     alu.seek(0,2)
     regUser= user()
     usuario="Dueño2"
-    clave="1234578"
+    clave="12345678"
     tipo="Dueño de local"
     contowner=contowner+1
     contuser=contuser+1
@@ -574,16 +574,16 @@ def busquedaUserLoc(coduser): #te dice si existe el codloc
 def buscadorLoc(cod): 
     all=open(afl,"r+b")
     all.seek(0,0)
+    size=os.path.getsize(afl)
     point=all.tell()
     regLoc=locales()
     regLoc=pickle.load(all)
-    
-    point=all.tell()
+    all.seek(0,0)
     if(regLoc.codLocal!=cod):
         point=all.tell()
     else:
         all.seek(0,0)
-        while regLoc.codLocal!=cod:
+        while all.tell()<size and regLoc.codLocal!=cod:
             point=all.tell()
             regLoc=pickle.load(all)
     return point
@@ -654,20 +654,6 @@ def orden_rub(matriz):
                 print(elemento_formateado, end=' ')
         print()
         print()
-
-
-
-
-
-
-
-
-
-
-
-
-   
-
 
 #----------------------------CONTADURIA RUBROS-----------------------------
 def rubros():
@@ -801,7 +787,6 @@ def modificar_local():
     regLoc=locales()
     all.seek(0,0)
     size=os.path.getsize(afl)
-    orden()
     bandera=1
     while bandera==1:
         codLoc=int(input('\nIngrese el código del local a' + Fore.WHITE + Style.BRIGHT + ' Modificar' + Fore.RESET + Style.RESET_ALL + ': '))
@@ -823,11 +808,12 @@ def modificar_local():
   
     all.seek(point,0)
     regLoc=pickle.load(all)
+    all.seek(point,0)
     codLoc=regLoc.codLocal
     valor=regLoc.nombreLocal.ljust(100)
     ubi=regLoc.ubicacionLocal.ljust(100)
     rubro=regLoc.rubroLocal.ljust(12)
-    coduser=regLoc.codLocal
+    coduser=regLoc.codUsuario
     estado=regLoc.estado
 
     while campo!= 0:
@@ -905,16 +891,16 @@ def modificar_local():
     locales_cargados()
     centrar_texto(Fore.GREEN + Style.BRIGHT + Back.BLACK + 'La modificación fue EXITOSA.')
     rubros()
-    orden_rub(rubrolocal)
+    #orden_rub(rubrolocal)
 
     exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
     enter(gestion_locales())
 
 #----------------------------ELIMINATIO LOCALATIO-----------------------------
 def eliminar_loc():
+
     all=open(afl,"r+b")
     regLoc=locales()
-
     bandera=1
     while bandera==1:
         codLoc=int(input(f"Ingrese el código del local a {Fore.RED + 'Eliminar:' }{Style.RESET_ALL}"))
@@ -923,17 +909,18 @@ def eliminar_loc():
     point=buscadorLoc(codLoc)
     all.seek(point,0)
     regLoc=pickle.load(all)
+    all.seek(point,0)
     codLoc=regLoc.codLocal
     valor=regLoc.nombreLocal.ljust(100)
     ubi=regLoc.ubicacionLocal.ljust(100)
     rubro=regLoc.rubroLocal.ljust(12)
-    coduser=regLoc.codLocal
+    coduser=regLoc.codUsuario
     estado=regLoc.estado
 
     if (regLoc.estado == "A"):
-        baja = input("Este local esta activo. Desea darlo de baja? (S/N): ").upper()
+        baja = input('Este local esta activo. ¿Desea darlo de baja? ('+ Fore.GREEN + 'S' + Fore.WHITE + '/' + Fore.RED + 'N'+ Fore.WHITE+'): ').upper()
         while baja.upper() != "S" and baja.upper() != "N":
-            baja = input("Respuesta inválida. ¿Desea darlo de baja? (S/N): ")
+            baja = input('Respuesta inválida. ¿Desea darlo de baja? ('+ Fore.GREEN + 'S' + Fore.WHITE + '/' + Fore.RED + 'N'+ Fore.WHITE+'): ').upper()
         if (baja=="S"):
             estado="B" 
 
@@ -942,7 +929,7 @@ def eliminar_loc():
     regLoc.nombreLocal=valor.ljust(100)
     regLoc.ubicacionLocal=ubi.ljust(100)
     regLoc.rubroLocal=rubro.ljust(12)
-    regLoc.codLocal=coduser
+    regLoc.codUsuario=coduser
     regLoc.estado=estado
     pickle.dump(regLoc,all)
     all.flush()
@@ -950,9 +937,9 @@ def eliminar_loc():
     
     codStr=str(regLoc.codLocal)
     print(f"El local {Fore.RED + codStr}{Style.RESET_ALL} fue dado de baja.")
-    
+    orden()
     rubros()
-    orden_rub(rubrolocal)
+    #orden_rub(rubrolocal)
 
     exit = input(Fore.WHITE + Style.BRIGHT + "\nToque Enter para volver: ")
     enter(gestion_locales())
@@ -1982,6 +1969,7 @@ def mainMenu():
     ingreso_main_menu(valid_opc())
 
 def PP():
+    orden()
     mainMenu()
 
 PP()
