@@ -3,6 +3,7 @@ cont=2
 contowner=0
 codloc=0
 #------------------------IMPORT-------------------------------
+import sys
 import os
 import pickle
 import os.path
@@ -70,12 +71,19 @@ class novedades:
 global all
 #------------------------PP-----------------------------------
 #user
-afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
+""" afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
 #afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
 #afu = "E:\\Users\\Lenovo\\Documents\\GitHub\\TP3-AyED\\USUARIOS.dat"
 alu = open (afu, "w+b")
 regUser = user()
-size=os.path.getsize(afu)
+size=os.path.getsize(afu) """
+
+afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
+#afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
+#afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
+alu = open (afu, "w+b")
+regUser = user()
+
 
 
 regUser.usuario = regUser.usuario.ljust(100)
@@ -114,27 +122,10 @@ regLoc.codUsuario= 0
 regLoc.estado= "A"
 size= os.path.getsize(afl)
 print(size)
-#pickle.dump(regLoc,all)
+
 all.flush()
-#size= os.path.getsize(afl)
-#print(size)
-#promos
-#afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
-afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
-#alp = open (afp, "w+b")
-regProm = promociones()
 
-#uso promos
-#afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
-afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
-#alup = open (afup, "w+b")
-regUP = uso_promociones()
 
-#novedades
-#afn = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\NOVEDADES.DAT"
-afn = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\NOVEDADES.DAT"
-#aln = open (afn, "w+b")
-regNov = novedades()
 
 #-------------------------EL AJUSTE---------------------------
 
@@ -173,13 +164,27 @@ pickle.dump(regLoc,all)
 all.flush()
 all.close()
 
-regUser.cod=1
+regUser.cod=00
 regUser.usuario="5"
 regUser.clave="6"
 regUser.tipo="Administrador"
 pickle.dump(regUser,alu)
+
+print(len(regUser.usuario),"uzer len")
+print(sys.getsizeof(regUser.cod),"cod")
+print(sys.getsizeof(regUser.usuario),"uzer")
+print(sys.getsizeof(regUser.clave),"clave")
+print(sys.getsizeof(regUser.tipo),"tipo")
+
+print(len(regUser.usuario.rstrip()),"oka")
+
 alu.flush()
-print(size)
+alu.seek(0,2)
+#pickle.dump(regUser,alu)
+size = os.path.getsize(afu)
+
+print(alu.tell(),"Pointer")
+print(size,"Tamaño size")
 alu.close()
 
 
@@ -901,7 +906,7 @@ def signin(user):
     alu.flush()
     alu.close()
     centrar_texto(Fore.GREEN + Style.BRIGHT + 'La cuenta ha sido creada EXITOSAMENTE!')
-    time.sleep(1.7)
+    time.sleep(1)
 
 #-------------------------MENU'S----------------------------
 def menu_admin():
@@ -952,7 +957,7 @@ def mainMenu():
 def PP():
     mainMenu()
 
-#PP()
+PP()
 
 
 
