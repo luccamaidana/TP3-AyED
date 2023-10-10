@@ -75,6 +75,8 @@ afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
 #afu = "E:\\Users\\Lenovo\\Documents\\GitHub\\TP3-AyED\\USUARIOS.dat"
 alu = open (afu, "w+b")
 regUser = user()
+size=os.path.getsize(afu)
+
 
 regUser.usuario = regUser.usuario.ljust(100)
 regUser.clave = regUser.clave.ljust(8)
@@ -88,8 +90,7 @@ afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
 #afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
 #afl="E:\\Users\\Lenovo\\Documents\\GitHub\\TP3-AyED\\LOCALES.dat"
 all = open (afl, "w+b")
-size= os.path.getsize(afl)
-print(size)
+
 #allaux = open (afl, "w+b")
 regLoc = locales()
 regLocAux = regLoc
@@ -177,10 +178,8 @@ regUser.usuario="5"
 regUser.clave="6"
 regUser.tipo="Administrador"
 pickle.dump(regUser,alu)
-
-
-
 alu.flush()
+print(size)
 alu.close()
 
 
@@ -953,7 +952,7 @@ def mainMenu():
 def PP():
     mainMenu()
 
-PP()
+#PP()
 
 
 
