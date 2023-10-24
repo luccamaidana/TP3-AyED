@@ -85,34 +85,33 @@ global all
 #afup="c:\tp3\USO_PROMOCIONES.DAT"
 
 
-
 #afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
-afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
-#afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
+#afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
+afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
 #afu = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\USUARIOS.dat" #este
 alu = open (afu, "w+b")
 regUser = user()
 
 #locales
 #afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
-afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
-#afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
+#afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
+afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
 #afl = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\LOCALES.dat" #este
 all = open (afl, "w+b") 
 regLoc = locales()
 
 #promos
 #afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
-afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
-#afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
+#afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
+afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
 #afp = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\PROMOCIONES.DAT" #este
 alp = open (afp, "w+b")
 regProm = promociones()
 
 #uso promos
 #afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
-afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
-#afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
+#afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
+afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
 #afup = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\USO_PROMOCIONES.DAT" #este
 alup = open (afup, "w+b")
 regUP = uso_promociones()
@@ -201,8 +200,8 @@ def precarga_admin():
     alu.seek(0,0)
     regUser= user()
     alu.seek(0,0)
-    usuario="1"
-    clave="2"
+    usuario="admin@shopping.com"
+    clave="12345"
     tipo="Administrador"
     contuser=contuser+1
     regUser.cod=contuser
@@ -245,8 +244,8 @@ def precarga_dueño():
     regUser.tipo=tipo.ljust(14)
     pickle.dump(regUser,alu)
     alu.close()
-    usercargados()
-    car=input("dfsdf")
+
+
 
 precarga_dueño()
 
@@ -257,8 +256,8 @@ def precarga_locales():
     all.seek(0,0)
     regLoc= locales()
     nombrelocal="Zara"
-    ubi="Narnia"
-    rubro="Perfumeria"
+    ubi="Ala norte"
+    rubro="Indumentaria"
     codusuario=2
     estado="A"
     codloc=codloc+1
@@ -273,7 +272,7 @@ def precarga_locales():
     alu.seek(0,2)
     nombrelocal="NutriGo"
     ubi="Olimpo"
-    rubro="Indumentaria"
+    rubro="Comidas"
     codusuario=3
     estado="A"
     codloc=codloc+1
@@ -286,8 +285,7 @@ def precarga_locales():
     pickle.dump(regLoc,all)
     all.flush()
     all.close()
-    locales_cargados()
-    car=input("dfsdf")
+
 
 precarga_locales()
 
@@ -300,16 +298,10 @@ def precarga_promo():
     alp.seek(0,0)
     regProm.codPromo=1
     codpromo=codpromo+1
-    regProm.textoPromo = "Promo1".ljust(100)
-    regProm.fechaDesdePromo = "23/10/2023".ljust(10)
-    regProm.fechaHastaPromo = "24/10/2023".ljust(10)
+    regProm.textoPromo = "2x1 en REMERAS ".ljust(100)
+    regProm.fechaDesdePromo = "24/10/2023".ljust(10)
+    regProm.fechaHastaPromo = "30/10/2023".ljust(10)
     regProm.diasSemana=[1]*7
-    #regProm.diasSemana[2]=0
-    #regProm.diasSemana[3]=0
-    #regProm.diasSemana[4]=0
-    #regProm.diasSemana[5]=0
-    #regProm.diasSemana[6]=0
-    #regProm.diasSemana[0]=1
     regProm.estado = "Aprobado".ljust(9)
     regProm.codLocal=1
     regProm.codUsuario=2
@@ -319,7 +311,7 @@ def precarga_promo():
     alp.close()
 
 precarga_promo()
-prom_cargados()
+
 #------------------------PANTALLAS-------------------------
 def centrar_texto(texto):
     ancho_consola, _ = shutil.get_terminal_size()
@@ -1171,29 +1163,34 @@ def aprob_den_desc():
                 col_codPromo = 20
                 col_nombreLocal = 40
                 col_textoPromo = 40
+                col_estado = 20
 
                 # Encabezados de la tabla
+                print()
                 print(
                     Back.BLACK + Fore.BLUE + Style.BRIGHT + Back.BLACK +
                     f'{"Nombre".center(col_nombreLocal)} | ' +
                     f'{"Codigo Promo".center(col_codPromo)} | ' +
-                    f'{"Texto Promo".center(col_textoPromo)} | ' 
+                    f'{"Texto Promo".center(col_textoPromo)} | ' +
+                    f'{"Estado".center(col_estado)} '
                 )
                 alp.seek(0,0)
                 while alp.tell() < sizeprom:
                     regProm = pickle.load(alp)
 
                     # Formatear y centrar cada columna en la tabla
-                    print()
+                    
                     print (
                         Fore.WHITE + Style.BRIGHT + 
                         f'{regLoc.nombreLocal.strip().center(col_nombreLocal)} | ' +
                         f'{str(regProm.codPromo).center(col_codPromo)} | ' +
-                        f'{regProm.textoPromo.strip().center(col_textoPromo)} | '
+                        f'{regProm.textoPromo.strip().center(col_textoPromo)} | ' +
+                        f'{regProm.estado.strip().center(col_estado)}  '
                     )
-                    print()
+                    
 
         ##### aca estan todos los locales en pendiente mostrados 
+        print()
         codpromo=int(input("Ingrese el codigo de promocion para Aprobar/Denegar: "))
         bandera=valid_codProm(codpromo)
         while bandera==1:
@@ -1258,7 +1255,7 @@ def reporteadmin():
     
     usercargados()
     locales_cargados()
-    prom_cargados()
+    
     alp=open(afp,"r+b")
     all=open(afl,"r+b")
     alup=open(afup,"r+b")
@@ -1323,8 +1320,7 @@ def reporteadmin():
                 f'{str(cantusopromo).center(col_cantUso)}'))
                 
     exit = input("\nToque Enter para volver. ")
-    while exit != "":
-        exit = input("Respuesta inválida. Presione ENTER. ")
+    enter(menu_admin())
 
 #------------------------MENU OWNER------------------------------------------------------------------------------------------
 def carga_dias(matriz,day):
@@ -1440,8 +1436,7 @@ def crear_descuento():
                         print(f"{Fore.BLUE+Style.BRIGHT}Estado promoción: {Fore.RED+Style.BRIGHT+regProm.estado}")
                     case "Pendiente":
                         print(f"{Fore.BLUE+Style.BRIGHT}Estado promoción: {Fore.YELLOW+Style.BRIGHT+regProm.estado}")
-                print(most_dias(regProm.diasSemana))
-                print(regProm.diasSemana)
+
                 print(Fore.BLUE+Back.BLACK+Style.BRIGHT+'-----------------------------------------')
         alp.seek(0,0)
         all.seek(0,0)
@@ -1523,7 +1518,7 @@ def crear_descuento():
                 regProm.textoPromo = texto.ljust(100)
                 regProm.fechaDesdePromo = desde.strftime("%d/%m/%Y")
                 regProm.fechaHastaPromo = hasta.strftime("%d/%m/%Y")
-                regProm.estado = "Aprobado".ljust(9)
+                regProm.estado = "Pendiente".ljust(9)
                 regProm.codLocal=codigo
                 regProm.codUsuario=cod
                 pickle.dump(regProm, alp)
@@ -1817,10 +1812,11 @@ def solicitardesc():
         fechaDesdePromo = datetime.datetime.strptime(regProm.fechaDesdePromo, "%d/%m/%Y")
         fechaHastaPromo = datetime.datetime.strptime(regProm.fechaHastaPromo, "%d/%m/%Y")
 
+        flaganashei=1
         alp.seek(0,0)
-        while alp.tell()<size :
+        while alp.tell()<size and flaganashei==1:
             regProm=pickle.load(alp)
-            if codigo==regProm.codPromo and regProm.estado.rstrip()=="Aprobado" and fechovich >= fechaDesdePromo and fechovich <= fechaHastaPromo and regProm.diasSemana[num_dias(dia_semana)]==1:
+            if codigo==regProm.codPromo and regProm.estado.rstrip()=="Aprobado" and fechovich >= fechaDesdePromo and fechovich <= fechaHastaPromo and regProm.diasSemana[num_dias(dia_semana)]==1 :
                 regUP.codCliente = regUser.cod
                 regUP.codPromo = codigo
                 regUP.fechaUsoPromo = fecha_formateada
@@ -1830,8 +1826,9 @@ def solicitardesc():
                 pickle.dump(regUP, alup)
                 alup.flush()
                 print(Fore.GREEN + Style.BRIGHT +'¡La promoción se aplico con exito!')
-
-            else:
+                flaganashei=0
+    
+        if flaganashei!=0:
                 print(Fore.RED + Style.BRIGHT + "La promoción no es valida el dia de hoy.")
                 
     alup.close()
