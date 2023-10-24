@@ -87,32 +87,32 @@ global all
 
 #afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
 #afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
-afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
-#afu = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\USUARIOS.dat" #este
+#afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
+afu = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\USUARIOS.dat" #este
 alu = open (afu, "w+b")
 regUser = user()
 
 #locales
 #afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
 #afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
-afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
-#afl = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\LOCALES.dat" #este
+#afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
+afl = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\LOCALES.dat" #este
 all = open (afl, "w+b") 
 regLoc = locales()
 
 #promos
 #afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
 #afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
-afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
-#afp = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\PROMOCIONES.DAT" #este
+#afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
+afp = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\PROMOCIONES.DAT" #este
 alp = open (afp, "w+b")
 regProm = promociones()
 
 #uso promos
 #afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
 #afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
-afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
-#afup = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\USO_PROMOCIONES.DAT" #este
+#afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
+afup = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\USO_PROMOCIONES.DAT" #este
 alup = open (afup, "w+b")
 regUP = uso_promociones()
 
@@ -1644,10 +1644,23 @@ def uso_descuento():
                     if exit == "":
                         menu_owner()
 
+
                 if fechaDesdePromo>=desde and fechaHastaPromo<=hasta and regProm.estado.rstrip()=="Aprobado" and fechaHastaPromo<=hasta :
                     if flag2==0:
-                        print(f"| {regProm.codPromo:<15} | {regProm.textoPromo.rstrip():<38} | {regProm.fechaDesdePromo:<14} | {regProm.fechaHastaPromo:<14} | {cantreg:<17} |")
-                        print("|-----------------|----------------------------------------|----------------|----------------|-------------------|") 
+                        alp.seek(0,0)
+                        while alp.tell()<size:
+                            regProm=pickle.load(alp)
+                            if(desde<=datetime.datetime.strptime(regProm.fechaDesdePromo,"%d/%m/%Y") and hasta>=datetime.datetime.strptime(regProm.fechaHastaPromo,"%d/%m/%Y") and regProm.estado.rstrip()=="Aprobado"):# cambiar el regprom a formato datetime
+                                alup.seek(0,0)
+                                sizeuprom=os.path.getsize(afup)
+                                cantusopromo=0
+                                while alup.tell()<sizeuprom:
+                                    regUP=pickle.load(alup)
+                                    if(regProm.codPromo==regUP.codPromo and datetime.datetime.strptime(regUP.fechaUsoPromo,"%d/%m/%Y")<=hasta and datetime.datetime.strptime(regUP.fechaUsoPromo,"%d/%m/%Y")>=desde):#cambiar le regprom a formato datetime
+                                        cantusopromo=cantusopromo+1
+                                        
+                            print(f"| {regProm.codPromo:<15} | {regProm.textoPromo.rstrip():<38} | {regProm.fechaDesdePromo:<14} | {regProm.fechaHastaPromo:<14} | {cantusopromo:<17} |")
+                            print("|-----------------|----------------------------------------|----------------|----------------|-------------------|") 
                         ban2=1
                         flag2=1
                 var=regProm.codLocal
