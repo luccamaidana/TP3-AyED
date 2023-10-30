@@ -88,7 +88,7 @@ global all
 #afu = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USUARIOS.dat"
 #afu = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USUARIOS.dat"
 #afu = "D:\\Descargas\\Facultad\\TP3-AyED\\USUARIOS.dat"
-afu = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\USUARIOS.dat" #este
+afu = "C:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\USUARIOS.dat" #este
 alu = open (afu, "w+b")
 regUser = user()
 
@@ -96,7 +96,7 @@ regUser = user()
 #afl = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\LOCALES.dat"
 #afl = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\LOCALES.dat"
 #afl = "D:\\Descargas\\Facultad\\TP3-AyED\\LOCALES.dat"
-afl = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\LOCALES.dat" #este
+afl = "C:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\LOCALES.dat" #este
 all = open (afl, "w+b") 
 regLoc = locales()
 
@@ -104,7 +104,7 @@ regLoc = locales()
 #afp = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\PROMOCIONES.DAT"
 #afp = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\PROMOCIONES.DAT"
 #afp = "D:\\Descargas\\Facultad\\TP3-AyED\\PROMOCIONES.DAT"
-afp = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\PROMOCIONES.DAT" #este
+afp = "C:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\PROMOCIONES.DAT" #este
 alp = open (afp, "w+b")
 regProm = promociones()
 
@@ -112,7 +112,7 @@ regProm = promociones()
 #afup = "c:\\Users\\lucca\\Desktop\\UTN\\AyED\\TP\\TP3-AyED\\USO_PROMOCIONES.DAT"
 #afup = "c:\\Users\\Gaston\\Documents\\GitHub\\TP2-AyED\\TP3-AyED\\USO_PROMOCIONES.DAT"
 #afup = "D:\\Descargas\\Facultad\\TP3-AyED\\USO_PROMOCIONES.DAT"
-afup = "D:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\USO_PROMOCIONES.DAT" #este
+afup = "C:\\Users\\penni\\OneDrive\\Documentos\\GitHub\\TP3-AyED\\USO_PROMOCIONES.DAT" #este
 alup = open (afup, "w+b")
 regUP = uso_promociones()
 
