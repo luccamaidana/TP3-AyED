@@ -8,7 +8,7 @@
 
 ## 🚀 **Descripción**
 
-Este proyecto es el **Sistema de Shopping** de _"La Favorita"_, ubicado en Rosario, Sta. Fe.  
+Este proyecto es el **Sistema de Shopping** con sus requerimientos básicos de _"La Favorita"_, ubicado en Rosario, Sta. Fe.  
 Se desarrolló como el **Trabajo Práctico Final** del primer año en la **UTN-FRRO**.
 
 ### 📋 **Características del Sistema**
@@ -24,9 +24,11 @@ Se desarrolló como el **Trabajo Práctico Final** del primer año en la **UTN-F
 ## 🎨 **Elementos Adicionales**
 - Uso de librerías para:
   - Gestión de archivos.
+  - Definir fechas.
   - Elementos estéticos como:
-    - **Limpia pantallas**.
-    - Colores en la consola.
+    - Limpia pantallas.
+    - Colores en consola.
+    - Ocultamiento de contraseñas.
 
 ---
 
@@ -42,12 +44,3 @@ Se desarrolló como el **Trabajo Práctico Final** del primer año en la **UTN-F
 
 ## 📅 **Fecha de Entrega**
 🗓️ **Octubre de 2023**
-
----
-
-<p align="center">
-  <img src="https://via.placeholder.com/600x200?text=Sistema+de+Shopping+-+La+Favorita" alt="Banner Sistema La Favorita">
-</p>
-
----
-
