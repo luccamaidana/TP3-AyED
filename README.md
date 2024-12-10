@@ -1,6 +1,53 @@
-Este código fuente es la aplicación del Sistema de Shopping de "La Favorita" en sus requerimientos básicos, como trabajo práctico en 1° año de la UTN-FRRO. 
-Programado únicamente en Python, y usando archivos .DAT para leer y grabar los datos del sistema. 
-El paradigma de programación utilizado es del tipo "Estructurado". No se utilizan métodos de búsquedas, ordenamientos y validaciones pertenecientes al lenguaje. 
-Se utilizaron librerías para el manejo de archivos y elementos estéticos como "limpia pantallas", colores representados en la consola, etc. 
-Programadores: Gastón Pennice, Valentín Bustos, Joaquín Pacheco y Lucca Maidana. 
-Octubre del 2023. 
+# 🛒 Sistema de Shopping - **"La Favorita"**
+
+![Estado del Proyecto](https://img.shields.io/badge/Estado-Completado-brightgreen)  
+![Lenguaje](https://img.shields.io/badge/Lenguaje-Python-blue)  
+![Paradigma](https://img.shields.io/badge/Paradigma-Estructurado-yellow)
+
+---
+
+## 🚀 **Descripción**
+
+Este proyecto es el **Sistema de Shopping** de _"La Favorita"_, ubicado en Rosario, Sta. Fe.  
+Se desarrolló como el **Trabajo Práctico Final** del primer año en la **UTN-FRRO**.
+
+### 📋 **Características del Sistema**
+- **Lenguaje**: Programado completamente en Python.
+- **Manejo de datos**: Utiliza archivos `.DAT` para leer y grabar información.
+- **Paradigma**: Programación estructurada.
+- **Limitaciones**:  
+  - No se utilizan funciones predefinidas para búsquedas, ordenamientos o validaciones.
+  - Enfoque manual para estas operaciones.
+
+---
+
+## 🎨 **Elementos Adicionales**
+- Uso de librerías para:
+  - Gestión de archivos.
+  - Elementos estéticos como:
+    - **Limpia pantallas**.
+    - Colores en la consola.
+
+---
+
+## 👩‍💻 **Equipo de Desarrollo**
+| Nombre              | Rol                        |
+|---------------------|----------------------------|
+| Gastón Pennice      | Programador                |
+| Valentín Bustos     | Programador                |
+| Joaquín Pacheco     | Programador                |
+| Lucca Maidana       | Programador                |
+
+---
+
+## 📅 **Fecha de Entrega**
+🗓️ **Octubre de 2023**
+
+---
+
+<p align="center">
+  <img src="https://via.placeholder.com/600x200?text=Sistema+de+Shopping+-+La+Favorita" alt="Banner Sistema La Favorita">
+</p>
+
+---
+
