@@ -21,7 +21,7 @@ Se desarrolló como el **Trabajo Práctico Final** del primer año en la **UTN-F
 
 ---
 
-## 🎨 **Elementos Adicionales**
+## 🐱‍👤 **Elementos Adicionales**
 - Uso de librerías para:
   - Gestión de archivos.
   - Definir fechas.
